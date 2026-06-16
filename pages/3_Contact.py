@@ -10,7 +10,10 @@ st.set_page_config(page_title="Contact — Vettd", page_icon="✦", layout="wide
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
 st.markdown("""
-<div style="max-width:760px;margin:0 auto;padding:3rem 1rem;">
+<div style="max-width:760px;margin:0 auto;padding:3rem 1rem;">""", unsafe_allow_html=True)
+
+st.markdown("""
+<div style="max-width:760px;margin:0 auto;padding:0 3rem 3rem;">
 
     <div style="text-align:center;margin-bottom:3.5rem;">
         <div style="font-size:13px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;
@@ -60,6 +63,7 @@ with st.container():
             background:linear-gradient(90deg,#7C3AED,#60A5FA,#06B6D4,#A78BFA);"></div>
         <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
             color:#555570;margin-bottom:1.5rem;">Send a message</div>
+    </div>
     """, unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
@@ -121,5 +125,7 @@ Message:
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
