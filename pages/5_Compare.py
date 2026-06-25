@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS
+from utils.styles import GLOBAL_CSS, SITE_FOOTER
 from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
     calculate_brand_fit_score, calculate_audience_quality_score,
@@ -20,7 +20,7 @@ st.markdown("""
 .block-container { padding:0 2rem 3rem !important; max-width:100% !important; }
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 .disp { font-family:'Space Grotesk','Inter',sans-serif; }
-.cmp-card { background:#08080F; border:1px solid #14142A; border-radius:18px; padding:1.5rem;
+.cmp-card { background:#101019; border:1px solid #14142A; border-radius:18px; padding:1.5rem;
   transition:border-color .4s, transform .4s cubic-bezier(.16,1,.3,1); }
 .cmp-stat { display:flex; justify-content:space-between; align-items:center; padding:8px 0;
   border-bottom:1px solid #0D0D1A; font-size:13px; }
@@ -32,8 +32,8 @@ st.markdown("""
 # ── NAV ──
 st.markdown("""
 <div style="font-family:'Inter',sans-serif;">
-<nav style="position:sticky;top:0;z-index:100;padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(5,5,9,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);margin:0 -2rem 0;">
-<a href="/" target="_self" class="disp" style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
+<nav style="position:sticky;top:0;z-index:100;padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,22,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);margin:0 -2rem 0;">
+<a href="/" target="_self" class="brandmark" style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
 <div style="display:flex;gap:2rem;align-items:center;">
 <a href="/app" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">Analyse one</a>
 <a href="/Compare" target="_self" style="font-size:13px;color:#A78BFA;text-decoration:none;font-weight:600;">Compare</a>
@@ -213,3 +213,6 @@ if run:
         bargap=0.5,
     )
     st.plotly_chart(fig2, use_container_width=True)
+
+# ── FOOTER ──
+st.markdown(SITE_FOOTER, unsafe_allow_html=True)

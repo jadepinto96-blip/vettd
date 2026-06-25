@@ -24,9 +24,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div style="font-family:'Inter',sans-serif;background:#050509;">
-<nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(5,5,9,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
-<a href="/" target="_self" class="disp" style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
+<div style="font-family:'Inter',sans-serif;background:#0B0B16;">
+<nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,22,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
+<a href="/" target="_self" class="brandmark" style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
 <div style="display:flex;gap:2.5rem;align-items:center;">
 <a href="/About" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">About</a>
 <a href="/Founder" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">Founder</a>
@@ -118,7 +118,7 @@ if send:
 st.markdown("""
 <div style="max-width:720px;margin:2.5rem auto 0;padding:2rem;border-top:1px solid #14142A;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
 <div>
-<div class="disp" style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">✦ VETTD</div>
+<div class="brandmark" style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">✦ VETTD</div>
 <div style="font-size:12px;color:#33334A;">Built in Mumbai. Made for brands everywhere.</div>
 </div>
 <a href="mailto:jadepinto96@gmail.com" style="font-size:12px;color:#5A5A78;text-decoration:none;">jadepinto96@gmail.com</a>

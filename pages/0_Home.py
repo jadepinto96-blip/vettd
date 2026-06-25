@@ -12,14 +12,14 @@ st.markdown("""
 
 * { box-sizing: border-box; }
 
-[data-testid="stAppViewContainer"] { background: #050509 !important; }
+[data-testid="stAppViewContainer"] { background: #0B0B16 !important; }
 [data-testid="stSidebar"], [data-testid="collapsedControl"],
 #MainMenu, footer, header, [data-testid="stToolbar"] { display: none !important; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
 html { scroll-behavior: smooth; }
 
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #050509; }
+::-webkit-scrollbar-track { background: #0B0B16; }
 ::-webkit-scrollbar-thumb { background: #1A1A2E; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #2A2A3E; }
 
@@ -54,7 +54,7 @@ html { scroll-behavior: smooth; }
 """, unsafe_allow_html=True)
 
 st.markdown(r"""
-<div style="font-family:'Inter',sans-serif;background:#050509;color:#EDEDF5;overflow-x:hidden;position:relative;">
+<div style="font-family:'Inter',sans-serif;background:#0B0B16;color:#EDEDF5;overflow-x:hidden;position:relative;">
 
 <canvas id="particles" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55;"></canvas>
 <div class="cursor-glow" id="cglow"></div>
@@ -69,8 +69,8 @@ st.markdown(r"""
 <!-- ════════════ NAV ════════════ -->
 <nav style="position:fixed;top:0;left:0;right:0;z-index:200;padding:1.1rem 3.5rem;
   display:flex;justify-content:space-between;align-items:center;
-  background:rgba(5,5,9,.7);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
-  <div class="disp" style="font-size:21px;font-weight:700;letter-spacing:-.5px;
+  background:rgba(11,11,22,.7);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
+  <div class="brandmark" style="font-size:21px;font-weight:700;letter-spacing:-.5px;
     background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);background-size:200% auto;
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;">✦ VETTD</div>
   <div style="display:flex;gap:2.75rem;align-items:center;">
@@ -163,15 +163,15 @@ st.markdown(r"""
   <div class="reveal d1 lift" style="max-width:1080px;margin:0 auto;background:rgba(255,255,255,.02);
     border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;
     box-shadow:0 40px 120px rgba(124,58,237,.18),0 0 60px rgba(34,211,238,.05);">
-    <div style="background:#08080F;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;">
+    <div style="background:#101019;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;">
       <div style="display:flex;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#FF5F57;"></span>
         <span style="width:10px;height:10px;border-radius:50%;background:#FEBC2E;"></span>
         <span style="width:10px;height:10px;border-radius:50%;background:#28C840;"></span></div>
       <div style="flex:1;background:#12121E;border-radius:6px;padding:5px 12px;font-size:11px;color:#3A3A52;max-width:300px;margin:0 auto;text-align:center;">get-vettd.streamlit.app</div>
     </div>
     <div style="padding:1.5rem;display:flex;gap:1.5rem;min-height:380px;">
-      <div style="width:180px;flex-shrink:0;background:#08080F;border-radius:12px;padding:1rem;">
-        <div class="disp" style="font-size:14px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.5rem;">✦ Vettd</div>
+      <div style="width:180px;flex-shrink:0;background:#101019;border-radius:12px;padding:1rem;">
+        <div class="brandmark" style="font-size:14px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.5rem;">✦ Vettd</div>
         <div style="font-size:10px;color:#222238;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Creator</div>
         <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6A6A90;">@emmalifestyle</div>
         <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:1rem;font-size:11px;color:#6A6A90;">Instagram</div>
@@ -188,16 +188,16 @@ st.markdown(r"""
               <div style="font-size:11px;color:#3A3A52;">@emmalifestyle · Instagram · Fashion</div></div></div>
           <div style="background:#16122E;border:1px solid rgba(124,58,237,.3);border-radius:999px;padding:4px 14px;font-size:11px;font-weight:600;color:#A78BFA;">Pro</div></div>
         <div style="display:flex;gap:1rem;">
-          <div style="background:#08080F;border:1px solid #16162A;border-radius:14px;padding:1.25rem;text-align:center;min-width:120px;">
+          <div style="background:#101019;border:1px solid #16162A;border-radius:14px;padding:1.25rem;text-align:center;min-width:120px;">
             <div style="font-size:10px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Vettd Score</div>
             <div class="disp" style="font-size:54px;font-weight:700;line-height:1;background:linear-gradient(135deg,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">74</div>
             <div style="font-size:11px;font-weight:600;color:#60A5FA;margin-top:6px;">Strong fit</div></div>
           <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">""" + "".join([
-    f'<div style="background:#08080F;border:1px solid #16162A;border-radius:10px;padding:10px 12px;"><div style="font-size:9px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;">{lbl}</div><div style="font-size:17px;font-weight:700;color:{clr};margin-top:4px;">{val}</div></div>'
+    f'<div style="background:#101019;border:1px solid #16162A;border-radius:10px;padding:10px 12px;"><div style="font-size:9px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;">{lbl}</div><div style="font-size:17px;font-weight:700;color:{clr};margin-top:4px;">{val}</div></div>'
     for lbl,val,clr in [("Followers","150K","#EDEDF5"),("Engagement","6.5%","#A78BFA"),("Brand fit","80/100","#22D3EE"),
                          ("Fake score","12/100","#10B981"),("Cost/post","£840","#EDEDF5"),("Growth 30d","+2.5%","#A78BFA")]
 ]) + r"""</div></div>
-        <div style="background:#08080F;border:1px solid #16162A;border-radius:12px;padding:1rem;display:flex;gap:1.5rem;">""" + "".join([
+        <div style="background:#101019;border:1px solid #16162A;border-radius:12px;padding:1rem;display:flex;gap:1.5rem;">""" + "".join([
     f'<div style="flex:1;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#3A3A52;">{lbl}</span><span style="color:#A78BFA;">{v}</span></div><div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:{v}%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#22D3EE);"></div></div></div>'
     for lbl,v in [("Engagement",65),("Authenticity",88),("Brand fit",80),("Consistency",80)]
 ]) + r"""</div>
@@ -228,7 +228,7 @@ features = [
 ]
 for i,(icon,color,dark,title,desc) in enumerate(features):
     st.markdown(f"""
-    <div class="reveal d{(i%3)+1} lift" style="background:#08080F;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;"
+    <div class="reveal d{(i%3)+1} lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;"
       onmouseover="this.style.borderColor='{color}40';this.style.boxShadow='0 20px 60px {color}18'"
       onmouseout="this.style.borderColor='#14142A';this.style.boxShadow='none'">
       <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}55,transparent);"></div>
@@ -260,7 +260,7 @@ steps = [
 ]
 for i,(num,color,title,desc) in enumerate(steps):
     st.markdown(f"""
-    <div class="reveal d{i+1}" style="background:#08080F;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
+    <div class="reveal d{i+1}" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-20px;right:10px;font-size:120px;font-weight:800;color:{color}0c;font-family:'Space Grotesk',sans-serif;line-height:1;">{num}</div>
       <div class="disp" style="font-size:46px;font-weight:700;line-height:1;margin-bottom:1.25rem;
         background:linear-gradient(135deg,{color},{color}55);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;">{num}</div>
@@ -280,7 +280,7 @@ stats = [("£","21","B","market we're fixing","#A78BFA"),("","80","%","of brands
          ("","6","×","faster than manual vetting","#22D3EE"),("","0","–100","one score, total clarity","#A78BFA")]
 for pre,num,suf,lbl,clr in stats:
     st.markdown(f"""
-    <div style="background:#08080F;padding:2.25rem 1.5rem;text-align:center;">
+    <div style="background:#101019;padding:2.25rem 1.5rem;text-align:center;">
       <div class="disp" style="font-size:44px;font-weight:700;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
         {pre}<span class="countup" data-target="{num}">0</span>{suf}</div>
       <div style="font-size:12px;color:#3A3A52;margin-top:8px;letter-spacing:.04em;">{lbl}</div>
@@ -301,11 +301,11 @@ st.markdown(r"""
 """, unsafe_allow_html=True)
 
 plans = [
-    ("Starter","£29","/mo","5 searches/month","#555570","#08080F",False,
+    ("Starter","£29","/mo","5 searches/month","#555570","#101019",False,
      ["Vettd Score","Engagement analytics","Fake follower score","Basic demographics","CSV export"]),
     ("Pro","£99","/mo","50 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
      ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF brand report"]),
-    ("Enterprise","Custom","","Unlimited searches","#22D3EE","#08080F",False,
+    ("Enterprise","Custom","","Unlimited searches","#22D3EE","#101019",False,
      ["Everything in Pro","ROI prediction","Buyer intent signals","Auto campaign brief","API access","White-label reports"]),
 ]
 for idx,(name,price,period,searches,color,bg,featured,flist) in enumerate(plans):
@@ -350,7 +350,7 @@ testimonials = [
 ]
 for i,(quote,name,role,color) in enumerate(testimonials):
     st.markdown(f"""
-    <div class="reveal d{i+1} lift" style="background:#08080F;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
+    <div class="reveal d{i+1} lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
       <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>
       <div class="disp" style="font-size:48px;color:{color};line-height:.6;margin-bottom:1.25rem;opacity:.5;">"</div>
       <p style="font-size:14.5px;color:#7A7A98;line-height:1.85;margin:0 0 1.5rem;">{quote}</p>
@@ -381,7 +381,7 @@ st.markdown(r"""
 </section>
 
 <footer style="border-top:1px solid #0D0D1A;padding:2.5rem 3.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:relative;z-index:2;">
-  <div class="disp" style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">✦ VETTD</div>
+  <div class="brandmark" style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">✦ VETTD</div>
   <div style="font-size:12px;color:#222238;">Built in Mumbai. Made for brands everywhere.</div>
   <div style="display:flex;gap:1.5rem;">
     <a href="/About" target="_self" style="font-size:12px;color:#3A3A52;text-decoration:none;">About</a>

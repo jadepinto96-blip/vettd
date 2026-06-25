@@ -17,10 +17,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div style="font-family:'Inter',sans-serif;background:#050509;color:#EDEDF5;min-height:100vh;">
+<div style="font-family:'Inter',sans-serif;background:#0B0B16;color:#EDEDF5;min-height:100vh;">
 
-<nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(5,5,9,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
-<a href="/" target="_self" class="disp" style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
+<nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,22,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
+<a href="/" target="_self" class="brandmark" style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
 <div style="display:flex;gap:2.5rem;align-items:center;">
 <a href="/About" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">About</a>
 <a href="/Founder" target="_self" style="font-size:13px;color:#A78BFA;text-decoration:none;font-weight:600;">Founder</a>

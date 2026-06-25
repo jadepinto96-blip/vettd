@@ -1,7 +1,7 @@
 import streamlit as st
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from utils.styles import GLOBAL_CSS
+from utils.styles import GLOBAL_CSS, SITE_FOOTER
 
 st.set_page_config(page_title="Vettd — Analyse a Creator", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
@@ -17,7 +17,7 @@ header { display: none !important; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
 
 .input-section {
-    background: #07070F;
+    background: #101019;
     border: 1px solid #1A1A2E;
     border-radius: 20px;
     padding: 2rem;
@@ -76,7 +76,7 @@ header { display: none !important; }
 st.markdown("""
 <div style="display:flex;justify-content:space-between;align-items:center;
     padding:1.25rem 3rem;border-bottom:1px solid #0D0D1A;
-    background:rgba(4,4,10,0.95);backdrop-filter:blur(20px);">
+    background:rgba(11,11,22,0.95);backdrop-filter:blur(20px);">
   <a href="/" target="_self" style="font-size:20px;font-weight:800;letter-spacing:-0.5px;
       background:linear-gradient(135deg,#A78BFA,#60A5FA,#06B6D4);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ Vettd</a>
@@ -130,7 +130,7 @@ with col_center:
         with tier_cols[i]:
             active = st.session_state.selected_tier == t
             color = tier_colors[t]
-            bg = f"rgba({','.join(str(int(color.lstrip('#')[j:j+2], 16)) for j in (0,2,4))},0.15)" if active else "#07070F"
+            bg = f"rgba({','.join(str(int(color.lstrip('#')[j:j+2], 16)) for j in (0,2,4))},0.15)" if active else "#101019"
             border = color if active else "#1A1A2E"
             if st.button(t, key=f"tier_{t}", use_container_width=True):
                 st.session_state.selected_tier = t
@@ -283,3 +283,6 @@ with col_center:
                 "crisis_risk": crisis_risk,
             }
             st.switch_page("pages/4_Dashboard.py")
+
+# ── FULL-WIDTH FOOTER ──
+st.markdown(SITE_FOOTER, unsafe_allow_html=True)

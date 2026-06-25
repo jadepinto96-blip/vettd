@@ -27,7 +27,7 @@ header { display: none !important; }
 .block-container { padding: 2rem 3rem !important; max-width: 100% !important; }
 
 div[data-testid="stMetric"] {
-    background: #07070F;
+    background: #101019;
     border: 1px solid #12121E;
     border-radius: 14px;
     padding: 1rem 1.25rem;
@@ -45,7 +45,7 @@ div[data-testid="stMetricValue"] {
 }
 
 .stTabs [data-baseweb="tab-list"] {
-    background: #07070F;
+    background: #101019;
     border-radius: 12px;
     padding: 4px;
     gap: 4px;
@@ -91,14 +91,14 @@ div[data-testid="stMetricValue"] {
 }
 
 .section-card {
-    background: #07070F;
+    background: #101019;
     border: 1px solid #12121E;
     border-radius: 16px;
     padding: 1.5rem;
 }
 
 .brief-block {
-    background: #04040A;
+    background: #0B0B16;
     border: 1px solid #12121E;
     border-left: 3px solid #7C3AED;
     border-radius: 0 12px 12px 0;
@@ -109,7 +109,7 @@ div[data-testid="stMetricValue"] {
 }
 
 [data-testid="stDownloadButton"] button {
-    background: #07070F !important;
+    background: #101019 !important;
     color: #A78BFA !important;
     border: 1px solid #1A1A2E !important;
     font-size: 13px !important;
@@ -224,7 +224,7 @@ col_score, col_main = st.columns([1, 3], gap="large")
 
 with col_score:
     st.markdown(f"""
-    <div style="background:#07070F;border:1px solid #12121E;border-radius:20px;
+    <div style="background:#101019;border:1px solid #12121E;border-radius:20px;
         padding:1.75rem;position:relative;overflow:hidden;">
       <div style="position:absolute;top:0;left:0;right:0;height:1px;
           background:linear-gradient(90deg,transparent,{score_color}55,transparent);"></div>

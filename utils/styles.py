@@ -1,10 +1,16 @@
 GLOBAL_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap');
 
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
-[data-testid="stAppViewContainer"] { background: #07070F; color: #E8E8F0; }
+[data-testid="stAppViewContainer"] { background: #0B0B16; color: #E8E8F0; }
+
+/* distinct logo wordmark */
+.brandmark { font-family: 'Syne', sans-serif !important; letter-spacing: -0.01em !important; font-weight: 800 !important; }
+
+/* softer, rounded alerts */
+[data-testid="stAlert"], .stAlert { border-radius: 14px !important; border: 1px solid rgba(255,255,255,0.06) !important; }
 [data-testid="stSidebar"] { background: #0A0A14 !important; border-right: 1px solid #1A1A2E; }
 [data-testid="stSidebar"] * { color: #C8C8D8 !important; }
 [data-testid="stSidebar"] .stSelectbox > div > div,
@@ -219,4 +225,46 @@ a { transition: color 0.3s ease, opacity 0.3s ease !important; }
 /* gradient focus ring on any focused input */
 *:focus-visible { outline: none !important; }
 </style>
+"""
+
+# Reusable site footer — drop into any page with st.markdown(SITE_FOOTER, unsafe_allow_html=True)
+SITE_FOOTER = """
+<div style="font-family:'Inter',sans-serif;margin-top:5rem;border-top:1px solid #1A1A2E;
+  background:linear-gradient(180deg,transparent,rgba(124,58,237,.03));padding:4rem 3.5rem 2.5rem;">
+  <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;">
+    <div>
+      <div class="brandmark" style="font-size:24px;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;">✦ VETTD</div>
+      <div style="font-size:22px;font-weight:600;color:#EDEDF5;line-height:1.3;letter-spacing:-.02em;">
+        Creator intelligence.<br>Simplified.</div>
+      <div style="font-size:12px;color:#3A3A52;margin-top:1.25rem;">Built in Mumbai. Made for brands everywhere.</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Company</div>
+      <a href="/About" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">About us</a>
+      <a href="/Founder" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Founder</a>
+      <a href="/" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Pricing</a>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Product</div>
+      <a href="/app" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Analyse a creator</a>
+      <a href="/Compare" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Compare creators</a>
+      <a href="/" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">How it works</a>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Contact</div>
+      <a href="/Contact" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Get in touch</a>
+      <a href="mailto:jadepinto96@gmail.com" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">jadepinto96@gmail.com</a>
+    </div>
+  </div>
+  <div style="max-width:1120px;margin:2.5rem auto 0;padding-top:1.75rem;border-top:1px solid #14142A;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+    <div style="display:flex;gap:1.75rem;">
+      <a href="/" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Privacy Policy</a>
+      <a href="/" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="/" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Refund Policy</a>
+    </div>
+    <div style="font-size:12px;color:#4A4A66;">© 2026 Vettd<sup style="font-size:8px;">®</sup></div>
+  </div>
+</div>
 """
