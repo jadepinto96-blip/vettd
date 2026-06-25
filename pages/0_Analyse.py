@@ -16,6 +16,27 @@ header { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
 .block-container { padding: 1.5rem 1rem 0 !important; max-width: 880px !important; margin: 0 auto !important; }
 
+/* ── tier selector: active = gradient, inactive = outline ── */
+.stButton button[kind="primary"] {
+    background: linear-gradient(135deg, #7C3AED, #4F46E5) !important;
+    color: #fff !important; border: 1px solid rgba(124,58,237,.6) !important;
+    border-radius: 12px !important; font-weight: 700 !important;
+    box-shadow: 0 0 28px rgba(124,58,237,.45) !important;
+    transform: translateY(-2px) !important;
+    transition: all .3s cubic-bezier(.16,1,.3,1) !important;
+}
+.stButton button[kind="secondary"] {
+    background: #101019 !important; color: #8888A8 !important;
+    border: 1px solid #1E1E32 !important; border-radius: 12px !important;
+    font-weight: 600 !important; box-shadow: none !important;
+    transition: all .3s cubic-bezier(.16,1,.3,1) !important;
+}
+.stButton button[kind="secondary"]:hover {
+    border-color: rgba(124,58,237,.5) !important; color: #C8C8E0 !important;
+    background: #14141F !important; transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(124,58,237,.15) !important;
+}
+
 .input-section {
     background: #101019;
     border: 1px solid #1A1A2E;
@@ -129,14 +150,19 @@ with col_center:
     for i, t in enumerate(tiers):
         with tier_cols[i]:
             active = st.session_state.selected_tier == t
-            color = tier_colors[t]
-            bg = f"rgba({','.join(str(int(color.lstrip('#')[j:j+2], 16)) for j in (0,2,4))},0.15)" if active else "#101019"
-            border = color if active else "#1A1A2E"
-            if st.button(t, key=f"tier_{t}", use_container_width=True):
+            if st.button(t, key=f"tier_{t}", use_container_width=True,
+                         type="primary" if active else "secondary"):
                 st.session_state.selected_tier = t
                 st.rerun()
 
     tier = st.session_state.selected_tier
+    st.markdown(f"""
+    <div style="text-align:center;margin-top:-0.25rem;margin-bottom:0.5rem;
+        font-size:12px;color:#5A5A78;">
+      <span style="color:#A78BFA;font-weight:600;">{tier}</span> plan selected —
+      {'core analytics' if tier=='Starter' else 'full demographics + brand fit' if tier=='Pro' else 'predictive intelligence + market fit'}
+    </div>
+    """, unsafe_allow_html=True)
     TIERS = {"Starter": 1, "Pro": 2, "Enterprise": 3}
 
     def tier_gate(required):

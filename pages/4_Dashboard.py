@@ -29,20 +29,39 @@ header { display: none !important; }
 
 div[data-testid="stMetric"] {
     background: #101019;
-    border: 1px solid #12121E;
+    border: 1px solid #1A1A2E;
     border-radius: 14px;
     padding: 1rem 1.25rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform .35s cubic-bezier(.16,1,.3,1), border-color .35s ease, box-shadow .35s ease, background .35s ease;
 }
+div[data-testid="stMetric"]::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, #7C3AED, #22D3EE);
+    opacity: 0; transition: opacity .35s ease;
+}
+div[data-testid="stMetric"]:hover {
+    transform: translateY(-4px);
+    border-color: rgba(124,58,237,.45);
+    background: #12121F;
+    box-shadow: 0 14px 40px rgba(124,58,237,.18);
+}
+div[data-testid="stMetric"]:hover::before { opacity: 1; }
 div[data-testid="stMetricLabel"] {
     font-size: 10px !important;
-    color: #333355 !important;
+    color: #6A6A90 !important;
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
 div[data-testid="stMetricValue"] {
-    font-size: 22px !important;
-    font-weight: 700 !important;
-    color: #E8E8F0 !important;
+    font-size: 23px !important;
+    font-weight: 800 !important;
+    background: linear-gradient(135deg, #EDEDF5, #A78BFA) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
 }
 
 .stTabs [data-baseweb="tab-list"] {
@@ -182,28 +201,21 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ── CREATOR HEADER ──
+_brand_suffix = f"&nbsp;·&nbsp; {d['brand_industry']}" if d['brand_industry'] else ""
 st.markdown(f"""
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;">
-  <div style="display:flex;align-items:center;gap:16px;">
-    <div style="width:56px;height:56px;border-radius:50%;
-        background:linear-gradient(135deg,#7C3AED,#06B6D4);
-        display:flex;align-items:center;justify-content:center;
-        font-size:20px;font-weight:800;color:white;">{initials}</div>
-    <div>
-      <div style="font-size:22px;font-weight:800;color:#E8E8F0;letter-spacing:-0.5px;">{d['creator_name']}</div>
-      <div style="font-size:12px;color:#333355;margin-top:3px;">
-        {d['username']} &nbsp;·&nbsp; {d['platform']} &nbsp;·&nbsp; {d['niche']}
-        {f"&nbsp;·&nbsp; {d['brand_industry']}" if d['brand_industry'] else ""}
-      </div>
-    </div>
-  </div>
-  <div style="text-align:right;">
-    <div style="font-size:11px;color:#333355;margin-bottom:4px;">Vettd Score</div>
-    <div style="font-size:48px;font-weight:900;line-height:1;
-        background:linear-gradient(135deg,{score_color},{score_color}99);
-        -webkit-background-clip:text;-webkit-text-fill-color:transparent;">{vettd_score}</div>
-    <div style="font-size:12px;font-weight:700;color:{score_color};margin-top:2px;">{label}</div>
-  </div>
+<div style="display:flex;align-items:center;gap:16px;">
+<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;">{initials}</div>
+<div>
+<div style="font-size:22px;font-weight:800;color:#E8E8F0;letter-spacing:-0.5px;">{d['creator_name']}</div>
+<div style="font-size:12px;color:#5A5A78;margin-top:3px;">{d['username']} &nbsp;·&nbsp; {d['platform']} &nbsp;·&nbsp; {d['niche']} {_brand_suffix}</div>
+</div>
+</div>
+<div style="text-align:right;">
+<div style="font-size:11px;color:#5A5A78;margin-bottom:4px;">Vettd Score</div>
+<div style="font-size:48px;font-weight:900;line-height:1;background:linear-gradient(135deg,{score_color},{score_color}99);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{vettd_score}</div>
+<div style="font-size:12px;font-weight:700;color:{score_color};margin-top:2px;">{label}</div>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
