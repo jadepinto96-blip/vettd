@@ -25,7 +25,7 @@ st.markdown("""
 <a href="/About" target="_self" style="font-size:13px;color:#A78BFA;text-decoration:none;font-weight:600;">About</a>
 <a href="/Founder" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">Founder</a>
 <a href="/Contact" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">Contact</a>
-<a href="/app" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;padding:9px 22px;border-radius:999px;background:linear-gradient(135deg,#7C3AED,#4F46E5);border:1px solid rgba(124,58,237,.5);">Launch app →</a>
+<a href="/" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;padding:9px 22px;border-radius:999px;background:linear-gradient(135deg,#7C3AED,#4F46E5);border:1px solid rgba(124,58,237,.5);">Launch app →</a>
 </div>
 </nav>
 
@@ -84,7 +84,7 @@ for name, weight, desc, color in score_components:
 st.markdown("""
 <div style="text-align:center;padding:3rem;margin-top:1rem;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(34,211,238,.08));border:1px solid rgba(124,58,237,.2);border-radius:24px;">
 <div class="disp" style="font-size:28px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;">Ready to vet your next creator?</div>
-<a href="/app" target="_self" style="display:inline-block;margin-top:8px;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;font-weight:600;font-size:14px;padding:12px 32px;border-radius:999px;text-decoration:none;">Launch the app →</a>
+<a href="/" target="_self" style="display:inline-block;margin-top:8px;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;font-weight:600;font-size:14px;padding:12px 32px;border-radius:999px;text-decoration:none;">Launch the app →</a>
 </div>
 
 </div>

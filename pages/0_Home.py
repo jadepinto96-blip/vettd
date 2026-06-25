@@ -77,7 +77,7 @@ st.markdown(r"""
     <a href="/About" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;font-weight:500;letter-spacing:.02em;">About</a>
     <a href="/Founder" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;font-weight:500;letter-spacing:.02em;">Founder</a>
     <a href="/Contact" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;font-weight:500;letter-spacing:.02em;">Contact</a>
-    <a href="/app" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;padding:9px 22px;border-radius:999px;
+    <a href="/" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;padding:9px 22px;border-radius:999px;
       background:linear-gradient(135deg,#7C3AED,#4F46E5);border:1px solid rgba(124,58,237,.5);
       box-shadow:0 0 24px rgba(124,58,237,.3);transition:box-shadow .3s,transform .3s;"
       onmouseover="this.style.boxShadow='0 0 44px rgba(124,58,237,.65)';this.style.transform='scale(1.04)'"
@@ -122,7 +122,7 @@ st.markdown(r"""
 
   <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:5.5rem;
     animation:float-up 1s cubic-bezier(.16,1,.3,1) .28s both;">
-    <a href="/app" target="_self" style="display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,#7C3AED,#4F46E5);
+    <a href="/" target="_self" style="display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,#7C3AED,#4F46E5);
       color:white;font-weight:700;font-size:15px;padding:17px 38px;border-radius:999px;text-decoration:none;
       box-shadow:0 0 44px rgba(124,58,237,.42);border:1px solid rgba(124,58,237,.5);transition:transform .3s,box-shadow .3s;"
       onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 64px rgba(124,58,237,.7)'"
@@ -323,7 +323,7 @@ for idx,(name,price,period,searches,color,bg,featured,flist) in enumerate(plans)
       <div style="margin-bottom:6px;">{price_html}</div>
       <div style="font-size:12px;color:#3A3A52;margin-bottom:1.5rem;">{searches}</div>
       <div style="border-top:1px solid #16162A;padding-top:1.4rem;">{checks}</div>
-      <a href="/app" target="_self" style="display:block;margin-top:1.5rem;text-align:center;
+      <a href="/" target="_self" style="display:block;margin-top:1.5rem;text-align:center;
         background:{'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'};
         border:{'none' if featured else '1px solid #16162A'};color:{'white' if featured else '#8888AA'};
         font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;transition:transform .3s;"
@@ -371,7 +371,7 @@ st.markdown(r"""
       background:linear-gradient(135deg,#FFFFFF 0%,#A78BFA 45%,#22D3EE 85%);background-size:200% auto;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 6s linear infinite;">Ready to vet your next creator?</h2>
     <p style="font-size:17px;color:#5A5A78;line-height:1.7;margin:0 0 2.5rem;">Join brands using Vettd to make smarter influencer decisions.</p>
-    <a href="/app" target="_self" style="display:inline-block;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;
+    <a href="/" target="_self" style="display:inline-block;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;
       font-weight:700;font-size:16px;padding:19px 50px;border-radius:999px;text-decoration:none;
       box-shadow:0 0 64px rgba(124,58,237,.42);border:1px solid rgba(124,58,237,.5);transition:transform .3s,box-shadow .3s;"
       onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 90px rgba(124,58,237,.7)'"

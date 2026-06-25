@@ -247,7 +247,7 @@ SITE_FOOTER = """
     </div>
     <div>
       <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Product</div>
-      <a href="/app" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Analyse a creator</a>
+      <a href="/" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Analyse a creator</a>
       <a href="/Compare" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">Compare creators</a>
       <a href="/" target="_self" style="display:block;font-size:13px;color:#8888A8;text-decoration:none;margin-bottom:.7rem;">How it works</a>
     </div>

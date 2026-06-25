@@ -103,10 +103,10 @@ st.markdown("""
   </div>
   <h1 style="font-size:52px;font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin:0 0 1rem;">
     <span style="background:linear-gradient(135deg,#FFFFFF,#E8E8F0);
-        -webkit-background-clip:text;-webkit-text-fill-color:transparent;">Vet any creator</span><br>
-    <span style="background:linear-gradient(135deg,#A78BFA,#60A5FA,#06B6D4);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;">Vet any creator.</span><br>
+    <span class="brandmark" style="background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);
         background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-      in seconds.
+      Vettd in seconds.
     </span>
   </h1>
   <p style="font-size:16px;color:#44446A;max-width:440px;margin:0 auto;line-height:1.7;">
