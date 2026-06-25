@@ -60,7 +60,7 @@ st.markdown("""
 </div>
 <div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.5rem;text-align:center;">
 <div class="disp" style="font-size:30px;font-weight:700;background:linear-gradient(135deg,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Fortune 500</div>
-<div style="font-size:12px;color:#5A5A78;margin-top:4px;">clients advised at Accenture</div>
+<div style="font-size:12px;color:#5A5A78;margin-top:4px;">clients advised in consulting</div>
 </div>
 <div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.5rem;text-align:center;">
 <div class="disp" style="font-size:30px;font-weight:700;background:linear-gradient(135deg,#22D3EE,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">2×</div>
@@ -72,7 +72,7 @@ st.markdown("""
 
 <div style="background:#0A0A14;border:1px solid #14142A;border-radius:18px;padding:1.75rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:10px;">The strategist</div>
-<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">By day, Jade is a management consultant at Accenture Strategy &amp; Consulting, where she designs large-scale transformation and AI-adoption strategies for Fortune Global 500 clients. With a finance degree, a US CMA in progress, and two "Champion of the Quarter" awards, she's spent her career turning messy data into decisions executives can actually act on — and seeing, first-hand, how much marketing budget gets spent on instinct rather than evidence.</p>
+<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">By day, Jade is a management consultant at a leading global consulting firm, where she designs large-scale transformation and AI-adoption strategies for Fortune Global 500 clients. With a finance degree, a US CMA in progress, and two "Champion of the Quarter" awards, she's spent her career turning messy data into decisions executives can actually act on — and seeing, first-hand, how much marketing budget gets spent on instinct rather than evidence.</p>
 </div>
 
 <div style="background:#0A0A14;border:1px solid rgba(124,58,237,.3);border-radius:18px;padding:1.75rem;position:relative;overflow:hidden;">
