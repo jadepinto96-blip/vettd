@@ -8,566 +8,412 @@ st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 * { box-sizing: border-box; }
 
-[data-testid="stAppViewContainer"] { background: #04040A !important; }
-[data-testid="stSidebar"] { display: none !important; }
-[data-testid="collapsedControl"] { display: none !important; }
-#MainMenu { display: none !important; }
-footer { display: none !important; }
-header { display: none !important; }
-[data-testid="stToolbar"] { display: none !important; }
+[data-testid="stAppViewContainer"] { background: #050509 !important; }
+[data-testid="stSidebar"], [data-testid="collapsedControl"],
+#MainMenu, footer, header, [data-testid="stToolbar"] { display: none !important; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
+html { scroll-behavior: smooth; }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(1deg); }
-  66% { transform: translateY(-10px) rotate(-1deg); }
-}
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
-}
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes counters {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes iris-move {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #050509; }
+::-webkit-scrollbar-thumb { background: #1A1A2E; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #2A2A3E; }
+
+.disp { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+@keyframes pulse-glow { 0%,100% { opacity:.35; transform:scale(1);} 50% { opacity:.65; transform:scale(1.08);} }
+@keyframes spin-slow { from { transform:rotate(0);} to { transform:rotate(360deg);} }
+@keyframes float-up { from { opacity:0; transform:translateY(40px);} to { opacity:1; transform:translateY(0);} }
+@keyframes marquee { from { transform:translateX(0);} to { transform:translateX(-50%);} }
+@keyframes gridmove { from { background-position:0 0;} to { background-position:60px 60px;} }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+
+/* scroll reveal */
+.reveal { opacity:0; transform:translateY(50px); transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity:1; transform:translateY(0); }
+.reveal.d1 { transition-delay:.08s; } .reveal.d2 { transition-delay:.16s; }
+.reveal.d3 { transition-delay:.24s; } .reveal.d4 { transition-delay:.32s; }
+.reveal.d5 { transition-delay:.4s; }
+
+/* hover lift cards */
+.lift { transition: transform .5s cubic-bezier(.16,1,.3,1), border-color .4s, box-shadow .4s; }
+.lift:hover { transform:translateY(-6px); }
+
+.cursor-glow {
+  position:fixed; width:500px; height:500px; border-radius:50%; pointer-events:none; z-index:1;
+  background:radial-gradient(circle, rgba(124,58,237,0.07), transparent 65%);
+  transform:translate(-50%,-50%); transition:left .25s ease-out, top .25s ease-out; left:50%; top:30%;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<div id="vettd-landing" style="font-family:'Inter',sans-serif;background:#04040A;color:#E8E8F0;overflow-x:hidden;">
+st.markdown(r"""
+<div style="font-family:'Inter',sans-serif;background:#050509;color:#EDEDF5;overflow-x:hidden;position:relative;">
 
-<!-- ═══════════════════════════════ PARTICLES BG ═══════════════════════════ -->
-<canvas id="particles" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.6;"></canvas>
+<canvas id="particles" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55;"></canvas>
+<div class="cursor-glow" id="cglow"></div>
 
-<!-- ══════════════════════════════════ NAV ════════════════════════════════ -->
-<nav style="position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 3rem;
-    display:flex;justify-content:space-between;align-items:center;
-    background:rgba(4,4,10,0.85);backdrop-filter:blur(20px);
-    border-bottom:1px solid rgba(255,255,255,0.05);">
-  <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px;
-      background:linear-gradient(135deg,#A78BFA,#60A5FA,#06B6D4);
-      background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      animation:shimmer 4s linear infinite;">✦ Vettd</div>
-  <div style="display:flex;gap:2.5rem;align-items:center;">
-    <a href="/About" target="_self" style="font-size:13px;color:#666688;text-decoration:none;font-weight:500;transition:color 0.2s;"
-       onmouseover="this.style.color='#A78BFA'" onmouseout="this.style.color='#666688'">About</a>
-    <a href="/Founder" target="_self" style="font-size:13px;color:#666688;text-decoration:none;font-weight:500;"
-       onmouseover="this.style.color='#A78BFA'" onmouseout="this.style.color='#666688'">Founder</a>
-    <a href="/Contact" target="_self" style="font-size:13px;color:#666688;text-decoration:none;font-weight:500;"
-       onmouseover="this.style.color='#A78BFA'" onmouseout="this.style.color='#666688'">Contact</a>
-    <a href="/app" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;
-        padding:9px 22px;border-radius:8px;
-        background:linear-gradient(135deg,#7C3AED,#4F46E5);
-        border:1px solid rgba(124,58,237,0.5);
-        box-shadow:0 0 20px rgba(124,58,237,0.3);
-        transition:box-shadow 0.2s;"
-       onmouseover="this.style.boxShadow='0 0 40px rgba(124,58,237,0.6)'"
-       onmouseout="this.style.boxShadow='0 0 20px rgba(124,58,237,0.3)'">
-      Launch app →
-    </a>
+<!-- animated grid overlay -->
+<div style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
+  background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);
+  background-size:60px 60px;animation:gridmove 8s linear infinite;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black,transparent 75%);"></div>
+
+<!-- ════════════ NAV ════════════ -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:200;padding:1.1rem 3.5rem;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(5,5,9,.7);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
+  <div class="disp" style="font-size:21px;font-weight:700;letter-spacing:-.5px;
+    background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);background-size:200% auto;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;">✦ VETTD</div>
+  <div style="display:flex;gap:2.75rem;align-items:center;">
+    <a href="/About" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;font-weight:500;letter-spacing:.02em;">About</a>
+    <a href="/Founder" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;font-weight:500;letter-spacing:.02em;">Founder</a>
+    <a href="/Contact" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;font-weight:500;letter-spacing:.02em;">Contact</a>
+    <a href="/app" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;padding:9px 22px;border-radius:999px;
+      background:linear-gradient(135deg,#7C3AED,#4F46E5);border:1px solid rgba(124,58,237,.5);
+      box-shadow:0 0 24px rgba(124,58,237,.3);transition:box-shadow .3s,transform .3s;"
+      onmouseover="this.style.boxShadow='0 0 44px rgba(124,58,237,.65)';this.style.transform='scale(1.04)'"
+      onmouseout="this.style.boxShadow='0 0 24px rgba(124,58,237,.3)';this.style.transform='scale(1)'">Launch app →</a>
   </div>
 </nav>
 
-<!-- ══════════════════════════════════ HERO ═══════════════════════════════ -->
-<section style="min-height:100vh;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;text-align:center;padding:8rem 2rem 4rem;position:relative;z-index:1;">
+<!-- ════════════ HERO ════════════ -->
+<section style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:9rem 2rem 4rem;position:relative;z-index:2;">
 
-  <!-- Glow orbs -->
-  <div style="position:absolute;top:20%;left:15%;width:500px;height:500px;border-radius:50%;
-      background:radial-gradient(circle,rgba(124,58,237,0.15),transparent 70%);
-      animation:pulse-glow 6s ease-in-out infinite;pointer-events:none;"></div>
-  <div style="position:absolute;top:30%;right:10%;width:400px;height:400px;border-radius:50%;
-      background:radial-gradient(circle,rgba(6,182,212,0.1),transparent 70%);
-      animation:pulse-glow 8s ease-in-out infinite 2s;pointer-events:none;"></div>
+  <div style="position:absolute;top:18%;left:12%;width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle,rgba(124,58,237,.16),transparent 70%);animation:pulse-glow 7s ease-in-out infinite;"></div>
+  <div style="position:absolute;top:32%;right:8%;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle,rgba(34,211,238,.1),transparent 70%);animation:pulse-glow 9s ease-in-out infinite 2s;"></div>
 
-  <!-- Rotating ring -->
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:700px;height:700px;border-radius:50%;
-      border:1px solid rgba(124,58,237,0.08);
-      animation:spin-slow 30s linear infinite;pointer-events:none;">
-    <div style="position:absolute;top:-4px;left:50%;width:8px;height:8px;
-        border-radius:50%;background:#7C3AED;box-shadow:0 0 10px #7C3AED;
-        transform:translateX(-50%);"></div>
-  </div>
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:900px;height:900px;border-radius:50%;
-      border:1px solid rgba(6,182,212,0.05);
-      animation:spin-slow 50s linear infinite reverse;pointer-events:none;">
-    <div style="position:absolute;top:-3px;left:50%;width:6px;height:6px;
-        border-radius:50%;background:#06B6D4;box-shadow:0 0 8px #06B6D4;
-        transform:translateX(-50%);"></div>
-  </div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:760px;height:760px;border-radius:50%;
+    border:1px solid rgba(124,58,237,.07);animation:spin-slow 34s linear infinite;">
+    <div style="position:absolute;top:-4px;left:50%;width:8px;height:8px;border-radius:50%;background:#7C3AED;box-shadow:0 0 12px #7C3AED;transform:translateX(-50%);"></div></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1000px;height:1000px;border-radius:50%;
+    border:1px solid rgba(34,211,238,.05);animation:spin-slow 55s linear infinite reverse;">
+    <div style="position:absolute;top:-3px;left:50%;width:6px;height:6px;border-radius:50%;background:#22D3EE;box-shadow:0 0 10px #22D3EE;transform:translateX(-50%);"></div></div>
 
-  <div style="animation:fadeInUp 0.8s ease-out both;">
-    <div style="display:inline-flex;align-items:center;gap:8px;
-        background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);
-        border-radius:999px;padding:7px 18px;margin-bottom:2rem;">
-      <div style="width:6px;height:6px;border-radius:50%;background:#A78BFA;
-          box-shadow:0 0 6px #A78BFA;animation:pulse-glow 2s ease-in-out infinite;"></div>
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.12em;color:#A78BFA;text-transform:uppercase;">
-        Creator intelligence for brands
-      </span>
+  <div style="animation:float-up .9s cubic-bezier(.16,1,.3,1) both;">
+    <div style="display:inline-flex;align-items:center;gap:9px;background:rgba(124,58,237,.1);
+      border:1px solid rgba(124,58,237,.28);border-radius:999px;padding:7px 18px;margin-bottom:2.25rem;">
+      <span style="width:6px;height:6px;border-radius:50%;background:#A78BFA;box-shadow:0 0 7px #A78BFA;animation:blink 2s infinite;"></span>
+      <span style="font-size:11.5px;font-weight:600;letter-spacing:.18em;color:#B9A7F7;text-transform:uppercase;">Creator intelligence for brands</span>
     </div>
   </div>
 
-  <div style="animation:fadeInUp 0.8s ease-out 0.1s both;">
-    <h1 style="font-size:80px;font-weight:900;letter-spacing:-4px;line-height:0.95;
-        margin:0 0 2rem;max-width:900px;">
-      <span style="background:linear-gradient(135deg,#FFFFFF 0%,#E8E8F0 30%);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-        Know exactly
-      </span><br>
-      <span style="background:linear-gradient(135deg,#A78BFA 0%,#60A5FA 40%,#06B6D4 80%);
-          background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-          animation:shimmer 5s linear infinite;">
-        who you're paying.
-      </span>
-    </h1>
+  <h1 class="disp" style="font-size:clamp(48px,9vw,108px);font-weight:700;letter-spacing:-.045em;line-height:.92;margin:0 0 2rem;max-width:1000px;
+    animation:float-up 1s cubic-bezier(.16,1,.3,1) .08s both;">
+    <span style="background:linear-gradient(135deg,#FFFFFF,#C8C8E0 60%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Know exactly</span><br>
+    <span style="background:linear-gradient(120deg,#A78BFA 0%,#60A5FA 45%,#22D3EE 90%);background-size:200% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 6s linear infinite;">who you're paying.</span>
+  </h1>
+
+  <p style="font-size:clamp(16px,2vw,20px);color:#6A6A90;line-height:1.75;max-width:540px;margin:0 auto 3rem;font-weight:400;
+    animation:float-up 1s cubic-bezier(.16,1,.3,1) .18s both;">
+    One transparent score for any creator — engineered from real engagement, audience authenticity and brand alignment. No guesswork.</p>
+
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:5.5rem;
+    animation:float-up 1s cubic-bezier(.16,1,.3,1) .28s both;">
+    <a href="/app" target="_self" style="display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,#7C3AED,#4F46E5);
+      color:white;font-weight:700;font-size:15px;padding:17px 38px;border-radius:999px;text-decoration:none;
+      box-shadow:0 0 44px rgba(124,58,237,.42);border:1px solid rgba(124,58,237,.5);transition:transform .3s,box-shadow .3s;"
+      onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 64px rgba(124,58,237,.7)'"
+      onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 44px rgba(124,58,237,.42)'">Vet a creator free <span style="font-size:18px;">→</span></a>
+    <a href="#how" style="display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.1);color:#A0A0C0;font-weight:500;font-size:15px;padding:17px 38px;border-radius:999px;text-decoration:none;
+      transition:background .3s,border-color .3s;" onmouseover="this.style.background='rgba(255,255,255,.06)';this.style.borderColor='rgba(255,255,255,.2)'"
+      onmouseout="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='rgba(255,255,255,.1)'">See how it works</a>
   </div>
 
-  <div style="animation:fadeInUp 0.8s ease-out 0.2s both;">
-    <p style="font-size:19px;color:#5555AA;line-height:1.8;max-width:520px;margin:0 auto 3rem;font-weight:400;">
-      A single, transparent score for any creator — built from real engagement,
-      audience authenticity, and brand alignment.
-    </p>
-  </div>
-
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:5rem;
-      animation:fadeInUp 0.8s ease-out 0.3s both;">
-    <a href="/app" target="_self" style="display:inline-flex;align-items:center;gap:8px;
-        background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;
-        font-weight:700;font-size:15px;padding:16px 36px;border-radius:12px;
-        text-decoration:none;box-shadow:0 0 40px rgba(124,58,237,0.4);
-        border:1px solid rgba(124,58,237,0.5);">
-      Try Vettd free <span style="font-size:18px;">→</span>
-    </a>
-    <a href="#how" style="display:inline-flex;align-items:center;gap:8px;
-        background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);
-        color:#9090B8;font-weight:500;font-size:15px;padding:16px 36px;
-        border-radius:12px;text-decoration:none;">
-      See how it works
-    </a>
-  </div>
-
-  <!-- Stats row -->
-  <div style="display:flex;gap:0;animation:fadeInUp 0.8s ease-out 0.4s both;
-      background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);
-      border-radius:16px;overflow:hidden;backdrop-filter:blur(10px);">
-    <div style="padding:1.5rem 2.5rem;border-right:1px solid rgba(255,255,255,0.06);text-align:center;">
-      <div style="font-size:32px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#60A5FA);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">£21B</div>
-      <div style="font-size:11px;color:#333355;margin-top:4px;letter-spacing:0.05em;">market we're fixing</div>
-    </div>
-    <div style="padding:1.5rem 2.5rem;border-right:1px solid rgba(255,255,255,0.06);text-align:center;">
-      <div style="font-size:32px;font-weight:800;background:linear-gradient(135deg,#60A5FA,#06B6D4);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">80%</div>
-      <div style="font-size:11px;color:#333355;margin-top:4px;letter-spacing:0.05em;">of brands guess on spend</div>
-    </div>
-    <div style="padding:1.5rem 2.5rem;border-right:1px solid rgba(255,255,255,0.06);text-align:center;">
-      <div style="font-size:32px;font-weight:800;background:linear-gradient(135deg,#06B6D4,#A78BFA);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">0–100</div>
-      <div style="font-size:11px;color:#333355;margin-top:4px;letter-spacing:0.05em;">one score, total clarity</div>
-    </div>
-    <div style="padding:1.5rem 2.5rem;text-align:center;">
-      <div style="font-size:32px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#7C3AED);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">3</div>
-      <div style="font-size:11px;color:#333355;margin-top:4px;letter-spacing:0.05em;">tiers, any brand size</div>
-    </div>
+  <div style="animation:float-up 1s cubic-bezier(.16,1,.3,1) .38s both;display:flex;align-items:center;gap:8px;color:#33334A;font-size:12px;letter-spacing:.1em;">
+    <span style="writing-mode:vertical-lr;">SCROLL</span>
+    <span style="display:inline-block;width:1px;height:36px;background:linear-gradient(#7C3AED,transparent);"></span>
   </div>
 </section>
 
-<!-- ════════════════════════ MOCK DASHBOARD PREVIEW ══════════════════════ -->
-<section style="padding:4rem 3rem;position:relative;z-index:1;">
-  <div style="max-width:1100px;margin:0 auto;
-      background:rgba(255,255,255,0.02);
-      border:1px solid rgba(255,255,255,0.07);
-      border-radius:24px;overflow:hidden;
-      box-shadow:0 0 80px rgba(124,58,237,0.15),0 0 40px rgba(6,182,212,0.05);">
-    <!-- Mock browser bar -->
-    <div style="background:#0A0A14;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.05);
-        display:flex;align-items:center;gap:12px;">
-      <div style="display:flex;gap:6px;">
-        <div style="width:10px;height:10px;border-radius:50%;background:#FF5F57;"></div>
-        <div style="width:10px;height:10px;border-radius:50%;background:#FEBC2E;"></div>
-        <div style="width:10px;height:10px;border-radius:50%;background:#28C840;"></div>
-      </div>
-      <div style="flex:1;background:#12121E;border-radius:6px;padding:5px 12px;
-          font-size:11px;color:#333355;max-width:300px;margin:0 auto;">
-        get-vettd.streamlit.app
-      </div>
+<!-- ════════════ MARQUEE ════════════ -->
+<div style="position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);
+  padding:1.5rem 0;overflow:hidden;background:rgba(124,58,237,.02);">
+  <div style="display:flex;width:max-content;animation:marquee 28s linear infinite;">
+""", unsafe_allow_html=True)
+
+marquee_items = ["DATA YOU CAN TRUST", "FAKE FOLLOWER DETECTION", "BRAND-FIT SCORING", "ROI PREDICTION",
+                 "AUDIENCE AUTHENTICITY", "ONE SCORE · TOTAL CLARITY"] * 2
+marquee_html = ""
+for it in marquee_items:
+    marquee_html += f'<span class="disp" style="font-size:26px;font-weight:600;color:#1E1E32;letter-spacing:-.01em;padding:0 2.5rem;white-space:nowrap;">{it}</span><span style="color:#7C3AED;font-size:20px;align-self:center;">✦</span>'
+st.markdown(marquee_html + "</div></div>", unsafe_allow_html=True)
+
+# ════════════ MOCK DASHBOARD ════════════
+st.markdown(r"""
+<section style="padding:7rem 3rem 5rem;position:relative;z-index:2;">
+  <div class="reveal" style="text-align:center;margin-bottom:3rem;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">The product</div>
+    <h2 class="disp" style="font-size:clamp(32px,5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;
+      background:linear-gradient(135deg,#FFFFFF,#A78BFA 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">A full report. In one glance.</h2>
+  </div>
+  <div class="reveal d1 lift" style="max-width:1080px;margin:0 auto;background:rgba(255,255,255,.02);
+    border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;
+    box-shadow:0 40px 120px rgba(124,58,237,.18),0 0 60px rgba(34,211,238,.05);">
+    <div style="background:#08080F;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#FF5F57;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#FEBC2E;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#28C840;"></span></div>
+      <div style="flex:1;background:#12121E;border-radius:6px;padding:5px 12px;font-size:11px;color:#3A3A52;max-width:300px;margin:0 auto;text-align:center;">get-vettd.streamlit.app</div>
     </div>
-    <!-- Mock dashboard content -->
     <div style="padding:1.5rem;display:flex;gap:1.5rem;min-height:380px;">
-      <!-- Sidebar mock -->
-      <div style="width:180px;flex-shrink:0;background:#07070F;border-radius:12px;padding:1rem;">
-        <div style="font-size:14px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#06B6D4);
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.5rem;">✦ Vettd</div>
-        <div style="font-size:10px;color:#222240;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Creator</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6666AA;">@emmalifestyle</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:1rem;font-size:11px;color:#6666AA;">Instagram</div>
-        <div style="font-size:10px;color:#222240;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Profile</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6666AA;">150,000 followers</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:1.5rem;font-size:11px;color:#6666AA;">Fashion · 4x/week</div>
-        <div style="background:linear-gradient(135deg,#7C3AED,#4F46E5);border-radius:8px;
-            padding:8px;text-align:center;font-size:11px;font-weight:700;color:white;">
-          ✦ Run analysis
-        </div>
+      <div style="width:180px;flex-shrink:0;background:#08080F;border-radius:12px;padding:1rem;">
+        <div class="disp" style="font-size:14px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.5rem;">✦ Vettd</div>
+        <div style="font-size:10px;color:#222238;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Creator</div>
+        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6A6A90;">@emmalifestyle</div>
+        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:1rem;font-size:11px;color:#6A6A90;">Instagram</div>
+        <div style="font-size:10px;color:#222238;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Profile</div>
+        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6A6A90;">150,000 followers</div>
+        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:1.5rem;font-size:11px;color:#6A6A90;">Fashion · 4×/week</div>
+        <div style="background:linear-gradient(135deg,#7C3AED,#4F46E5);border-radius:8px;padding:8px;text-align:center;font-size:11px;font-weight:700;color:white;">✦ Run analysis</div>
       </div>
-      <!-- Main content mock -->
       <div style="flex:1;display:flex;flex-direction:column;gap:1rem;">
-        <!-- Header -->
         <div style="display:flex;align-items:center;justify-content:space-between;">
           <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:40px;height:40px;border-radius:50%;
-                background:linear-gradient(135deg,#7C3AED,#4F46E5);
-                display:flex;align-items:center;justify-content:center;
-                font-size:14px;font-weight:700;color:white;">EW</div>
-            <div>
-              <div style="font-size:15px;font-weight:700;color:#E8E8F0;">Emma Williams</div>
-              <div style="font-size:11px;color:#333355;">@emmalifestyle · Instagram · Fashion</div>
-            </div>
-          </div>
-          <div style="background:#16122E;border:1px solid rgba(124,58,237,0.3);
-              border-radius:999px;padding:4px 14px;font-size:11px;font-weight:600;color:#A78BFA;">Pro</div>
-        </div>
-        <!-- Score + metrics row -->
+            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;">EW</div>
+            <div><div style="font-size:15px;font-weight:700;color:#EDEDF5;">Emma Williams</div>
+              <div style="font-size:11px;color:#3A3A52;">@emmalifestyle · Instagram · Fashion</div></div></div>
+          <div style="background:#16122E;border:1px solid rgba(124,58,237,.3);border-radius:999px;padding:4px 14px;font-size:11px;font-weight:600;color:#A78BFA;">Pro</div></div>
         <div style="display:flex;gap:1rem;">
-          <!-- Score card -->
-          <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:14px;
-              padding:1.25rem;text-align:center;min-width:120px;">
-            <div style="font-size:10px;color:#333355;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Vettd Score</div>
-            <div style="font-size:52px;font-weight:900;line-height:1;
-                background:linear-gradient(135deg,#60A5FA,#06B6D4);
-                -webkit-background-clip:text;-webkit-text-fill-color:transparent;">74</div>
-            <div style="font-size:11px;font-weight:600;color:#60A5FA;margin-top:6px;">Strong fit</div>
-          </div>
-          <!-- Metric cards -->
-          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-            <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:10px;padding:10px 12px;">
-              <div style="font-size:9px;color:#333355;text-transform:uppercase;letter-spacing:0.1em;">Followers</div>
-              <div style="font-size:17px;font-weight:700;color:#E8E8F0;margin-top:4px;">150K</div>
-            </div>
-            <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:10px;padding:10px 12px;">
-              <div style="font-size:9px;color:#333355;text-transform:uppercase;letter-spacing:0.1em;">Engagement</div>
-              <div style="font-size:17px;font-weight:700;color:#A78BFA;margin-top:4px;">6.5%</div>
-            </div>
-            <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:10px;padding:10px 12px;">
-              <div style="font-size:9px;color:#333355;text-transform:uppercase;letter-spacing:0.1em;">Brand fit</div>
-              <div style="font-size:17px;font-weight:700;color:#06B6D4;margin-top:4px;">80/100</div>
-            </div>
-            <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:10px;padding:10px 12px;">
-              <div style="font-size:9px;color:#333355;text-transform:uppercase;letter-spacing:0.1em;">Fake score</div>
-              <div style="font-size:17px;font-weight:700;color:#10B981;margin-top:4px;">12/100</div>
-            </div>
-            <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:10px;padding:10px 12px;">
-              <div style="font-size:9px;color:#333355;text-transform:uppercase;letter-spacing:0.1em;">Cost/post</div>
-              <div style="font-size:17px;font-weight:700;color:#E8E8F0;margin-top:4px;">£840</div>
-            </div>
-            <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:10px;padding:10px 12px;">
-              <div style="font-size:9px;color:#333355;text-transform:uppercase;letter-spacing:0.1em;">Growth 30d</div>
-              <div style="font-size:17px;font-weight:700;color:#A78BFA;margin-top:4px;">+2.5%</div>
-            </div>
-          </div>
-        </div>
-        <!-- Score bar breakdown -->
-        <div style="background:#07070F;border:1px solid #1A1A2E;border-radius:12px;padding:1rem;display:flex;gap:1.5rem;">
-          <div style="flex:1;">
-            <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#444466;">Engagement</span><span style="color:#A78BFA;">65</span></div>
-            <div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:65%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#60A5FA);"></div></div>
-          </div>
-          <div style="flex:1;">
-            <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#444466;">Authenticity</span><span style="color:#A78BFA;">88</span></div>
-            <div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:88%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#06B6D4);"></div></div>
-          </div>
-          <div style="flex:1;">
-            <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#444466;">Brand fit</span><span style="color:#A78BFA;">80</span></div>
-            <div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:80%;height:100%;border-radius:999px;background:linear-gradient(90deg,#4F46E5,#A78BFA);"></div></div>
-          </div>
-          <div style="flex:1;">
-            <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#444466;">Consistency</span><span style="color:#A78BFA;">80</span></div>
-            <div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:80%;height:100%;border-radius:999px;background:linear-gradient(90deg,#60A5FA,#06B6D4);"></div></div>
-          </div>
-        </div>
+          <div style="background:#08080F;border:1px solid #16162A;border-radius:14px;padding:1.25rem;text-align:center;min-width:120px;">
+            <div style="font-size:10px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Vettd Score</div>
+            <div class="disp" style="font-size:54px;font-weight:700;line-height:1;background:linear-gradient(135deg,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">74</div>
+            <div style="font-size:11px;font-weight:600;color:#60A5FA;margin-top:6px;">Strong fit</div></div>
+          <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">""" + "".join([
+    f'<div style="background:#08080F;border:1px solid #16162A;border-radius:10px;padding:10px 12px;"><div style="font-size:9px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;">{lbl}</div><div style="font-size:17px;font-weight:700;color:{clr};margin-top:4px;">{val}</div></div>'
+    for lbl,val,clr in [("Followers","150K","#EDEDF5"),("Engagement","6.5%","#A78BFA"),("Brand fit","80/100","#22D3EE"),
+                         ("Fake score","12/100","#10B981"),("Cost/post","£840","#EDEDF5"),("Growth 30d","+2.5%","#A78BFA")]
+]) + r"""</div></div>
+        <div style="background:#08080F;border:1px solid #16162A;border-radius:12px;padding:1rem;display:flex;gap:1.5rem;">""" + "".join([
+    f'<div style="flex:1;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#3A3A52;">{lbl}</span><span style="color:#A78BFA;">{v}</span></div><div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:{v}%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#22D3EE);"></div></div></div>'
+    for lbl,v in [("Engagement",65),("Authenticity",88),("Brand fit",80),("Consistency",80)]
+]) + r"""</div>
       </div>
     </div>
   </div>
 </section>
+""", unsafe_allow_html=True)
 
-<!-- ══════════════════════════════ FEATURES ═══════════════════════════════ -->
-<section style="padding:6rem 3rem;position:relative;z-index:1;max-width:1100px;margin:0 auto;">
-  <div style="text-align:center;margin-bottom:4rem;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
-        color:#333355;margin-bottom:1rem;">What Vettd gives you</div>
-    <h2 style="font-size:48px;font-weight:900;letter-spacing:-2px;margin:0;
-        background:linear-gradient(135deg,#FFFFFF,#A78BFA 60%);
-        -webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-      Everything a brand needs.
-    </h2>
+# ════════════ FEATURES ════════════
+st.markdown(r"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
+  <div class="reveal" style="text-align:center;margin-bottom:4rem;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Capabilities</div>
+    <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
+      background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Everything a brand needs.</h2>
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
 """, unsafe_allow_html=True)
 
 features = [
-    ("✦", "#A78BFA", "#7C3AED", "Vettd Score", "One 0–100 number. Transparent, weighted, built from real data — not follower counts."),
-    ("◈", "#60A5FA", "#4F46E5", "Audience authenticity", "Fake follower detection, bot networks, and inactive follower estimates before you spend."),
-    ("⬡", "#06B6D4", "#0891B2", "Brand-fit alignment", "Creator niche, tone, and audience scored against your specific brand automatically."),
-    ("◇", "#A78BFA", "#7C3AED", "Deep demographics", "Gender, age, locations, and audience interest categories in one clean report."),
-    ("✧", "#60A5FA", "#4F46E5", "ROI prediction", "Cost per post, cost per engagement, and campaign ROI — before you sign anything."),
-    ("⟡", "#06B6D4", "#0891B2", "Multi-platform", "Instagram, TikTok, and YouTube unified in one report. Compare side by side."),
+    ("✦","#A78BFA","#7C3AED","Vettd Score","One 0–100 number. Transparent, weighted, built from real data — not follower counts."),
+    ("◈","#60A5FA","#4F46E5","Audience authenticity","Fake follower detection, bot networks and inactive estimates before you spend."),
+    ("⬡","#22D3EE","#0891B2","Brand-fit alignment","Creator niche, tone and audience scored against your specific brand automatically."),
+    ("◇","#A78BFA","#7C3AED","Deep demographics","Gender, age, locations and audience interests in one clean report."),
+    ("✧","#60A5FA","#4F46E5","ROI prediction","Cost per post, cost per engagement and campaign ROI — before you sign anything."),
+    ("⟡","#22D3EE","#0891B2","Multi-platform","Instagram, TikTok and YouTube unified. Compare creators side by side."),
 ]
-
-for icon, color, dark, title, desc in features:
+for i,(icon,color,dark,title,desc) in enumerate(features):
     st.markdown(f"""
-    <div style="background:#07070F;border:1px solid #12121E;border-radius:20px;padding:2rem;
-        transition:border-color 0.3s,transform 0.3s;cursor:default;position:relative;overflow:hidden;"
-        onmouseover="this.style.borderColor='{color}33';this.style.transform='translateY(-4px)'"
-        onmouseout="this.style.borderColor='#12121E';this.style.transform='translateY(0)'">
-      <div style="position:absolute;top:0;left:0;right:0;height:1px;
-          background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>
-      <div style="width:48px;height:48px;border-radius:12px;margin-bottom:1.25rem;
-          background:linear-gradient(135deg,{color}18,{dark}10);
-          border:1px solid {color}30;
-          display:flex;align-items:center;justify-content:center;
-          font-size:20px;color:{color};">{icon}</div>
-      <div style="font-size:16px;font-weight:700;color:#E8E8F0;margin-bottom:8px;">{title}</div>
-      <div style="font-size:13px;color:#444466;line-height:1.7;">{desc}</div>
+    <div class="reveal d{(i%3)+1} lift" style="background:#08080F;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;"
+      onmouseover="this.style.borderColor='{color}40';this.style.boxShadow='0 20px 60px {color}18'"
+      onmouseout="this.style.borderColor='#14142A';this.style.boxShadow='none'">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}55,transparent);"></div>
+      <div style="width:52px;height:52px;border-radius:14px;margin-bottom:1.5rem;background:linear-gradient(135deg,{color}1f,{dark}10);
+        border:1px solid {color}35;display:flex;align-items:center;justify-content:center;font-size:22px;color:{color};">{icon}</div>
+      <div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;letter-spacing:-.01em;">{title}</div>
+      <div style="font-size:13.5px;color:#5A5A78;line-height:1.75;">{desc}</div>
     </div>
     """, unsafe_allow_html=True)
-
 st.markdown("</div></section>", unsafe_allow_html=True)
 
-# HOW IT WORKS
-st.markdown("""
-<section id="how" style="padding:6rem 3rem;position:relative;z-index:1;
-    border-top:1px solid #0D0D1A;border-bottom:1px solid #0D0D1A;
-    background:linear-gradient(180deg,rgba(124,58,237,0.03),transparent);">
-  <div style="max-width:1100px;margin:0 auto;text-align:center;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
-        color:#333355;margin-bottom:1rem;">Simple by design</div>
-    <h2 style="font-size:48px;font-weight:900;letter-spacing:-2px;margin:0 0 4rem;
-        background:linear-gradient(135deg,#FFFFFF,#60A5FA);
-        -webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-      Three steps to a decision.
-    </h2>
-    <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:1rem;">
+# ════════════ HOW IT WORKS ════════════
+st.markdown(r"""
+<section id="how" style="padding:7rem 3rem;position:relative;z-index:2;
+  border-top:1px solid #0D0D1A;border-bottom:1px solid #0D0D1A;background:linear-gradient(180deg,rgba(124,58,237,.04),transparent);">
+  <div style="max-width:1120px;margin:0 auto;">
+    <div class="reveal" style="text-align:center;margin-bottom:4rem;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Simple by design</div>
+      <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
+        background:linear-gradient(135deg,#FFFFFF,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Three steps to a decision.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;">
 """, unsafe_allow_html=True)
 
 steps = [
-    ("01", "#7C3AED", "Enter the creator", "Type in any creator's stats. Takes under 2 minutes."),
-    ("02", "#60A5FA", "Get their Vettd Score", "6 weighted signals. One clear 0–100 score with full breakdown."),
-    ("03", "#06B6D4", "Make the call", "Download the report, share the link, decide with confidence."),
+    ("01","#7C3AED","Enter the creator","Type in any creator's stats. Takes under two minutes — no integrations required."),
+    ("02","#60A5FA","Get their Vettd Score","Six weighted signals resolve into one clear 0–100 score with a full breakdown."),
+    ("03","#22D3EE","Make the call","Download the report, share the link, decide with total confidence."),
 ]
-for i, (num, color, title, desc) in enumerate(steps):
+for i,(num,color,title,desc) in enumerate(steps):
     st.markdown(f"""
-    <div style="background:#07070F;border:1px solid #12121E;border-radius:20px;padding:2rem;">
-      <div style="font-size:48px;font-weight:900;line-height:1;margin-bottom:1rem;
-          background:linear-gradient(135deg,{color},{color}55);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">{num}</div>
-      <div style="font-size:16px;font-weight:700;color:#E8E8F0;margin-bottom:8px;">{title}</div>
-      <div style="font-size:13px;color:#444466;line-height:1.7;">{desc}</div>
+    <div class="reveal d{i+1}" style="background:#08080F;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-20px;right:10px;font-size:120px;font-weight:800;color:{color}0c;font-family:'Space Grotesk',sans-serif;line-height:1;">{num}</div>
+      <div class="disp" style="font-size:46px;font-weight:700;line-height:1;margin-bottom:1.25rem;
+        background:linear-gradient(135deg,{color},{color}55);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;">{num}</div>
+      <div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;position:relative;">{title}</div>
+      <div style="font-size:13.5px;color:#5A5A78;line-height:1.75;position:relative;">{desc}</div>
     </div>
     """, unsafe_allow_html=True)
-    if i < 2:
-        st.markdown(f"""
-        <div style="font-size:24px;color:#1A1A2E;font-weight:300;">→</div>
-        """, unsafe_allow_html=True)
-
 st.markdown("</div></div></section>", unsafe_allow_html=True)
 
-# PRICING
-st.markdown("""
-<section style="padding:6rem 3rem;position:relative;z-index:1;">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:4rem;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
-          color:#333355;margin-bottom:1rem;">Pricing</div>
-      <h2 style="font-size:48px;font-weight:900;letter-spacing:-2px;margin:0;
-          background:linear-gradient(135deg,#FFFFFF,#A78BFA);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-        Start free. Scale when ready.
-      </h2>
+# ════════════ STATS BAND (count up) ════════════
+st.markdown(r"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1000px;margin:0 auto;">
+  <div class="reveal" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.06);border-radius:20px;overflow:hidden;">
+""", unsafe_allow_html=True)
+stats = [("£","21","B","market we're fixing","#A78BFA"),("","80","%","of brands guess on spend","#60A5FA"),
+         ("","6","×","faster than manual vetting","#22D3EE"),("","0","–100","one score, total clarity","#A78BFA")]
+for pre,num,suf,lbl,clr in stats:
+    st.markdown(f"""
+    <div style="background:#08080F;padding:2.25rem 1.5rem;text-align:center;">
+      <div class="disp" style="font-size:44px;font-weight:700;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+        {pre}<span class="countup" data-target="{num}">0</span>{suf}</div>
+      <div style="font-size:12px;color:#3A3A52;margin-top:8px;letter-spacing:.04em;">{lbl}</div>
+    </div>
+    """, unsafe_allow_html=True)
+st.markdown("</div></section>", unsafe_allow_html=True)
+
+# ════════════ PRICING ════════════
+st.markdown(r"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;">
+  <div style="max-width:1120px;margin:0 auto;">
+    <div class="reveal" style="text-align:center;margin-bottom:4rem;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Pricing</div>
+      <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
+        background:linear-gradient(135deg,#FFFFFF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Start free. Scale when ready.</h2>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;align-items:start;">
 """, unsafe_allow_html=True)
 
 plans = [
-    ("Starter", "£29", "/mo", "5 searches/month", "#555570", "#12121E", False,
-     ["Vettd Score", "Engagement analytics", "Fake follower score", "Basic demographics", "CSV export"]),
-    ("Pro", "£99", "/mo", "50 searches/month", "#A78BFA", "rgba(124,58,237,0.15)", True,
-     ["Everything in Starter", "Full audience demographics", "Brand-fit score", "Multi-platform report", "Competitor comparison", "PDF brand report"]),
-    ("Enterprise", "Custom", "", "Unlimited searches", "#06B6D4", "#07070F", False,
-     ["Everything in Pro", "ROI prediction", "Buyer intent signals", "Auto campaign brief", "API access", "White-label reports"]),
+    ("Starter","£29","/mo","5 searches/month","#555570","#08080F",False,
+     ["Vettd Score","Engagement analytics","Fake follower score","Basic demographics","CSV export"]),
+    ("Pro","£99","/mo","50 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
+     ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF brand report"]),
+    ("Enterprise","Custom","","Unlimited searches","#22D3EE","#08080F",False,
+     ["Everything in Pro","ROI prediction","Buyer intent signals","Auto campaign brief","API access","White-label reports"]),
 ]
-
-for name, price, period, searches, color, bg, featured, features_list in plans:
-    border = f"1px solid rgba(124,58,237,0.4)" if featured else "1px solid #12121E"
-    glow = "box-shadow:0 0 60px rgba(124,58,237,0.15);" if featured else ""
-    top_line = f'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#06B6D4);"></div>' if featured else ""
-    popular = '<div style="position:absolute;top:16px;right:16px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);color:#A78BFA;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:0.1em;">POPULAR</div>' if featured else ""
-    checks = "".join([f'<div style="display:flex;gap:8px;align-items:center;font-size:13px;color:#555577;margin-bottom:10px;"><div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,{color},{color}88);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700;">✓</div>{f}</div>' for f in features_list])
-    price_html = f'<span style="font-size:40px;font-weight:900;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#444466;">{period}</span>' if period else f'<span style="font-size:40px;font-weight:900;color:#E8E8F0;">{price}</span>'
-
+for idx,(name,price,period,searches,color,bg,featured,flist) in enumerate(plans):
+    border = "1px solid rgba(124,58,237,.45)" if featured else "1px solid #14142A"
+    glow = "box-shadow:0 30px 80px rgba(124,58,237,.18);" if featured else ""
+    topline = '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>' if featured else ""
+    popular = '<div style="position:absolute;top:16px;right:16px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#A78BFA;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.1em;">POPULAR</div>' if featured else ""
+    checks = "".join([f'<div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#5A5A78;margin-bottom:11px;"><span style="width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,{color},{color}88);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700;">✓</span>{f}</div>' for f in flist])
+    price_html = (f'<span class="disp" style="font-size:42px;font-weight:700;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#3A3A52;">{period}</span>' if period else f'<span class="disp" style="font-size:42px;font-weight:700;color:#EDEDF5;">{price}</span>')
+    cta = 'Get started →' if name=='Starter' else ('Get Pro →' if name=='Pro' else 'Contact us →')
     st.markdown(f"""
-    <div style="background:{bg};border:{border};border-radius:20px;padding:2rem;
-        position:relative;overflow:hidden;{glow}">
-      {top_line}{popular}
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:{color};margin-bottom:12px;">{name}</div>
+    <div class="reveal d{idx+1} lift" style="background:{bg};border:{border};border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;{glow}">
+      {topline}{popular}
+      <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:{color};margin-bottom:14px;">{name}</div>
       <div style="margin-bottom:6px;">{price_html}</div>
-      <div style="font-size:12px;color:#333355;margin-bottom:1.5rem;">{searches}</div>
-      <div style="border-top:1px solid #1A1A2E;padding-top:1.25rem;">{checks}</div>
+      <div style="font-size:12px;color:#3A3A52;margin-bottom:1.5rem;">{searches}</div>
+      <div style="border-top:1px solid #16162A;padding-top:1.4rem;">{checks}</div>
       <a href="/app" target="_self" style="display:block;margin-top:1.5rem;text-align:center;
-          background:{'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,0.04)'};
-          border:{'none' if featured else '1px solid #1A1A2E'};
-          color:{'white' if featured else '#8888AA'};font-weight:600;font-size:14px;
-          padding:12px;border-radius:10px;text-decoration:none;">
-        {'Get started →' if name == 'Starter' else 'Get Pro →' if name == 'Pro' else 'Contact us →'}
-      </a>
+        background:{'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'};
+        border:{'none' if featured else '1px solid #16162A'};color:{'white' if featured else '#8888AA'};
+        font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;transition:transform .3s;"
+        onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">{cta}</a>
     </div>
     """, unsafe_allow_html=True)
-
 st.markdown("</div></div></section>", unsafe_allow_html=True)
 
-# TESTIMONIALS
-st.markdown("""
-<section style="padding:6rem 3rem;position:relative;z-index:1;
-    background:linear-gradient(180deg,transparent,rgba(124,58,237,0.04),transparent);">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:4rem;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
-          color:#333355;margin-bottom:1rem;">Early feedback</div>
-      <h2 style="font-size:48px;font-weight:900;letter-spacing:-2px;margin:0;
-          background:linear-gradient(135deg,#FFFFFF,#06B6D4);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-        Brands that get it.
-      </h2>
+# ════════════ TESTIMONIALS ════════════
+st.markdown(r"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent);">
+  <div style="max-width:1120px;margin:0 auto;">
+    <div class="reveal" style="text-align:center;margin-bottom:4rem;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Early feedback</div>
+      <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
+        background:linear-gradient(135deg,#FFFFFF,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Brands that get it.</h2>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
 """, unsafe_allow_html=True)
-
 testimonials = [
-    ("We wasted £40k on a campaign last year. Vettd would have told us in 30 seconds it was the wrong fit.", "Priya S.", "Head of Marketing, D2C Fashion Brand", "#A78BFA"),
-    ("The brand-fit score is exactly what was missing. Something that thinks like a strategist, not just a data tool.", "Marcus T.", "Founder, Creative Agency — London", "#60A5FA"),
-    ("I showed the Vettd report in a board meeting. The ROI prediction alone justified the subscription 10x.", "Ananya R.", "CMO, Lifestyle Startup — Mumbai", "#06B6D4"),
+    ("We wasted £40k on a campaign last year. Vettd would have told us in 30 seconds it was the wrong fit.","Priya S.","Head of Marketing, D2C Fashion","#A78BFA"),
+    ("The brand-fit score is exactly what was missing. Something that thinks like a strategist, not just a data tool.","Marcus T.","Founder, Creative Agency — London","#60A5FA"),
+    ("I showed the Vettd report in a board meeting. The ROI prediction alone justified the subscription 10×.","Ananya R.","CMO, Lifestyle Startup — Mumbai","#22D3EE"),
 ]
-for quote, name, role, color in testimonials:
+for i,(quote,name,role,color) in enumerate(testimonials):
     st.markdown(f"""
-    <div style="background:#07070F;border:1px solid #12121E;border-radius:20px;padding:2rem;
-        position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:1px;
-          background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>
-      <div style="font-size:36px;color:{color};line-height:1;margin-bottom:1rem;opacity:0.6;">"</div>
-      <p style="font-size:14px;color:#666688;line-height:1.8;margin:0 0 1.5rem;font-style:italic;">{quote}</p>
-      <div style="border-top:1px solid #12121E;padding-top:1rem;">
-        <div style="font-size:13px;font-weight:600;color:#E8E8F0;">{name}</div>
-        <div style="font-size:11px;color:#333355;margin-top:3px;">{role}</div>
-      </div>
+    <div class="reveal d{i+1} lift" style="background:#08080F;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>
+      <div class="disp" style="font-size:48px;color:{color};line-height:.6;margin-bottom:1.25rem;opacity:.5;">"</div>
+      <p style="font-size:14.5px;color:#7A7A98;line-height:1.85;margin:0 0 1.5rem;">{quote}</p>
+      <div style="border-top:1px solid #14142A;padding-top:1rem;">
+        <div style="font-size:13px;font-weight:600;color:#EDEDF5;">{name}</div>
+        <div style="font-size:11px;color:#3A3A52;margin-top:3px;">{role}</div></div>
     </div>
     """, unsafe_allow_html=True)
-
 st.markdown("</div></div></section>", unsafe_allow_html=True)
 
-# FINAL CTA
-st.markdown("""
-<section style="padding:8rem 3rem;position:relative;z-index:1;text-align:center;">
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:800px;height:400px;border-radius:50%;
-      background:radial-gradient(ellipse,rgba(124,58,237,0.12),transparent 70%);
-      pointer-events:none;"></div>
-  <div style="max-width:700px;margin:0 auto;position:relative;">
-    <h2 style="font-size:56px;font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin:0 0 1.5rem;
-        background:linear-gradient(135deg,#FFFFFF 0%,#A78BFA 40%,#06B6D4 80%);
-        background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-        animation:shimmer 5s linear infinite;">
-      Ready to vet your next creator?
-    </h2>
-    <p style="font-size:17px;color:#44446A;line-height:1.7;margin:0 0 2.5rem;">
-      Join brands using Vettd to make smarter influencer decisions.
-    </p>
-    <a href="/app" target="_self" style="display:inline-block;
-        background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;
-        font-weight:700;font-size:16px;padding:18px 48px;border-radius:14px;
-        text-decoration:none;box-shadow:0 0 60px rgba(124,58,237,0.4);
-        border:1px solid rgba(124,58,237,0.5);">
-      Start for free →
-    </a>
-    <div style="margin-top:1rem;font-size:12px;color:#222240;">No credit card required</div>
+# ════════════ FINAL CTA + FOOTER ════════════
+st.markdown(r"""
+<section style="padding:9rem 3rem;position:relative;z-index:2;text-align:center;">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:850px;height:430px;border-radius:50%;
+    background:radial-gradient(ellipse,rgba(124,58,237,.14),transparent 70%);"></div>
+  <div class="reveal" style="max-width:720px;margin:0 auto;position:relative;">
+    <h2 class="disp" style="font-size:clamp(40px,7vw,68px);font-weight:700;letter-spacing:-.04em;line-height:1;margin:0 0 1.5rem;
+      background:linear-gradient(135deg,#FFFFFF 0%,#A78BFA 45%,#22D3EE 85%);background-size:200% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 6s linear infinite;">Ready to vet your next creator?</h2>
+    <p style="font-size:17px;color:#5A5A78;line-height:1.7;margin:0 0 2.5rem;">Join brands using Vettd to make smarter influencer decisions.</p>
+    <a href="/app" target="_self" style="display:inline-block;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;
+      font-weight:700;font-size:16px;padding:19px 50px;border-radius:999px;text-decoration:none;
+      box-shadow:0 0 64px rgba(124,58,237,.42);border:1px solid rgba(124,58,237,.5);transition:transform .3s,box-shadow .3s;"
+      onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 90px rgba(124,58,237,.7)'"
+      onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 64px rgba(124,58,237,.42)'">Start for free →</a>
+    <div style="margin-top:1rem;font-size:12px;color:#222238;">No credit card required</div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer style="border-top:1px solid #0D0D1A;padding:2rem 3rem;
-    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
-    position:relative;z-index:1;">
-  <div style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#06B6D4);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;">✦ Vettd</div>
-  <div style="font-size:12px;color:#222240;">Built in Mumbai. Made for brands everywhere.</div>
+<footer style="border-top:1px solid #0D0D1A;padding:2.5rem 3.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:relative;z-index:2;">
+  <div class="disp" style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">✦ VETTD</div>
+  <div style="font-size:12px;color:#222238;">Built in Mumbai. Made for brands everywhere.</div>
   <div style="display:flex;gap:1.5rem;">
-    <a href="/About" target="_self" style="font-size:12px;color:#333355;text-decoration:none;">About</a>
-    <a href="/Founder" target="_self" style="font-size:12px;color:#333355;text-decoration:none;">Founder</a>
-    <a href="/Contact" target="_self" style="font-size:12px;color:#333355;text-decoration:none;">Contact</a>
-    <a href="mailto:jadepinto96@gmail.com" style="font-size:12px;color:#333355;text-decoration:none;">jadepinto96@gmail.com</a>
+    <a href="/About" target="_self" style="font-size:12px;color:#3A3A52;text-decoration:none;">About</a>
+    <a href="/Founder" target="_self" style="font-size:12px;color:#3A3A52;text-decoration:none;">Founder</a>
+    <a href="/Contact" target="_self" style="font-size:12px;color:#3A3A52;text-decoration:none;">Contact</a>
+    <a href="mailto:jadepinto96@gmail.com" style="font-size:12px;color:#3A3A52;text-decoration:none;">jadepinto96@gmail.com</a>
   </div>
 </footer>
-
 </div>
 
 <script>
-// Particle background
-const canvas = document.getElementById('particles');
-if (canvas) {
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const particles = [];
-  for (let i = 0; i < 80; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.5 + 0.3,
-      dx: (Math.random() - 0.5) * 0.3,
-      dy: (Math.random() - 0.5) * 0.3,
-      opacity: Math.random() * 0.5 + 0.1,
-      color: ['#A78BFA','#60A5FA','#06B6D4'][Math.floor(Math.random()*3)]
-    });
-  }
-  function drawParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.globalAlpha = p.opacity;
-      ctx.fill();
-      p.x += p.dx; p.y += p.dy;
-      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-    requestAnimationFrame(drawParticles);
-  }
-  drawParticles();
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-}
+(function(){
+  // particles
+  const c=document.getElementById('particles');
+  if(c){const x=c.getContext('2d');function sz(){c.width=innerWidth;c.height=innerHeight;}sz();
+    const P=[];for(let i=0;i<90;i++){P.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5+.3,
+      dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,o:Math.random()*.5+.1,cl:['#A78BFA','#60A5FA','#22D3EE'][Math.floor(Math.random()*3)]});}
+    (function d(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle=p.cl;x.globalAlpha=p.o;x.fill();
+      p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>c.width)p.dx*=-1;if(p.y<0||p.y>c.height)p.dy*=-1;});requestAnimationFrame(d);})();
+    addEventListener('resize',sz);}
+  // cursor glow
+  const g=document.getElementById('cglow');
+  if(g){addEventListener('mousemove',e=>{g.style.left=e.clientX+'px';g.style.top=e.clientY+'px';});}
+  // scroll reveal
+  const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12});
+  function bind(){document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));}
+  bind();setTimeout(bind,400);setTimeout(bind,1200);
+  // count up
+  function count(){document.querySelectorAll('.countup:not(.done)').forEach(el=>{
+    const r=el.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0){el.classList.add('done');
+      const t=parseFloat(el.dataset.target);let s=0;const step=t/45;
+      const iv=setInterval(()=>{s+=step;if(s>=t){s=t;clearInterval(iv);}el.textContent=Number.isInteger(t)?Math.floor(s):s.toFixed(0);},22);}});}
+  count();addEventListener('scroll',count);
+})();
 </script>
 """, unsafe_allow_html=True)
