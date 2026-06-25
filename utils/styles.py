@@ -137,5 +137,86 @@ div[data-testid="stMetricValue"] { font-size: 22px !important; font-weight: 700 
 .stTextInput > div > div > input:focus, .stTextArea > div > div > textarea:focus {
     border-color: #7C3AED !important; box-shadow: 0 0 0 2px rgba(124,58,237,0.2) !important;
 }
+
+/* ============ GRADIENT SLIDERS (kills the default red) ============ */
+/* full track */
+div[data-baseweb="slider"] > div > div {
+    background: #16162A !important;
+    height: 5px !important;
+    border-radius: 999px !important;
+}
+/* filled portion of the track */
+div[data-baseweb="slider"] > div > div > div {
+    background: linear-gradient(90deg, #7C3AED, #4F46E5, #22D3EE) !important;
+    height: 5px !important;
+    border-radius: 999px !important;
+}
+/* the thumb */
+div[data-baseweb="slider"] div[role="slider"] {
+    background: linear-gradient(135deg, #A78BFA, #22D3EE) !important;
+    border: 2px solid #050509 !important;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.3), 0 2px 8px rgba(0,0,0,0.5) !important;
+    transition: box-shadow 0.25s ease, transform 0.2s ease !important;
+}
+div[data-baseweb="slider"] div[role="slider"]:hover {
+    box-shadow: 0 0 0 5px rgba(124,58,237,0.4), 0 2px 12px rgba(124,58,237,0.5) !important;
+    transform: scale(1.12) !important;
+}
+/* live value bubble above the thumb */
+div[data-baseweb="slider"] div[role="slider"] + div,
+div[data-testid="stThumbValue"] {
+    color: #A78BFA !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+}
+/* min/max tick labels */
+div[data-testid="stTickBarMin"], div[data-testid="stTickBarMax"],
+div[data-testid="stSliderTickBarMin"], div[data-testid="stSliderTickBarMax"] {
+    color: #3A3A52 !important; font-size: 11px !important;
+}
+
+/* ============ NUMBER INPUT — gradient step buttons, no red ============ */
+.stNumberInput button {
+    background: #12121E !important;
+    border: 1px solid #1E1E32 !important;
+    color: #A78BFA !important;
+    transition: background 0.25s ease, border-color 0.25s ease !important;
+}
+.stNumberInput button:hover {
+    background: linear-gradient(135deg, #7C3AED, #4F46E5) !important;
+    border-color: #7C3AED !important;
+    color: #FFFFFF !important;
+}
+.stNumberInput > div > div { border-radius: 10px !important; }
+
+/* selectbox focus / dropdown accents */
+.stSelectbox div[data-baseweb="select"] > div:focus-within {
+    border-color: #7C3AED !important;
+    box-shadow: 0 0 0 2px rgba(124,58,237,0.2) !important;
+}
+li[role="option"][aria-selected="true"], div[data-baseweb="menu"] li:hover {
+    background: rgba(124,58,237,0.15) !important;
+}
+
+/* ============ FLUIDITY — smooth global motion ============ */
+.stButton > button {
+    transition: transform 0.3s cubic-bezier(.16,1,.3,1), box-shadow 0.3s cubic-bezier(.16,1,.3,1), opacity 0.3s ease !important;
+    box-shadow: 0 0 24px rgba(124,58,237,0.18) !important;
+}
+.stButton > button:hover {
+    opacity: 1 !important;
+    transform: translateY(-2px) scale(1.01) !important;
+    box-shadow: 0 0 40px rgba(124,58,237,0.45) !important;
+}
+.stButton > button:active { transform: translateY(0) scale(0.99) !important; }
+
+.stTabs [data-baseweb="tab"] { transition: background 0.3s ease, color 0.3s ease !important; }
+.section-card, div[data-testid="stMetric"] { transition: border-color 0.4s ease, transform 0.4s cubic-bezier(.16,1,.3,1) !important; }
+.navlink { transition: color 0.3s ease !important; }
+.navlink:hover { color: #A78BFA !important; }
+a { transition: color 0.3s ease, opacity 0.3s ease !important; }
+
+/* gradient focus ring on any focused input */
+*:focus-visible { outline: none !important; }
 </style>
 """

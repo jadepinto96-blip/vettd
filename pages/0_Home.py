@@ -33,12 +33,13 @@ html { scroll-behavior: smooth; }
 @keyframes gridmove { from { background-position:0 0;} to { background-position:60px 60px;} }
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
 
-/* scroll reveal */
-.reveal { opacity:0; transform:translateY(50px); transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1); }
-.reveal.in { opacity:1; transform:translateY(0); }
-.reveal.d1 { transition-delay:.08s; } .reveal.d2 { transition-delay:.16s; }
-.reveal.d3 { transition-delay:.24s; } .reveal.d4 { transition-delay:.32s; }
-.reveal.d5 { transition-delay:.4s; }
+/* scroll reveal — longer, softer ease for fluidity */
+.reveal { opacity:0; transform:translateY(60px); filter:blur(6px);
+  transition:opacity 1.3s cubic-bezier(.16,1,.3,1), transform 1.3s cubic-bezier(.16,1,.3,1), filter 1.3s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity:1; transform:translateY(0); filter:blur(0); }
+.reveal.d1 { transition-delay:.1s; } .reveal.d2 { transition-delay:.2s; }
+.reveal.d3 { transition-delay:.3s; } .reveal.d4 { transition-delay:.4s; }
+.reveal.d5 { transition-delay:.5s; }
 
 /* hover lift cards */
 .lift { transition: transform .5s cubic-bezier(.16,1,.3,1), border-color .4s, box-shadow .4s; }
@@ -88,9 +89,9 @@ st.markdown(r"""
 <section style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:9rem 2rem 4rem;position:relative;z-index:2;">
 
-  <div style="position:absolute;top:18%;left:12%;width:520px;height:520px;border-radius:50%;
+  <div data-orb style="position:absolute;top:18%;left:12%;width:520px;height:520px;border-radius:50%;will-change:transform;transition:transform .6s cubic-bezier(.16,1,.3,1);
     background:radial-gradient(circle,rgba(124,58,237,.16),transparent 70%);animation:pulse-glow 7s ease-in-out infinite;"></div>
-  <div style="position:absolute;top:32%;right:8%;width:420px;height:420px;border-radius:50%;
+  <div data-orb style="position:absolute;top:32%;right:8%;width:420px;height:420px;border-radius:50%;will-change:transform;transition:transform .6s cubic-bezier(.16,1,.3,1);
     background:radial-gradient(circle,rgba(34,211,238,.1),transparent 70%);animation:pulse-glow 9s ease-in-out infinite 2s;"></div>
 
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:760px;height:760px;border-radius:50%;
@@ -401,9 +402,14 @@ st.markdown(r"""
     (function d(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle=p.cl;x.globalAlpha=p.o;x.fill();
       p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>c.width)p.dx*=-1;if(p.y<0||p.y>c.height)p.dy*=-1;});requestAnimationFrame(d);})();
     addEventListener('resize',sz);}
-  // cursor glow
+  // cursor glow + subtle parallax drift on glow orbs
   const g=document.getElementById('cglow');
-  if(g){addEventListener('mousemove',e=>{g.style.left=e.clientX+'px';g.style.top=e.clientY+'px';});}
+  const orbs=document.querySelectorAll('[data-orb]');
+  if(g){addEventListener('mousemove',e=>{
+    g.style.left=e.clientX+'px';g.style.top=e.clientY+'px';
+    const mx=(e.clientX/innerWidth-.5),my=(e.clientY/innerHeight-.5);
+    orbs.forEach((o,i)=>{const f=(i+1)*14;o.style.transform=`translate(${mx*f}px,${my*f}px)`;});
+  });}
   // scroll reveal
   const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12});
   function bind(){document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));}

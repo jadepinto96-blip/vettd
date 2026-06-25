@@ -64,7 +64,6 @@ header { display: none !important; }
     color: #E8E8F0 !important;
 }
 .stSlider [data-baseweb="slider"] { padding: 0.5rem 0; }
-div[data-testid="stSlider"] > div > div > div { background: #7C3AED !important; }
 .stSelectbox label, .stTextInput label, .stNumberInput label, .stSlider label {
     color: #666688 !important;
     font-size: 12px !important;
