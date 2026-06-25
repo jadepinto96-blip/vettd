@@ -81,6 +81,7 @@ st.markdown("""
       background:linear-gradient(135deg,#A78BFA,#60A5FA,#06B6D4);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ Vettd</a>
   <div style="display:flex;gap:2rem;align-items:center;">
+    <a href="/Compare" target="_self" style="font-size:13px;color:#A78BFA;text-decoration:none;font-weight:600;">Compare creators</a>
     <a href="/About" target="_self" style="font-size:13px;color:#555570;text-decoration:none;">About</a>
     <a href="/Founder" target="_self" style="font-size:13px;color:#555570;text-decoration:none;">Founder</a>
     <a href="/Contact" target="_self" style="font-size:13px;color:#555570;text-decoration:none;">Contact</a>

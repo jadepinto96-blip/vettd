@@ -1,10 +1,17 @@
 import streamlit as st
+import urllib.parse
+import requests
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.styles import GLOBAL_CSS
 
 st.set_page_config(page_title="Contact — Vettd", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
+
+# Formspree endpoint — set FORMSPREE_ID in .streamlit/secrets.toml (or Streamlit Cloud → Settings → Secrets).
+# Until then, submissions fall back to a pre-filled mailto link.
+FORMSPREE_ID = st.secrets.get("FORMSPREE_ID", "") if hasattr(st, "secrets") else ""
+CONTACT_EMAIL = "jadepinto96@gmail.com"
 
 st.markdown("""
 <style>
@@ -75,7 +82,38 @@ if send:
     if not name or not email or not message:
         st.error("Please fill in your name, email, and message.")
     else:
-        st.success(f"Thanks {name.split()[0]}! Your message has been received. We'll be in touch at {email} shortly.")
+        sent = False
+        if FORMSPREE_ID:
+            try:
+                resp = requests.post(
+                    f"https://formspree.io/f/{FORMSPREE_ID}",
+                    data={
+                        "name": name,
+                        "email": email,
+                        "subject": subject,
+                        "message": message,
+                        "_subject": f"[Vettd] {subject} — from {name}",
+                    },
+                    headers={"Accept": "application/json"},
+                    timeout=10,
+                )
+                sent = resp.status_code in (200, 201)
+            except Exception:
+                sent = False
+
+        if sent:
+            st.success(f"Thanks {name.split()[0]}! Your message has been sent — we'll reply to {email} shortly.")
+        else:
+            # Fallback: pre-filled email the visitor can send from their own client
+            body = f"Name: {name}\nEmail: {email}\nSubject: {subject}\n\n{message}"
+            mailto = f"mailto:{CONTACT_EMAIL}?subject={urllib.parse.quote('[Vettd] ' + subject)}&body={urllib.parse.quote(body)}"
+            st.info("Click below to send your message — it'll open in your email app.")
+            st.markdown(
+                f'<a href="{mailto}" style="display:inline-block;background:linear-gradient(135deg,#7C3AED,#4F46E5);'
+                f'color:white;font-weight:600;font-size:14px;padding:12px 28px;border-radius:999px;'
+                f'text-decoration:none;">Open email to send →</a>',
+                unsafe_allow_html=True,
+            )
 
 st.markdown("""
 <div style="max-width:720px;margin:2.5rem auto 0;padding:2rem;border-top:1px solid #14142A;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
