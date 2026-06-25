@@ -10,7 +10,8 @@ from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
     calculate_brand_fit_score, calculate_audience_quality_score,
     calculate_growth_score, calculate_consistency_score,
-    calculate_vettd_score, score_label, estimate_cpe
+    calculate_vettd_score, score_label, estimate_cpe,
+    calculate_market_fit_score, recommend_creators
 )
 
 st.set_page_config(page_title="Vettd — Report", page_icon="✦", layout="wide")
@@ -489,8 +490,71 @@ with col_main:
                   </div>
                 </div>
                 """, unsafe_allow_html=True)
+
+            # ── BRAND–PRODUCT MARKET FIT (flagship Enterprise metric) ──
+            mf_score, mf_breakdown, mf_key = calculate_market_fit_score(
+                d.get("product_text", ""), d["brand_industry"], d["niche"],
+                d["female_pct"], d["age_18_24"], d["age_25_34"], d["age_35_44"],
+                d["audience_authenticity"], engagement_rate, d["followers"],
+            )
+            if mf_score >= 75:
+                mf_color, mf_verdict = "#10B981", "Excellent product–audience match"
+            elif mf_score >= 60:
+                mf_color, mf_verdict = "#60A5FA", "Good match"
+            elif mf_score >= 45:
+                mf_color, mf_verdict = "#F59E0B", "Weak match — consider alternatives"
+            else:
+                mf_color, mf_verdict = "#EF4444", "Poor match — not recommended"
+
+            product_label = (d.get("product_text") or d["brand_industry"] or "your product")
+
+            bars = "".join([
+                f'<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
+                f'<span style="color:#5A5A78;">{k}</span><span style="color:{mf_color};font-weight:600;">{v}</span></div>'
+                f'<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:{v}%;background:linear-gradient(90deg,{mf_color},{mf_color}88);"></div></div></div>'
+                for k, v in mf_breakdown.items()
+            ])
+
+            st.markdown(f"""
+            <div class="section-card" style="margin-top:1.5rem;position:relative;overflow:hidden;border-color:{mf_color}33;">
+              <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,{mf_color},transparent);"></div>
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+                <div style="flex:1;min-width:260px;">
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:{mf_color};margin-bottom:6px;">★ Brand–Product Market Fit</div>
+                  <div style="font-size:13px;color:#8888A8;line-height:1.6;margin-bottom:1rem;">
+                    How well <b style="color:#EDEDF5;">{product_label}</b> fits {d['creator_name']}'s specific audience —
+                    niche, gender, age, authenticity and price-point alignment.</div>
+                  {bars}
+                </div>
+                <div style="text-align:center;min-width:140px;">
+                  <div class="disp" style="font-size:56px;font-weight:800;line-height:1;color:{mf_color};">{mf_score}</div>
+                  <div style="font-size:12px;font-weight:600;color:{mf_color};max-width:150px;">{mf_verdict}</div>
+                </div>
+              </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # Recommended alternative creators when fit is weak
+            if mf_score < 60:
+                recs = recommend_creators(mf_key, d["brand_industry"], mf_score)
+                rec_cards = "".join([
+                    f'<div style="background:#0B0B16;border:1px solid #16162A;border-radius:12px;padding:1rem 1.25rem;flex:1;min-width:200px;">'
+                    f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+                    f'<span style="font-size:14px;font-weight:700;color:#EDEDF5;">{handle}</span>'
+                    f'<span style="font-size:13px;font-weight:800;color:#10B981;">{fit}</span></div>'
+                    f'<div style="font-size:12px;color:#A78BFA;margin-bottom:4px;">{kind}</div>'
+                    f'<div style="font-size:11px;color:#5A5A78;line-height:1.5;">{why}</div></div>'
+                    for handle, kind, fit, why in recs
+                ])
+                st.markdown(f"""
+                <div class="section-card" style="margin-top:1rem;border-color:rgba(16,185,129,0.2);">
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#10B981;margin-bottom:4px;">Recommended creators — better fit for {product_label}</div>
+                  <div style="font-size:12px;color:#5A5A78;margin-bottom:1rem;">{d['creator_name']} scored {mf_score}/100 for this product. These creators are a stronger match:</div>
+                  <div style="display:flex;gap:12px;flex-wrap:wrap;">{rec_cards}</div>
+                </div>
+                """, unsafe_allow_html=True)
         else:
-            st.markdown('<div style="text-align:center;padding:3rem;color:#333355;">Upgrade to Enterprise for predictive intelligence and campaign briefs.</div>', unsafe_allow_html=True)
+            st.markdown('<div style="text-align:center;padding:3rem;color:#333355;">Upgrade to Enterprise for predictive intelligence, Brand–Product Market Fit, and campaign briefs.</div>', unsafe_allow_html=True)
 
 # ── EXPORTS + BACK BUTTON ──
 st.markdown('<div style="border-top:1px solid #0D0D1A;margin-top:2rem;padding-top:1.5rem;"></div>', unsafe_allow_html=True)

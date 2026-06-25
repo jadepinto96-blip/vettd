@@ -239,9 +239,14 @@ with col_center:
             brand_safety = st.slider("Brand safety score", 0, 100, 88)
         with adv4:
             crisis_risk = st.selectbox("Crisis risk", ["Low", "Medium", "High"])
+        product_text = st.text_input(
+            "Product you're selling (powers Brand–Product Market Fit)",
+            placeholder="e.g. vitamin C serum, running shoes, budgeting app"
+        )
         st.markdown('</div>', unsafe_allow_html=True)
     else:
         buyer_intent, sentiment_score, brand_safety, crisis_risk = 60, 70, 80, "Low"
+        product_text = ""
 
     # ── RUN BUTTON ──
     st.markdown("<br>", unsafe_allow_html=True)
@@ -281,6 +286,7 @@ with col_center:
                 "sentiment_score": sentiment_score,
                 "brand_safety": brand_safety,
                 "crisis_risk": crisis_risk,
+                "product_text": product_text,
             }
             st.switch_page("pages/4_Dashboard.py")
 
