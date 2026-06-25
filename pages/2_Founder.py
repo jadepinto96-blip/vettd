@@ -33,47 +33,63 @@ st.markdown("""
 
 <div style="text-align:center;margin-bottom:4rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.25rem;">The person behind Vettd</div>
-<h1 class="disp" style="font-size:clamp(36px,6vw,56px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 50%,#22D3EE 90%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Built from frustration.<br>Driven by data.</h1>
+<h1 class="disp" style="font-size:clamp(34px,6vw,54px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 50%,#22D3EE 90%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">A strategist who<br>became a creator.</h1>
 </div>
 
-<div style="display:flex;align-items:flex-start;gap:2rem;margin-bottom:3rem;background:#0A0A14;border:1px solid #14142A;border-radius:24px;padding:2rem;">
+<div style="display:flex;align-items:flex-start;gap:2rem;margin-bottom:2rem;background:#0A0A14;border:1px solid #14142A;border-radius:24px;padding:2rem;">
 <div style="flex-shrink:0;text-align:center;">
 <div style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#22D3EE);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:white;letter-spacing:-1px;">JP</div>
 <div style="font-size:12px;color:#5A5A78;margin-top:10px;">Mumbai, India</div>
 </div>
 <div>
 <div style="font-size:21px;font-weight:700;color:#EDEDF5;margin-bottom:4px;">Jade Pinto</div>
-<div style="font-size:13px;background:linear-gradient(135deg,#A78BFA,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600;margin-bottom:16px;">Founder &amp; CEO, Vettd</div>
+<div style="font-size:13px;background:linear-gradient(135deg,#A78BFA,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600;margin-bottom:16px;">Founder, Vettd &nbsp;·&nbsp; Management Consultant</div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;">
-<span style="background:#16122E;border:1px solid #2A2040;color:#A78BFA;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;">Brand Strategy</span>
-<span style="background:#0E1A2E;border:1px solid #1A3040;color:#60A5FA;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;">Creator Economy</span>
-<span style="background:#0A1A1E;border:1px solid #10303A;color:#22D3EE;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;">Data &amp; Analytics</span>
+<span style="background:#16122E;border:1px solid #2A2040;color:#A78BFA;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;">Strategy &amp; Consulting</span>
+<span style="background:#0E1A2E;border:1px solid #1A3040;color:#60A5FA;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;">Creator · 75K</span>
+<span style="background:#0A1A1E;border:1px solid #10303A;color:#22D3EE;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;">AI &amp; Transformation</span>
+<span style="background:#16122E;border:1px solid #2A2040;color:#A78BFA;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;">Finance · CMA</span>
 </div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:3rem;">
+<div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.5rem;text-align:center;">
+<div class="disp" style="font-size:30px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">0→75K</div>
+<div style="font-size:12px;color:#5A5A78;margin-top:4px;">followers in 5 months</div>
+</div>
+<div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.5rem;text-align:center;">
+<div class="disp" style="font-size:30px;font-weight:700;background:linear-gradient(135deg,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Fortune 500</div>
+<div style="font-size:12px;color:#5A5A78;margin-top:4px;">clients advised at Accenture</div>
+</div>
+<div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.5rem;text-align:center;">
+<div class="disp" style="font-size:30px;font-weight:700;background:linear-gradient(135deg,#22D3EE,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">2×</div>
+<div style="font-size:12px;color:#5A5A78;margin-top:4px;">Champion of the Quarter</div>
 </div>
 </div>
 
 <div style="display:flex;flex-direction:column;gap:1.5rem;margin-bottom:3rem;">
 
 <div style="background:#0A0A14;border:1px solid #14142A;border-radius:18px;padding:1.75rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:10px;">The background</div>
-<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">Before Vettd, Jade spent five years working in brand strategy and digital marketing across Mumbai's fast-growing consumer landscape — running campaigns for D2C brands, fashion labels, and lifestyle startups across India and the UK. She became the person brands came to when they needed to figure out where to spend their marketing budget.</p>
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:10px;">The strategist</div>
+<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">By day, Jade is a management consultant at Accenture Strategy &amp; Consulting, where she designs large-scale transformation and AI-adoption strategies for Fortune Global 500 clients. With a finance degree, a US CMA in progress, and two "Champion of the Quarter" awards, she's spent her career turning messy data into decisions executives can actually act on — and seeing, first-hand, how much marketing budget gets spent on instinct rather than evidence.</p>
 </div>
 
 <div style="background:#0A0A14;border:1px solid rgba(124,58,237,.3);border-radius:18px;padding:1.75rem;position:relative;overflow:hidden;">
 <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#22D3EE,#A78BFA);"></div>
-<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#22D3EE;margin-bottom:10px;">The problem she kept hitting</div>
-<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">Time and again, brands would hand over significant budgets to influencers based on follower counts and aesthetics — only to get campaigns with barely any real return. The data existed somewhere, but it was scattered, expensive to access, and completely inaccessible to smaller brands who needed it most. There was no single place to get a clear, honest answer: <em style="color:#A78BFA;font-style:normal;">is this creator actually right for us?</em></p>
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#22D3EE;margin-bottom:10px;">The creator</div>
+<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">Then she crossed to the other side. Creating content on motivation and the way people think and behave, Jade grew her own page <b style="color:#EDEDF5;">from 0 to 75,000 followers in just five months</b>. Living the creator journey herself showed her exactly how brands evaluate creators — and how often great, well-matched creators get overlooked while the numbers tell only half the story.</p>
 </div>
 
 <div style="background:#0A0A14;border:1px solid #14142A;border-radius:18px;padding:1.75rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#60A5FA;margin-bottom:10px;">Why she built Vettd</div>
-<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">Jade built Vettd to be the tool she always wished existed — a platform that cuts through the noise and gives brands a single, trustworthy score they can act on. Not another dashboard full of vanity metrics. A real decision-making tool. Built in Mumbai, designed for brands everywhere.</p>
+<p style="font-size:15px;color:#8888A8;line-height:1.9;margin:0;">Sitting at the rare intersection of brand strategy and creator life, Jade kept seeing the same gap: brands guessing, and creators judged on vanity metrics. Vettd is the tool she wished existed on both sides of the table — one transparent score that tells a brand whether a creator is genuinely right for them. Built in Mumbai, designed for brands everywhere.</p>
 </div>
 
 </div>
 
 <div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(34,211,238,.06));border:1px solid rgba(124,58,237,.15);border-radius:20px;padding:2.5rem;text-align:center;">
-<div class="disp" style="font-size:20px;font-weight:600;color:#EDEDF5;margin-bottom:8px;line-height:1.6;">"The influencer marketing industry is built on trust.<br><span style="background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Vettd makes sure that trust is earned."</span></div>
+<div class="disp" style="font-size:20px;font-weight:600;color:#EDEDF5;margin-bottom:8px;line-height:1.6;">"I've been the strategist deciding the budget, and the creator on the other side of it.<br><span style="background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Vettd is what both sides needed."</span></div>
 <div style="font-size:12px;color:#3A3A52;margin-top:14px;">— Jade Pinto, Founder of Vettd</div>
 </div>
 

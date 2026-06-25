@@ -14,7 +14,7 @@ st.markdown("""
 footer { display: none !important; }
 header { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
-.block-container { padding: 0 !important; max-width: 100% !important; }
+.block-container { padding: 1.5rem 1rem 0 !important; max-width: 880px !important; margin: 0 auto !important; }
 
 .input-section {
     background: #101019;
@@ -116,7 +116,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── PLAN SELECTOR ──
-col_left, col_center, col_right = st.columns([1, 3, 1])
+col_center = st.container()
 
 with col_center:
     tier_cols = st.columns(3)
