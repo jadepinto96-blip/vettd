@@ -129,7 +129,7 @@ if "vettd_data" not in st.session_state:
     </div>
     """, unsafe_allow_html=True)
     if st.button("← Go back to analysis", use_container_width=False):
-        st.switch_page("app.py")
+        st.switch_page("pages/0_Analyse.py")
     st.stop()
 
 d = st.session_state.vettd_data
@@ -580,4 +580,4 @@ with exp3:
         disabled=True, label_visibility="collapsed")
 with exp4:
     if st.button("← Analyse another creator", use_container_width=True):
-        st.switch_page("app.py")
+        st.switch_page("pages/0_Analyse.py")
