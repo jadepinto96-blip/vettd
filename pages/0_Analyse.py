@@ -3,6 +3,12 @@ import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.styles import GLOBAL_CSS, SITE_FOOTER
 from utils.data_provider import fetch_creator, active_provider
+from utils.scoring import (
+    calculate_engagement_rate, estimate_fake_follower_score,
+    calculate_brand_fit_score, calculate_audience_quality_score,
+    calculate_growth_score, calculate_consistency_score,
+    calculate_vettd_score, score_label,
+)
 
 st.set_page_config(page_title="Vettd — Analyse a Creator", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
@@ -168,6 +174,28 @@ with col_center:
 
     def tier_gate(required):
         return TIERS[tier] >= TIERS[required]
+
+    # ── SAVED SEARCHES (this session) ──
+    _hist = st.session_state.get("history", [])
+    if _hist:
+        with st.expander(f"⭑  Saved searches  ·  {len(_hist)}", expanded=False):
+            for i, h in enumerate(_hist):
+                hc1, hc2 = st.columns([4, 1])
+                with hc1:
+                    st.markdown(
+                        f'<div style="padding:6px 0;">'
+                        f'<span style="font-weight:600;color:#EDEDF5;">{h["name"]}</span> '
+                        f'<span style="color:#5A5A78;font-size:12px;">{h["username"]} · {h["niche"]}</span> '
+                        f'<span style="float:right;font-weight:700;color:#A78BFA;">{h["score"]}'
+                        f'<span style="font-size:11px;color:#5A5A78;font-weight:400;"> · {h["label"]}</span></span></div>',
+                        unsafe_allow_html=True)
+                with hc2:
+                    if st.button("View", key=f"hist_{i}", use_container_width=True):
+                        st.session_state.vettd_data = dict(h["data"])
+                        st.switch_page("pages/4_Dashboard.py")
+            if st.button("Clear history", key="clear_hist"):
+                st.session_state.history = []
+                st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -349,6 +377,19 @@ with col_center:
                 "crisis_risk": crisis_risk,
                 "product_text": product_text,
             }
+            # ── save to search history (most recent first, dedup by username) ──
+            _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)
+            _fake = estimate_fake_follower_score(followers, following, avg_likes, avg_comments)
+            _bf = calculate_brand_fit_score(niche, brand_industry or niche, female_pct, age_18_24 + age_25_34, posting_freq)
+            _aq = calculate_audience_quality_score(_fake, _er, audience_authenticity)
+            _vs = calculate_vettd_score(_er, _fake, _bf, _aq,
+                                        calculate_consistency_score(posting_freq),
+                                        calculate_growth_score(growth_rate_30d))
+            _lbl, _ = score_label(_vs)
+            entry = {"data": dict(st.session_state.vettd_data), "score": _vs, "label": _lbl,
+                     "name": creator_name, "username": username, "niche": niche}
+            hist = [h for h in st.session_state.get("history", []) if h["username"] != username]
+            st.session_state.history = ([entry] + hist)[:12]
             st.switch_page("pages/4_Dashboard.py")
 
 # ── FULL-WIDTH FOOTER ──
