@@ -138,19 +138,7 @@ st.markdown(r"""
     <span style="display:inline-block;width:1px;height:36px;background:linear-gradient(#7C3AED,transparent);"></span>
   </div>
 </section>
-
-<!-- ════════════ MARQUEE ════════════ -->
-<div style="position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);
-  padding:1.5rem 0;overflow:hidden;background:rgba(124,58,237,.02);">
-  <div style="display:flex;width:max-content;animation:marquee 28s linear infinite;">
 """, unsafe_allow_html=True)
-
-marquee_items = ["DATA YOU CAN TRUST", "FAKE FOLLOWER DETECTION", "BRAND-FIT SCORING", "ROI PREDICTION",
-                 "AUDIENCE AUTHENTICITY", "ONE SCORE · TOTAL CLARITY"] * 2
-marquee_html = ""
-for it in marquee_items:
-    marquee_html += f'<span class="disp" style="font-size:24px;font-weight:600;color:#7E7EA0;letter-spacing:-.01em;padding:0 2.5rem;white-space:nowrap;">{it}</span><span style="color:#A78BFA;font-size:20px;align-self:center;">✦</span>'
-st.markdown(marquee_html + "</div></div>", unsafe_allow_html=True)
 
 # ════════════ MOCK DASHBOARD ════════════
 st.markdown(r"""
