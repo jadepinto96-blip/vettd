@@ -425,6 +425,60 @@ for i,(quote,name,role,color) in enumerate(testimonials):
     """, unsafe_allow_html=True)
 st.markdown("</div></div></section>", unsafe_allow_html=True)
 
+# ════════════ FAQ ════════════
+st.markdown("""
+<style>
+.faq-item { background:#0D0D14; border:1px solid #14142A; border-radius:16px; margin-bottom:12px;
+  transition:border-color .35s ease, background .35s ease; overflow:hidden; }
+.faq-item:hover { border-color:rgba(124,58,237,.35); }
+.faq-item[open] { border-color:rgba(124,58,237,.4); background:#101019; }
+.faq-item summary { list-style:none; cursor:pointer; padding:1.25rem 1.5rem;
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+  font-size:15px; font-weight:600; color:#EDEDF5; }
+.faq-item summary::-webkit-details-marker { display:none; }
+.faq-item summary .chev { color:#7C3AED; font-size:20px; transition:transform .35s cubic-bezier(.16,1,.3,1); flex-shrink:0; }
+.faq-item[open] summary .chev { transform:rotate(45deg); }
+.faq-item .faq-body { padding:0 1.5rem 1.4rem; font-size:14px; color:#7A7A98; line-height:1.8; }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown(r"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:820px;margin:0 auto;">
+  <div class="reveal" style="text-align:center;margin-bottom:3.5rem;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Questions</div>
+    <h2 class="disp" style="font-size:clamp(34px,5.5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;
+      background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+      Frequently asked.</h2>
+  </div>
+  <div class="reveal d1">
+""", unsafe_allow_html=True)
+
+faqs = [
+    ("What exactly is the Vettd Score?",
+     "A single 0–100 score for any creator, built from six weighted signals — engagement, audience authenticity, brand-fit, audience quality, consistency and growth. Instead of reading 30 metrics, you get one transparent number, with the full breakdown of how it's calculated."),
+    ("Where does the data come from?",
+     "Vettd works from real engagement and audience data. Today you can enter a creator's stats manually or connect a data provider to auto-fill them; audience demographics come from licensed third-party data, never from scraping."),
+    ("How is this different from other influencer tools?",
+     "Most tools hand you a database and a wall of metrics, then leave the decision to you. Vettd is built around the decision — it scores your product against the creator's audience, tells you who to pick (and who instead), and flags when two creators share the same followers."),
+    ("Can I compare multiple creators?",
+     "Yes. The Compare tool scores up to three creators side by side, picks a recommended winner, overlays their signals, and runs an audience-overlap check so you don't pay twice to reach the same people."),
+    ("What's the Brand–Product Market Fit score?",
+     "An Enterprise feature that scores how well your specific product fits a creator's audience — niche, gender, age, authenticity and price-point. If the fit is weak, Vettd recommends better-matched creators for that product."),
+    ("Do I need to pay to try it?",
+     "No. You can start free and run analyses right away. Paid tiers unlock deeper audience demographics, brand-fit, multi-platform reports and predictive intelligence as you scale."),
+    ("Is my data private?",
+     "Yes. We only use the details you enter to generate your report, we don't sell your data, and you can request deletion any time. See our Legal page for the full policy."),
+]
+for q, a in faqs:
+    st.markdown(f"""
+    <details class="faq-item">
+      <summary>{q}<span class="chev">+</span></summary>
+      <div class="faq-body">{a}</div>
+    </details>
+    """, unsafe_allow_html=True)
+
+st.markdown("</div></section>", unsafe_allow_html=True)
+
 # ════════════ FINAL CTA + FOOTER ════════════
 st.markdown(r"""
 <section style="padding:9rem 3rem;position:relative;z-index:2;text-align:center;">
