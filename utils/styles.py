@@ -260,9 +260,9 @@ SITE_FOOTER = """
   <div style="max-width:1120px;margin:2.5rem auto 0;padding-top:1.75rem;border-top:1px solid #14142A;
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
     <div style="display:flex;gap:1.75rem;">
-      <a href="/" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Privacy Policy</a>
-      <a href="/" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Terms &amp; Conditions</a>
-      <a href="/" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Refund Policy</a>
+      <a href="/Legal" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Privacy Policy</a>
+      <a href="/Legal" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="/Legal" target="_self" style="font-size:12px;color:#4A4A66;text-decoration:none;">Refund Policy</a>
     </div>
     <div style="font-size:12px;color:#4A4A66;">© 2026 Vettd<sup style="font-size:8px;">®</sup></div>
   </div>

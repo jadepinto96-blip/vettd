@@ -142,6 +142,54 @@ def estimate_cpe(followers, engagement_rate):
     return round(cost_per_post, 2), round(cost_per_engagement, 4)
 
 
+def estimate_audience_overlap(a, b):
+    """
+    Estimate how much two creators' audiences overlap (0–100%).
+    Brands running multi-creator campaigns waste budget when overlap is high —
+    they pay twice to reach the same people. Heuristic uses niche, platform,
+    audience-size band and authenticity (no follower-level data needed).
+
+    Each creator dict needs: niche, platform, followers, auth (authenticity %).
+    """
+    score = 0.0
+    # 1. Same niche is the biggest driver of shared audience (up to 55)
+    if a["niche"].lower() == b["niche"].lower():
+        score += 55
+    else:
+        related = {
+            "fashion": {"beauty", "lifestyle"}, "beauty": {"fashion", "lifestyle"},
+            "lifestyle": {"fashion", "beauty", "travel", "food"},
+            "fitness": {"food", "lifestyle"}, "food": {"lifestyle", "fitness"},
+            "tech": {"gaming", "finance"}, "gaming": {"tech"},
+            "travel": {"lifestyle"}, "finance": {"tech"},
+        }
+        if b["niche"].lower() in related.get(a["niche"].lower(), set()):
+            score += 28
+        else:
+            score += 6
+    # 2. Same platform → audiences can literally overlap (up to 20)
+    if a.get("platform", "Instagram") == b.get("platform", "Instagram"):
+        score += 20
+    # 3. Similar audience size band → more likely to share the mainstream of the niche (up to 15)
+    fa, fb = max(a["followers"], 1), max(b["followers"], 1)
+    ratio = min(fa, fb) / max(fa, fb)
+    score += ratio * 15
+    # 4. Two highly authentic audiences in the same niche overlap a bit less
+    #    (real, engaged niches fragment); low authenticity inflates apparent overlap
+    avg_auth = (a.get("auth", 80) + b.get("auth", 80)) / 2
+    score += (100 - avg_auth) * 0.1
+    return round(max(0, min(100, score)))
+
+
+def overlap_verdict(pct):
+    if pct >= 65:
+        return "High overlap", "#EF4444", "You'd likely pay twice to reach the same audience. Pick one."
+    elif pct >= 45:
+        return "Moderate overlap", "#F59E0B", "Some shared audience — fine if budgets are staggered."
+    else:
+        return "Low overlap", "#10B981", "Largely distinct audiences — strong combination for wider reach."
+
+
 # ── Product category → ideal audience profile ──────────────────────────────
 # Each product maps to: matching creator niches, ideal female %, ideal age band,
 # and a typical price point (affects which audience size/affluence fits best).

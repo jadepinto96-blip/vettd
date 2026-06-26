@@ -7,7 +7,8 @@ from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
     calculate_brand_fit_score, calculate_audience_quality_score,
     calculate_growth_score, calculate_consistency_score,
-    calculate_vettd_score, score_label, estimate_cpe
+    calculate_vettd_score, score_label, estimate_cpe,
+    estimate_audience_overlap, overlap_verdict
 )
 
 st.set_page_config(page_title="Compare creators — Vettd", page_icon="✦", layout="wide")
@@ -213,6 +214,38 @@ if run:
         bargap=0.5,
     )
     st.plotly_chart(fig2, use_container_width=True)
+
+    # ── AUDIENCE OVERLAP DETECTOR ──
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#3A3A52;margin-bottom:.25rem;">★ Audience overlap</div>
+    <div style="font-size:13px;color:#5A5A78;margin-bottom:1rem;max-width:640px;line-height:1.6;">
+      Running more than one of these creators together? Overlap shows how much you'd be paying twice to reach the same people.</div>
+    """, unsafe_allow_html=True)
+
+    pairs = [(0, 1), (0, 2), (1, 2)]
+    ov_cols = st.columns(3)
+    for col, (i, j) in zip(ov_cols, pairs):
+        a, b = results[i], results[j]
+        pct = estimate_audience_overlap(a, b)
+        verdict, vcolor, advice = overlap_verdict(pct)
+        with col:
+            st.markdown(f"""
+            <div class="cmp-card" style="border-color:{vcolor}33;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span style="width:8px;height:8px;border-radius:50%;background:{accent[i]};"></span>
+                <span style="font-size:12px;color:#8888A8;font-weight:600;">{a['name']}</span>
+                <span style="color:#3A3A52;font-size:12px;">↔</span>
+                <span style="width:8px;height:8px;border-radius:50%;background:{accent[j]};"></span>
+                <span style="font-size:12px;color:#8888A8;font-weight:600;">{b['name']}</span>
+              </div>
+              <div class="disp" style="font-size:38px;font-weight:700;line-height:1;color:{vcolor};">{pct}%</div>
+              <div style="background:#0B0B16;border-radius:999px;height:6px;margin:10px 0;overflow:hidden;">
+                <div style="width:{pct}%;height:100%;border-radius:999px;background:{vcolor};"></div></div>
+              <div style="font-size:12px;font-weight:600;color:{vcolor};margin-bottom:4px;">{verdict}</div>
+              <div style="font-size:11px;color:#5A5A78;line-height:1.5;">{advice}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
 # ── FOOTER ──
 st.markdown(SITE_FOOTER, unsafe_allow_html=True)
