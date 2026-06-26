@@ -118,17 +118,31 @@ def _fetch_rapidapi(username, platform):
         )
         if r.status_code != 200:
             return None
-        data = r.json().get("data", r.json())
+        payload = r.json()
+        # Instagram Scraper API2 nests under data -> (sometimes) user.
+        data = payload.get("data", payload)
+        if isinstance(data, dict) and isinstance(data.get("user"), dict):
+            data = data["user"]
+
+        def first(*keys):
+            for k in keys:
+                v = data.get(k)
+                if isinstance(v, dict):  # e.g. {"count": 1234}
+                    v = v.get("count")
+                if v not in (None, "", 0):
+                    return v
+            return None
 
         prof = _empty_profile()
         prof["_source"] = "rapidapi"
         prof["_partial"] = True  # demographics not available from scrapers
-        prof["followers"] = data.get("follower_count") or data.get("followers")
-        prof["following"] = data.get("following_count") or data.get("following")
-        prof["post_count"] = data.get("media_count") or data.get("posts")
-        # scrapers rarely give averages directly; estimate likes from latest post if present
-        prof["avg_likes"] = data.get("avg_likes") or data.get("edge_owner_to_timeline_media", {}).get("avg_likes")
-        return prof
+        prof["followers"] = first("follower_count", "followers", "followers_count", "edge_followed_by")
+        prof["following"] = first("following_count", "following", "follows_count", "edge_follow")
+        prof["post_count"] = first("media_count", "posts", "post_count", "edge_owner_to_timeline_media")
+        prof["avg_likes"] = first("avg_likes", "average_likes")
+        prof["avg_comments"] = first("avg_comments", "average_comments")
+        # only return if we actually got the core number
+        return prof if prof["followers"] is not None else None
     except Exception:
         return None
 
