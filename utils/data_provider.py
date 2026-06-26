@@ -53,9 +53,31 @@ def _empty_profile():
         "loc1_name": None, "loc1_pct": None,
         "loc2_name": None, "loc2_pct": None,
         "loc3_name": None, "loc3_pct": None,
-        "profile_pic": None, "full_name": None,
+        "profile_pic": None, "full_name": None, "niche_guess": None,
         "_source": "manual", "_partial": True,
     }
+
+
+def _category_to_niche(category):
+    """Map an Instagram profile category to one of Vettd's niches."""
+    if not category:
+        return None
+    c = category.lower()
+    table = [
+        (("beauty", "cosmetic", "skincare", "makeup"), "Beauty"),
+        (("cloth", "apparel", "fashion", "shoe", "footwear", "jewel", "accessor"), "Fashion"),
+        (("fitness", "gym", "sport", "athlete", "trainer", "yoga"), "Fitness"),
+        (("food", "restaurant", "grocery", "beverage", "cafe", "kitchen", "chef"), "Food"),
+        (("travel", "hotel", "tourism", "airline"), "Travel"),
+        (("tech", "software", "electronic", "gadget", "app", "computer"), "Tech"),
+        (("game", "gaming", "esport"), "Gaming"),
+        (("financ", "bank", "invest", "money"), "Finance"),
+        (("baby", "parent", "kid", "child", "mother"), "Parenting"),
+    ]
+    for keys, niche in table:
+        if any(k in c for k in keys):
+            return niche
+    return "Lifestyle"
 
 
 # ── Provider 1: Modash (full data, incl. demographics) ──────────────────────
@@ -149,6 +171,7 @@ def _fetch_rapidapi(username, platform):
         # prefer the HD pic if present, else the standard one
         hd = data.get("hd_profile_pic_url_info") or {}
         prof["profile_pic"] = (hd.get("url") if isinstance(hd, dict) else None) or data.get("profile_pic_url")
+        prof["niche_guess"] = _category_to_niche(data.get("category"))
         return prof if prof["followers"] is not None else None
     except Exception:
         return None

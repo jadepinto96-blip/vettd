@@ -211,7 +211,9 @@ with col_center:
     with c3:
         platform = st.selectbox("Platform", ["Instagram", "TikTok", "YouTube"])
     with c4:
-        niche = st.selectbox("Niche", ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Gaming", "Lifestyle", "Finance", "Parenting", "Other"])
+        _niches = ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Gaming", "Lifestyle", "Finance", "Parenting", "Other"]
+        _guess = (st.session_state.get("fetched") or {}).get("niche_guess")
+        niche = st.selectbox("Niche", _niches, index=_niches.index(_guess) if _guess in _niches else 0)
     with c5:
         brand_industry = st.text_input("Your brand industry", placeholder="e.g. Fashion")
     brand_name = st.text_input("Your brand name (used in the report)", placeholder="e.g. Malabar Gold & Diamonds")
@@ -350,10 +352,11 @@ with col_center:
             # name is optional — use fetched full name, else username (many IG profiles have no display name)
             if not creator_name:
                 creator_name = _fetched.get("full_name") or username.lstrip("@") or "Creator"
+            _user_display = ("@" + username.lstrip("@")) if username else ""
             st.session_state.vettd_data = {
                 "tier": tier,
                 "creator_name": creator_name,
-                "username": username,
+                "username": _user_display,
                 "platform": platform,
                 "niche": niche,
                 "brand_industry": brand_industry,
@@ -394,8 +397,8 @@ with col_center:
                                         calculate_growth_score(growth_rate_30d))
             _lbl, _ = score_label(_vs)
             entry = {"data": dict(st.session_state.vettd_data), "score": _vs, "label": _lbl,
-                     "name": creator_name, "username": username, "niche": niche}
-            hist = [h for h in st.session_state.get("history", []) if h["username"] != username]
+                     "name": creator_name, "username": _user_display, "niche": niche}
+            hist = [h for h in st.session_state.get("history", []) if h["username"] != _user_display]
             st.session_state.history = ([entry] + hist)[:12]
             st.switch_page("pages/4_Dashboard.py")
 

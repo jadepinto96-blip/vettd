@@ -97,6 +97,7 @@ for i, col in enumerate(cols):
         freq = st.number_input("Posts/week", min_value=0.0, value=dft["freq"], step=0.5, key=f"fq{i}")
         growth = st.number_input("Growth 30d %", min_value=-10.0, value=dft["growth"], step=0.1, key=f"gr{i}")
         auth = st.slider("Audience authenticity %", 0, 100, dft["auth"], key=f"au{i}")
+        user = ("@" + user.lstrip("@")) if user else ""
         inputs.append(dict(name=name, user=user, niche=niche, followers=followers, following=following,
                            likes=likes, comments=comments, saves=saves, shares=shares,
                            freq=freq, growth=growth, auth=auth))
