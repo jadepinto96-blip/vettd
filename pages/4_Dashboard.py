@@ -11,7 +11,8 @@ from utils.scoring import (
     calculate_brand_fit_score, calculate_audience_quality_score,
     calculate_growth_score, calculate_consistency_score,
     calculate_vettd_score, score_label, estimate_cpe,
-    calculate_market_fit_score, recommend_creators
+    calculate_market_fit_score, recommend_creators,
+    generate_creator_report
 )
 
 st.set_page_config(page_title="Vettd — Report", page_icon="✦", layout="wide")
@@ -262,6 +263,60 @@ for <b style="color:#A78BFA;">{_brand}</b>, scoring <b style="color:#A78BFA;">{v
 The profile shows {_eng_note} ({engagement_rate}%), {_auth_note} ({d['audience_authenticity']}% authentic), and {_fitnote}.
 Based on this, {d['creator_name']} {_verb} a sound choice for a {_brand} campaign in the {d['niche'].lower()} space.
 </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ── PERSONALISED REPORT (MBTI-style) ──
+rep = generate_creator_report(d, engagement_rate, fake_score, brand_fit,
+                              aud_quality, growth_score, consistency_score, vettd_score)
+strengths_html = "".join([
+    f'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">'
+    f'<span style="color:#10B981;flex-shrink:0;margin-top:2px;">✓</span>'
+    f'<span style="font-size:14px;color:#C2C2D6;line-height:1.6;">{s}</span></div>' for s in rep["strengths"]
+])
+watchouts_html = "".join([
+    f'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">'
+    f'<span style="color:#F59E0B;flex-shrink:0;margin-top:2px;">!</span>'
+    f'<span style="font-size:14px;color:#C2C2D6;line-height:1.6;">{w}</span></div>' for w in rep["watchouts"]
+])
+st.markdown(f"""
+<div style="background:linear-gradient(160deg,rgba(124,58,237,.1),rgba(34,211,238,.04));
+  border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden;">
+<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#22D3EE;margin-bottom:6px;">Creator archetype</div>
+<div class="disp" style="font-size:30px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;">{rep['archetype']}</div>
+<div style="font-size:14px;color:#9090B0;margin-top:8px;line-height:1.6;font-style:italic;">{rep['archetype_desc']}</div>
+<div style="font-size:15px;color:#D2D2E4;line-height:1.8;margin-top:1.25rem;border-top:1px solid #1A1A2E;padding-top:1.25rem;">{rep['summary']}</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
+<div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#10B981;margin-bottom:1rem;">Strengths</div>
+{strengths_html}
+</div>
+<div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#F59E0B;margin-bottom:1rem;">Watch-outs</div>
+{watchouts_html}
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
+<div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#60A5FA;margin-bottom:.6rem;">Best suited for</div>
+<div style="font-size:14px;color:#C2C2D6;line-height:1.7;">{rep['best_for']}</div>
+</div>
+<div style="background:#101019;border:1px solid {score_color}55;border-radius:18px;padding:1.5rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:{score_color};margin-bottom:.6rem;">Recommendation</div>
+<div style="font-size:14px;color:#EDEDF5;line-height:1.7;font-weight:500;">{rep['recommendation']}</div>
+</div>
+</div>
+""", unsafe_allow_html=True)
+
+# ── DEEP DIVE (full data & charts, below the readable report) ──
+st.markdown("""
+<div style="display:flex;align-items:center;gap:14px;margin:1rem 0 1.5rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5A5A78;white-space:nowrap;">🔍 Deep dive — full data &amp; charts</div>
+<div style="flex:1;height:1px;background:linear-gradient(90deg,#1A1A2E,transparent);"></div>
 </div>
 """, unsafe_allow_html=True)
 

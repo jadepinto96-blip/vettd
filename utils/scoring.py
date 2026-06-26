@@ -4,6 +4,122 @@ def calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves):
     return round(((avg_likes + avg_comments + avg_saves) / followers) * 100, 2)
 
 
+def generate_creator_report(d, engagement_rate, fake_score, brand_fit,
+                            aud_quality, growth_score, consistency_score, vettd_score):
+    """
+    Produce an MBTI-style, plain-English report for a creator:
+    an archetype label + description, a summary paragraph, strengths,
+    watch-outs, who they're best for, and a recommendation.
+    Everything is derived from the computed signals.
+    """
+    followers = d["followers"]
+    auth = d["audience_authenticity"]
+    niche = d["niche"]
+    name = d["creator_name"]
+    brand = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip() or "a brand"
+
+    # tier by size
+    if followers < 10_000:
+        size = "nano"
+    elif followers < 100_000:
+        size = "micro"
+    elif followers < 1_000_000:
+        size = "mid-tier"
+    else:
+        size = "macro"
+
+    high_eng = engagement_rate >= 5
+    rising = d["growth_rate_30d"] >= 3
+    authentic = auth >= 80
+
+    # ── Archetype (the "personality type") ──
+    if high_eng and authentic and size in ("nano", "micro"):
+        archetype = "The Trusted Insider"
+        arch_desc = "A tight-knit, highly engaged community that genuinely listens. Small but mighty — their word carries real weight."
+    elif rising and high_eng:
+        archetype = "The Rising Star"
+        arch_desc = "Fast-growing momentum paired with strong engagement. Catch them now before they get expensive."
+    elif size in ("mid-tier", "macro") and high_eng:
+        archetype = "The Powerhouse"
+        arch_desc = "Serious reach that still drives genuine interaction — the rare combination of scale and connection."
+    elif size in ("mid-tier", "macro") and not high_eng:
+        archetype = "The Broad Broadcaster"
+        arch_desc = "Wide reach with lighter per-post engagement. Best for awareness plays, not deep conversion."
+    elif not authentic:
+        archetype = "The Question Mark"
+        arch_desc = "The numbers look big, but audience quality raises flags worth checking before committing budget."
+    else:
+        archetype = "The Steady Contender"
+        arch_desc = "A solid, dependable profile without a standout signal — a safe, mid-risk choice."
+
+    # ── Summary paragraph ──
+    summary = (
+        f"{name} is a {size} {niche.lower()} creator with {followers:,} followers and a "
+        f"{engagement_rate}% engagement rate — {'well above' if high_eng else 'around' if engagement_rate>=2 else 'below'} "
+        f"the typical benchmark for this size. Their audience looks {auth}% authentic, "
+        f"and the account is {'growing fast' if rising else 'growing steadily' if d['growth_rate_30d']>0 else 'flat or declining'} "
+        f"month-on-month. Overall, this profile reads as “{archetype}”."
+    )
+
+    # ── Strengths ──
+    strengths = []
+    if high_eng:
+        strengths.append(f"Strong engagement ({engagement_rate}%) — the audience genuinely interacts, not just follows.")
+    if authentic:
+        strengths.append(f"High audience authenticity ({auth}%) — low fake-follower risk, real people behind the numbers.")
+    if rising:
+        strengths.append(f"Rising fast (+{d['growth_rate_30d']}% in 30 days) — momentum on their side.")
+    if brand_fit >= 70:
+        strengths.append(f"Strong alignment with {brand} ({brand_fit}/100 brand-fit).")
+    if consistency_score >= 80:
+        strengths.append(f"Posts consistently ({d['posting_freq']}/week) — a reliable, active partner.")
+    if d["avg_saves"] > d["avg_comments"]:
+        strengths.append("High save rate — content people want to come back to (a strong intent signal).")
+    if not strengths:
+        strengths.append("A balanced profile with no major red flags.")
+
+    # ── Watch-outs ──
+    watchouts = []
+    if fake_score >= 40:
+        watchouts.append(f"Elevated fake-follower score ({fake_score}/100) — vet the audience quality before committing.")
+    if not high_eng and engagement_rate < 2:
+        watchouts.append(f"Low engagement ({engagement_rate}%) — reach may not convert into action.")
+    if brand_fit < 55:
+        watchouts.append(f"Weaker brand alignment ({brand_fit}/100) — the audience may not match {brand}'s target.")
+    if d["growth_rate_30d"] <= 0:
+        watchouts.append("Flat or declining growth — the audience isn't expanding right now.")
+    if auth < 65:
+        watchouts.append(f"Audience authenticity is on the lower side ({auth}%).")
+    if not watchouts:
+        watchouts.append("No significant concerns surfaced in the data.")
+
+    # ── Best for ──
+    if high_eng and size in ("nano", "micro"):
+        best_for = "Conversion-focused campaigns, product launches, and authentic reviews where trust matters more than raw reach."
+    elif size in ("mid-tier", "macro") and not high_eng:
+        best_for = "Top-of-funnel awareness and broad reach campaigns."
+    elif rising:
+        best_for = "Brands wanting to lock in a creator early, before their rates climb."
+    else:
+        best_for = "Balanced campaigns combining reasonable reach with genuine engagement."
+
+    # ── Recommendation ──
+    if vettd_score >= 70:
+        rec = f"Recommended. {name} is a strong match for {brand} — worth reaching out."
+    elif vettd_score >= 55:
+        rec = f"Worth considering. {name} could work for {brand} with the right brief and budget."
+    elif vettd_score >= 40:
+        rec = f"Proceed with caution. {name} has gaps for {brand}; consider the recommended alternatives first."
+    else:
+        rec = f"Not recommended for {brand} right now. The risks outweigh the upside."
+
+    return {
+        "archetype": archetype, "archetype_desc": arch_desc, "summary": summary,
+        "strengths": strengths, "watchouts": watchouts, "best_for": best_for,
+        "recommendation": rec, "size": size,
+    }
+
+
 def estimate_fake_follower_score(followers, following, avg_likes, avg_comments):
     if followers == 0:
         return 50
