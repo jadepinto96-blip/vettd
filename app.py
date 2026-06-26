@@ -86,8 +86,8 @@ st.markdown(r"""
 </nav>
 
 <!-- ════════════ HERO ════════════ -->
-<section style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:9rem 2rem 4rem;position:relative;z-index:2;">
+<section style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:8rem 2rem 3rem;position:relative;z-index:2;">
 
   <div data-orb style="position:absolute;top:18%;left:12%;width:520px;height:520px;border-radius:50%;will-change:transform;transition:transform .6s cubic-bezier(.16,1,.3,1);
     background:radial-gradient(circle,rgba(124,58,237,.16),transparent 70%);animation:pulse-glow 7s ease-in-out infinite;"></div>
@@ -120,7 +120,7 @@ st.markdown(r"""
     animation:float-up 1s cubic-bezier(.16,1,.3,1) .18s both;">
     One transparent score for any creator — engineered from real engagement, audience authenticity and brand alignment. No guesswork.</p>
 
-  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:5.5rem;
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:0;
     animation:float-up 1s cubic-bezier(.16,1,.3,1) .28s both;">
     <a href="/Analyse" target="_self" style="display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,#7C3AED,#4F46E5);
       color:white;font-weight:700;font-size:15px;padding:17px 38px;border-radius:999px;text-decoration:none;
@@ -133,18 +133,14 @@ st.markdown(r"""
       onmouseout="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='rgba(255,255,255,.1)'">See how it works</a>
   </div>
 
-  <div style="animation:float-up 1s cubic-bezier(.16,1,.3,1) .38s both;display:flex;align-items:center;gap:8px;color:#33334A;font-size:12px;letter-spacing:.1em;">
-    <span style="writing-mode:vertical-lr;">SCROLL</span>
-    <span style="display:inline-block;width:1px;height:36px;background:linear-gradient(#7C3AED,transparent);"></span>
-  </div>
 </section>
 """, unsafe_allow_html=True)
 
 # ════════════ MOCK DASHBOARD ════════════
 st.markdown(r"""
-<section style="padding:7rem 3rem 5rem;position:relative;z-index:2;">
+<section style="padding:3rem 3rem 5rem;position:relative;z-index:2;">
   <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">The product</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">The product</div>
     <h2 class="disp" style="font-size:clamp(32px,5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;
       background:linear-gradient(135deg,#FFFFFF,#A78BFA 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">A full report. In one glance.</h2>
   </div>
