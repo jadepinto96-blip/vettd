@@ -239,45 +239,26 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── WRITTEN VERDICT (names the brand) ──
+# brand + one-line fit phrase (used in the report header)
 _brand = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip() or "your brand"
 _fit_phrase = ("an excellent fit" if vettd_score >= 85 else
                "a strong fit" if vettd_score >= 70 else
                "a moderate fit" if vettd_score >= 55 else
                "a weak fit" if vettd_score >= 40 else
                "not recommended")
-_eng_note = "high engagement" if engagement_rate > 5 else "moderate engagement" if engagement_rate > 2 else "low engagement"
-_auth_note = ("a highly authentic audience" if d["audience_authenticity"] >= 80 else
-              "a reasonably authentic audience" if d["audience_authenticity"] >= 60 else
-              "some audience-quality concerns")
-_fitnote = ("strong brand alignment" if brand_fit >= 75 else
-            "decent brand alignment" if brand_fit >= 55 else "limited brand alignment")
-_verb = "would be" if vettd_score >= 55 else "may not be"
-st.markdown(f"""
-<div style="background:#101019;border:1px solid #1A1A2E;border-left:3px solid {score_color};
-  border-radius:0 14px 14px 0;padding:1.1rem 1.4rem;margin-bottom:1.5rem;">
-<div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:6px;">Verdict</div>
-<div style="font-size:15px;color:#D2D2E4;line-height:1.7;">
-<b style="color:#EDEDF5;">{d['creator_name']}</b> is <b style="color:{score_color};">{_fit_phrase}</b>
-for <b style="color:#A78BFA;">{_brand}</b>, scoring <b style="color:#A78BFA;">{vettd_score}/100</b> on Vettd.
-The profile shows {_eng_note} ({engagement_rate}%), {_auth_note} ({d['audience_authenticity']}% authentic), and {_fitnote}.
-Based on this, {d['creator_name']} {_verb} a sound choice for a {_brand} campaign in the {d['niche'].lower()} space.
-</div>
-</div>
-""", unsafe_allow_html=True)
 
 # ── PERSONALISED REPORT (MBTI-style) ──
 rep = generate_creator_report(d, engagement_rate, fake_score, brand_fit,
                               aud_quality, growth_score, consistency_score, vettd_score)
 strengths_html = "".join([
-    f'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">'
+    f'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;">'
     f'<span style="color:#10B981;flex-shrink:0;margin-top:2px;">✓</span>'
-    f'<span style="font-size:14px;color:#C2C2D6;line-height:1.6;">{s}</span></div>' for s in rep["strengths"]
+    f'<span style="font-size:13.5px;color:#C2C2D6;line-height:1.55;">{s}</span></div>' for s in rep["strengths"][:3]
 ])
 watchouts_html = "".join([
-    f'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">'
+    f'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;">'
     f'<span style="color:#F59E0B;flex-shrink:0;margin-top:2px;">!</span>'
-    f'<span style="font-size:14px;color:#C2C2D6;line-height:1.6;">{w}</span></div>' for w in rep["watchouts"]
+    f'<span style="font-size:13.5px;color:#C2C2D6;line-height:1.55;">{w}</span></div>' for w in rep["watchouts"][:3]
 ])
 
 # highlight stats — a few key numbers WITH plain-English meaning (data + text mix)
@@ -306,7 +287,8 @@ st.markdown(f"""
 <div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#22D3EE;margin-bottom:6px;">Creator archetype</div>
 <div class="disp" style="font-size:30px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;">{rep['archetype']}</div>
 <div style="font-size:14px;color:#9090B0;margin-top:8px;line-height:1.6;font-style:italic;">{rep['archetype_desc']}</div>
-<div style="font-size:15px;color:#D2D2E4;line-height:1.8;margin-top:1.25rem;border-top:1px solid #1A1A2E;padding-top:1.25rem;">{rep['summary']}</div>
+<div style="font-size:15px;color:#D2D2E4;margin-top:1.1rem;border-top:1px solid #1A1A2E;padding-top:1.1rem;">
+<b style="color:#EDEDF5;">{d['creator_name']}</b> · <b style="color:{score_color};">{_fit_phrase}</b> for <b style="color:#A78BFA;">{_brand}</b> · <b style="color:#A78BFA;">{vettd_score}/100</b></div>
 </div>
 
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">{highlights_html}</div>
