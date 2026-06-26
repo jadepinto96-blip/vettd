@@ -270,6 +270,70 @@ for i,(num,color,title,desc) in enumerate(steps):
     """, unsafe_allow_html=True)
 st.markdown("</div></div></section>", unsafe_allow_html=True)
 
+# ════════════ WHY VETTD (vs the old way) ════════════
+st.markdown(r"""
+<section style="padding:7rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
+  <div class="reveal" style="text-align:center;margin-bottom:4rem;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Why Vettd</div>
+    <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
+      background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+      A decision, not a spreadsheet.</h2>
+    <p style="font-size:16px;color:#5A5A78;max-width:560px;margin:1.25rem auto 0;line-height:1.7;">
+      Most creator tools hand you a database and a wall of metrics, then leave the hard part — the decision — to you. Vettd is built the other way around.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+
+    <div class="reveal d1" style="background:#0D0D14;border:1px solid #14142A;border-radius:22px;padding:2.25rem;">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5A5A78;margin-bottom:1.5rem;">Traditional creator tools</div>
+""", unsafe_allow_html=True)
+
+old_way = [
+    "Walls of vanity metrics — you interpret them",
+    "Scores the creator in isolation",
+    "Hands you a list; you decide who fits",
+    "No warning when creators share an audience",
+    "Built for big budgets and steep learning curves",
+    "Data. No guidance.",
+]
+for item in old_way:
+    st.markdown(f"""
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
+      <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:rgba(239,68,68,.12);
+        border:1px solid rgba(239,68,68,.3);color:#EF4444;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;">✕</span>
+      <span style="font-size:14px;color:#6A6A90;line-height:1.5;">{item}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown(r"""
+    </div>
+
+    <div class="reveal d2" style="background:linear-gradient(160deg,rgba(124,58,237,.1),rgba(34,211,238,.05));
+      border:1px solid rgba(124,58,237,.4);border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;
+      box-shadow:0 30px 80px rgba(124,58,237,.15);">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>
+      <div class="brandmark" style="font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.5rem;
+        background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">The Vettd way</div>
+""", unsafe_allow_html=True)
+
+vettd_way = [
+    "One transparent 0–100 Vettd Score",
+    "Scores your product against their audience",
+    "Tells you who to pick — and who instead",
+    "Audience-overlap detector saves double spend",
+    "Start free, get an answer in seconds",
+    "A clear recommendation you can act on",
+]
+for item in vettd_way:
+    st.markdown(f"""
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
+      <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#22D3EE);
+        color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px;">✓</span>
+      <span style="font-size:14px;color:#C8C8E0;line-height:1.5;font-weight:500;">{item}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("</div></div></section>", unsafe_allow_html=True)
+
 # ════════════ STATS BAND (count up) ════════════
 st.markdown(r"""
 <section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1000px;margin:0 auto;">
