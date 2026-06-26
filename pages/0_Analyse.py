@@ -346,9 +346,10 @@ with col_center:
         if not creator_name and not username:
             st.error("Please enter at least a username or a name.")
         else:
-            # name is optional — fall back to the username (many IG profiles have no display name)
+            _fetched = st.session_state.get("fetched") or {}
+            # name is optional — use fetched full name, else username (many IG profiles have no display name)
             if not creator_name:
-                creator_name = username.lstrip("@") or "Creator"
+                creator_name = _fetched.get("full_name") or username.lstrip("@") or "Creator"
             st.session_state.vettd_data = {
                 "tier": tier,
                 "creator_name": creator_name,
@@ -381,6 +382,7 @@ with col_center:
                 "brand_safety": brand_safety,
                 "crisis_risk": crisis_risk,
                 "product_text": product_text,
+                "profile_pic": _fetched.get("profile_pic"),
             }
             # ── save to search history (most recent first, dedup by username) ──
             _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)

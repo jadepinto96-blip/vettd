@@ -214,7 +214,7 @@ st.markdown(f"""
 </style>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:2rem;margin-bottom:2rem;">
 <div style="display:flex;align-items:center;gap:16px;">
-<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;">{initials}</div>
+{(f'<img src="{d["profile_pic"]}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #7C3AED;flex-shrink:0;" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';"/><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:none;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;">{initials}</div>') if d.get("profile_pic") else (f'<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;">{initials}</div>')}
 <div>
 <div style="font-size:22px;font-weight:800;color:#E8E8F0;letter-spacing:-0.5px;">{d['creator_name']}</div>
 <div style="font-size:12px;color:#5A5A78;margin-top:3px;">{d['username']} &nbsp;·&nbsp; {d['platform']} &nbsp;·&nbsp; {d['niche']} {_brand_suffix}</div>

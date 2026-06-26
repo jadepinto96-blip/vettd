@@ -53,6 +53,7 @@ def _empty_profile():
         "loc1_name": None, "loc1_pct": None,
         "loc2_name": None, "loc2_pct": None,
         "loc3_name": None, "loc3_pct": None,
+        "profile_pic": None, "full_name": None,
         "_source": "manual", "_partial": True,
     }
 
@@ -144,6 +145,10 @@ def _fetch_rapidapi(username, platform):
         prof["followers"] = first("follower_count", "followers", "followers_count")
         prof["following"] = first("following_count", "following", "follows_count")
         prof["post_count"] = first("media_count", "posts", "post_count")
+        prof["full_name"] = data.get("full_name") or None
+        # prefer the HD pic if present, else the standard one
+        hd = data.get("hd_profile_pic_url_info") or {}
+        prof["profile_pic"] = (hd.get("url") if isinstance(hd, dict) else None) or data.get("profile_pic_url")
         return prof if prof["followers"] is not None else None
     except Exception:
         return None
