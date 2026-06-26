@@ -208,16 +208,6 @@ st.markdown(r"""
 """, unsafe_allow_html=True)
 
 # ════════════ FEATURES ════════════
-st.markdown(r"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
-  <div class="reveal" style="text-align:center;margin-bottom:4rem;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Capabilities</div>
-    <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
-      background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Everything a brand needs.</h2>
-  </div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
-""", unsafe_allow_html=True)
-
 features = [
     ("✦","#A78BFA","#7C3AED","Vettd Score","One 0–100 number. Transparent, weighted, built from real data — not follower counts."),
     ("◈","#60A5FA","#4F46E5","Audience authenticity","Fake follower detection, bot networks and inactive estimates before you spend."),
@@ -226,67 +216,54 @@ features = [
     ("✧","#60A5FA","#4F46E5","ROI prediction","Cost per post, cost per engagement and campaign ROI — before you sign anything."),
     ("⟡","#22D3EE","#0891B2","Multi-platform","Instagram, TikTok and YouTube unified. Compare creators side by side."),
 ]
-for i,(icon,color,dark,title,desc) in enumerate(features):
-    st.markdown(f"""
-    <div class="reveal d{(i%3)+1} lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;"
-      onmouseover="this.style.borderColor='{color}40';this.style.boxShadow='0 20px 60px {color}18'"
-      onmouseout="this.style.borderColor='#14142A';this.style.boxShadow='none'">
-      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}55,transparent);"></div>
-      <div style="width:52px;height:52px;border-radius:14px;margin-bottom:1.5rem;background:linear-gradient(135deg,{color}1f,{dark}10);
-        border:1px solid {color}35;display:flex;align-items:center;justify-content:center;font-size:22px;color:{color};">{icon}</div>
-      <div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;letter-spacing:-.01em;">{title}</div>
-      <div style="font-size:13.5px;color:#5A5A78;line-height:1.75;">{desc}</div>
-    </div>
-    """, unsafe_allow_html=True)
-st.markdown("</div></section>", unsafe_allow_html=True)
-
-# ════════════ HOW IT WORKS ════════════
-st.markdown(r"""
-<section id="how" style="padding:7rem 3rem;position:relative;z-index:2;
-  border-top:1px solid #0D0D1A;border-bottom:1px solid #0D0D1A;background:linear-gradient(180deg,rgba(124,58,237,.04),transparent);">
-  <div style="max-width:1120px;margin:0 auto;">
-    <div class="reveal" style="text-align:center;margin-bottom:4rem;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Simple by design</div>
-      <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
-        background:linear-gradient(135deg,#FFFFFF,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Three steps to a decision.</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;">
+feature_cards = "".join([
+    f'<div class="lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;"'
+    f' onmouseover="this.style.borderColor=\'{color}40\';this.style.boxShadow=\'0 20px 60px {color}18\'"'
+    f' onmouseout="this.style.borderColor=\'#14142A\';this.style.boxShadow=\'none\'">'
+    f'<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}55,transparent);"></div>'
+    f'<div style="width:52px;height:52px;border-radius:14px;margin-bottom:1.5rem;background:linear-gradient(135deg,{color}1f,{dark}10);'
+    f'border:1px solid {color}35;display:flex;align-items:center;justify-content:center;font-size:22px;color:{color};">{icon}</div>'
+    f'<div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;letter-spacing:-.01em;">{title}</div>'
+    f'<div style="font-size:13.5px;color:#5A5A78;line-height:1.75;">{desc}</div></div>'
+    for icon,color,dark,title,desc in features
+])
+st.markdown(f"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:3rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Capabilities</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Everything a brand needs.</h2>
+</div>
+<div class="reveal d1" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">{feature_cards}</div>
+</section>
 """, unsafe_allow_html=True)
 
+# ════════════ HOW IT WORKS ════════════
 steps = [
     ("01","#7C3AED","Enter the creator","Type in any creator's stats. Takes under two minutes — no integrations required."),
     ("02","#60A5FA","Get their Vettd Score","Six weighted signals resolve into one clear 0–100 score with a full breakdown."),
     ("03","#22D3EE","Make the call","Download the report, share the link, decide with total confidence."),
 ]
-for i,(num,color,title,desc) in enumerate(steps):
-    st.markdown(f"""
-    <div class="reveal d{i+1}" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-20px;right:10px;font-size:120px;font-weight:800;color:{color}0c;font-family:'Space Grotesk',sans-serif;line-height:1;">{num}</div>
-      <div class="disp" style="font-size:46px;font-weight:700;line-height:1;margin-bottom:1.25rem;
-        background:linear-gradient(135deg,{color},{color}55);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;">{num}</div>
-      <div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;position:relative;">{title}</div>
-      <div style="font-size:13.5px;color:#5A5A78;line-height:1.75;position:relative;">{desc}</div>
-    </div>
-    """, unsafe_allow_html=True)
-st.markdown("</div></div></section>", unsafe_allow_html=True)
-
-# ════════════ WHY VETTD (vs the old way) ════════════
-st.markdown(r"""
-<section style="padding:7rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
-  <div class="reveal" style="text-align:center;margin-bottom:4rem;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Why Vettd</div>
-    <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
-      background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-      A decision, not a spreadsheet.</h2>
-    <p style="font-size:16px;color:#5A5A78;max-width:560px;margin:1.25rem auto 0;line-height:1.7;">
-      Most creator tools hand you a database and a wall of metrics, then leave the hard part — the decision — to you. Vettd is built the other way around.</p>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
-
-    <div class="reveal d1" style="background:#0D0D14;border:1px solid #14142A;border-radius:22px;padding:2.25rem;">
-      <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5A5A78;margin-bottom:1.5rem;">Traditional creator tools</div>
+step_cards = "".join([
+    f'<div class="lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">'
+    f'<div style="position:absolute;top:-20px;right:10px;font-size:120px;font-weight:800;color:{color}14;font-family:\'Space Grotesk\',sans-serif;line-height:1;">{num}</div>'
+    f'<div class="disp" style="font-size:46px;font-weight:700;line-height:1;margin-bottom:1.25rem;background:linear-gradient(135deg,{color},{color}99);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;">{num}</div>'
+    f'<div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;position:relative;">{title}</div>'
+    f'<div style="font-size:13.5px;color:#5A5A78;line-height:1.75;position:relative;">{desc}</div></div>'
+    for num,color,title,desc in steps
+])
+st.markdown(f"""
+<section id="how" style="padding:6rem 3rem;position:relative;z-index:2;border-top:1px solid #14142A;border-bottom:1px solid #14142A;background:linear-gradient(180deg,rgba(124,58,237,.05),transparent);">
+<div style="max-width:1120px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:3rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Simple by design</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Three steps to a decision.</h2>
+</div>
+<div class="reveal d1" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;">{step_cards}</div>
+</div>
+</section>
 """, unsafe_allow_html=True)
 
+# ════════════ WHY VETTD (vs the old way) ════════════
 old_way = [
     "Walls of vanity metrics — you interpret them",
     "Scores the creator in isolation",
@@ -295,26 +272,6 @@ old_way = [
     "Built for big budgets and steep learning curves",
     "Data. No guidance.",
 ]
-for item in old_way:
-    st.markdown(f"""
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
-      <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:rgba(239,68,68,.12);
-        border:1px solid rgba(239,68,68,.3);color:#EF4444;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;">✕</span>
-      <span style="font-size:14px;color:#6A6A90;line-height:1.5;">{item}</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown(r"""
-    </div>
-
-    <div class="reveal d2" style="background:linear-gradient(160deg,rgba(124,58,237,.1),rgba(34,211,238,.05));
-      border:1px solid rgba(124,58,237,.4);border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;
-      box-shadow:0 30px 80px rgba(124,58,237,.15);">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>
-      <div class="brandmark" style="font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.5rem;
-        background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">The Vettd way</div>
-""", unsafe_allow_html=True)
-
 vettd_way = [
     "One transparent 0–100 Vettd Score",
     "Scores your product against their audience",
@@ -323,107 +280,119 @@ vettd_way = [
     "Start free, get an answer in seconds",
     "A clear recommendation you can act on",
 ]
-for item in vettd_way:
-    st.markdown(f"""
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
-      <span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#22D3EE);
-        color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px;">✓</span>
-      <span style="font-size:14px;color:#C8C8E0;line-height:1.5;font-weight:500;">{item}</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("</div></div></section>", unsafe_allow_html=True)
+old_rows = "".join([
+    f'<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">'
+    f'<span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#EF4444;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;">✕</span>'
+    f'<span style="font-size:14px;color:#8888A8;line-height:1.5;">{x}</span></div>' for x in old_way
+])
+new_rows = "".join([
+    f'<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">'
+    f'<span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#22D3EE);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px;">✓</span>'
+    f'<span style="font-size:14px;color:#D2D2E4;line-height:1.5;font-weight:500;">{x}</span></div>' for x in vettd_way
+])
+st.markdown(f"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:3rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Why Vettd</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">A decision, not a spreadsheet.</h2>
+<p style="font-size:16px;color:#7A7A98;max-width:560px;margin:1.25rem auto 0;line-height:1.7;">Most creator tools hand you a database and a wall of metrics, then leave the hard part — the decision — to you. Vettd is built the other way around.</p>
+</div>
+<div class="reveal d1" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+<div style="background:#0D0D14;border:1px solid #14142A;border-radius:22px;padding:2.25rem;">
+<div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7A7A98;margin-bottom:1.5rem;">Traditional creator tools</div>
+{old_rows}
+</div>
+<div style="background:linear-gradient(160deg,rgba(124,58,237,.1),rgba(34,211,238,.05));border:1px solid rgba(124,58,237,.4);border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(124,58,237,.15);">
+<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>
+<div class="brandmark" style="font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.5rem;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">The Vettd way</div>
+{new_rows}
+</div>
+</div>
+</section>
+""", unsafe_allow_html=True)
 
 # ════════════ STATS BAND (count up) ════════════
-st.markdown(r"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1000px;margin:0 auto;">
-  <div class="reveal" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.06);border-radius:20px;overflow:hidden;">
+stats = [("£21B","market we're fixing","#A78BFA"),("80%","of brands guess on spend","#60A5FA"),
+         ("6×","faster than manual vetting","#22D3EE"),("0–100","one score, total clarity","#A78BFA")]
+stat_cells = "".join([
+    f'<div style="background:#101019;padding:2.25rem 1.5rem;text-align:center;">'
+    f'<div class="disp" style="font-size:44px;font-weight:700;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{val}</div>'
+    f'<div style="font-size:12px;color:#5A5A78;margin-top:8px;letter-spacing:.04em;">{lbl}</div></div>'
+    for val,lbl,clr in stats
+])
+st.markdown(f"""
+<section style="padding:5rem 3rem;position:relative;z-index:2;max-width:1000px;margin:0 auto;">
+<div class="reveal" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;">{stat_cells}</div>
+</section>
 """, unsafe_allow_html=True)
-stats = [("£","21","B","market we're fixing","#A78BFA"),("","80","%","of brands guess on spend","#60A5FA"),
-         ("","6","×","faster than manual vetting","#22D3EE"),("","0","–100","one score, total clarity","#A78BFA")]
-for pre,num,suf,lbl,clr in stats:
-    st.markdown(f"""
-    <div style="background:#101019;padding:2.25rem 1.5rem;text-align:center;">
-      <div class="disp" style="font-size:44px;font-weight:700;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-        {pre}<span class="countup" data-target="{num}">0</span>{suf}</div>
-      <div style="font-size:12px;color:#3A3A52;margin-top:8px;letter-spacing:.04em;">{lbl}</div>
-    </div>
-    """, unsafe_allow_html=True)
-st.markdown("</div></section>", unsafe_allow_html=True)
 
 # ════════════ PRICING ════════════
-st.markdown(r"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;">
-  <div style="max-width:1120px;margin:0 auto;">
-    <div class="reveal" style="text-align:center;margin-bottom:4rem;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Pricing</div>
-      <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
-        background:linear-gradient(135deg,#FFFFFF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Start free. Scale when ready.</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;align-items:start;">
-""", unsafe_allow_html=True)
-
 plans = [
-    ("Starter","£29","/mo","5 searches/month","#555570","#101019",False,
+    ("Starter","£29","/mo","5 searches/month","#8888A8","#101019",False,
      ["Vettd Score","Engagement analytics","Fake follower score","Basic demographics","CSV export"]),
     ("Pro","£99","/mo","50 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
      ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF brand report"]),
     ("Enterprise","Custom","","Unlimited searches","#22D3EE","#101019",False,
      ["Everything in Pro","ROI prediction","Buyer intent signals","Auto campaign brief","API access","White-label reports"]),
 ]
-for idx,(name,price,period,searches,color,bg,featured,flist) in enumerate(plans):
+def _plan_card(name,price,period,searches,color,bg,featured,flist):
     border = "1px solid rgba(124,58,237,.45)" if featured else "1px solid #14142A"
     glow = "box-shadow:0 30px 80px rgba(124,58,237,.18);" if featured else ""
     topline = '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>' if featured else ""
     popular = '<div style="position:absolute;top:16px;right:16px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#A78BFA;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.1em;">POPULAR</div>' if featured else ""
-    checks = "".join([f'<div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#5A5A78;margin-bottom:11px;"><span style="width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,{color},{color}88);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700;">✓</span>{f}</div>' for f in flist])
-    price_html = (f'<span class="disp" style="font-size:42px;font-weight:700;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#3A3A52;">{period}</span>' if period else f'<span class="disp" style="font-size:42px;font-weight:700;color:#EDEDF5;">{price}</span>')
+    checks = "".join([f'<div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#8888A8;margin-bottom:11px;"><span style="width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,{color},{color}88);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700;">✓</span>{f}</div>' for f in flist])
+    price_html = (f'<span class="disp" style="font-size:42px;font-weight:700;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#5A5A78;">{period}</span>' if period else f'<span class="disp" style="font-size:42px;font-weight:700;color:#EDEDF5;">{price}</span>')
     cta = 'Get started →' if name=='Starter' else ('Get Pro →' if name=='Pro' else 'Contact us →')
-    st.markdown(f"""
-    <div class="reveal d{idx+1} lift" style="background:{bg};border:{border};border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;{glow}">
-      {topline}{popular}
-      <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:{color};margin-bottom:14px;">{name}</div>
-      <div style="margin-bottom:6px;">{price_html}</div>
-      <div style="font-size:12px;color:#3A3A52;margin-bottom:1.5rem;">{searches}</div>
-      <div style="border-top:1px solid #16162A;padding-top:1.4rem;">{checks}</div>
-      <a href="/Analyse" target="_self" style="display:block;margin-top:1.5rem;text-align:center;
-        background:{'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'};
-        border:{'none' if featured else '1px solid #16162A'};color:{'white' if featured else '#8888AA'};
-        font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;transition:transform .3s;"
-        onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">{cta}</a>
-    </div>
-    """, unsafe_allow_html=True)
-st.markdown("</div></div></section>", unsafe_allow_html=True)
+    btn_bg = 'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'
+    btn_border = 'none' if featured else '1px solid #16162A'
+    btn_color = 'white' if featured else '#A8A8C0'
+    return (f'<div class="lift" style="background:{bg};border:{border};border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;{glow}">'
+            f'{topline}{popular}'
+            f'<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:{color};margin-bottom:14px;">{name}</div>'
+            f'<div style="margin-bottom:6px;">{price_html}</div>'
+            f'<div style="font-size:12px;color:#5A5A78;margin-bottom:1.5rem;">{searches}</div>'
+            f'<div style="border-top:1px solid #16162A;padding-top:1.4rem;">{checks}</div>'
+            f'<a href="/Analyse" target="_self" style="display:block;margin-top:1.5rem;text-align:center;background:{btn_bg};border:{btn_border};color:{btn_color};font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;">{cta}</a></div>')
+plan_cards = "".join([_plan_card(*p) for p in plans])
+st.markdown(f"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;">
+<div style="max-width:1120px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:3rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Pricing</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Start free. Scale when ready.</h2>
+</div>
+<div class="reveal d1" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;align-items:start;">{plan_cards}</div>
+</div>
+</section>
+""", unsafe_allow_html=True)
 
 # ════════════ TESTIMONIALS ════════════
-st.markdown(r"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent);">
-  <div style="max-width:1120px;margin:0 auto;">
-    <div class="reveal" style="text-align:center;margin-bottom:4rem;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Early feedback</div>
-      <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;
-        background:linear-gradient(135deg,#FFFFFF,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Brands that get it.</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
-""", unsafe_allow_html=True)
 testimonials = [
     ("We wasted £40k on a campaign last year. Vettd would have told us in 30 seconds it was the wrong fit.","Priya S.","Head of Marketing, D2C Fashion","#A78BFA"),
     ("The brand-fit score is exactly what was missing. Something that thinks like a strategist, not just a data tool.","Marcus T.","Founder, Creative Agency — London","#60A5FA"),
     ("I showed the Vettd report in a board meeting. The ROI prediction alone justified the subscription 10×.","Ananya R.","CMO, Lifestyle Startup — Mumbai","#22D3EE"),
 ]
-for i,(quote,name,role,color) in enumerate(testimonials):
-    st.markdown(f"""
-    <div class="reveal d{i+1} lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>
-      <div class="disp" style="font-size:48px;color:{color};line-height:.6;margin-bottom:1.25rem;opacity:.5;">"</div>
-      <p style="font-size:14.5px;color:#7A7A98;line-height:1.85;margin:0 0 1.5rem;">{quote}</p>
-      <div style="border-top:1px solid #14142A;padding-top:1rem;">
-        <div style="font-size:13px;font-weight:600;color:#EDEDF5;">{name}</div>
-        <div style="font-size:11px;color:#3A3A52;margin-top:3px;">{role}</div></div>
-    </div>
-    """, unsafe_allow_html=True)
-st.markdown("</div></div></section>", unsafe_allow_html=True)
+tcards = "".join([
+    f'<div class="lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">'
+    f'<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>'
+    f'<div class="disp" style="font-size:48px;color:{color};line-height:.6;margin-bottom:1.25rem;opacity:.6;">&ldquo;</div>'
+    f'<p style="font-size:14.5px;color:#A8A8C0;line-height:1.85;margin:0 0 1.5rem;">{quote}</p>'
+    f'<div style="border-top:1px solid #14142A;padding-top:1rem;">'
+    f'<div style="font-size:13px;font-weight:600;color:#EDEDF5;">{name}</div>'
+    f'<div style="font-size:11px;color:#5A5A78;margin-top:3px;">{role}</div></div></div>'
+    for quote,name,role,color in testimonials
+])
+st.markdown(f"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent);">
+<div style="max-width:1120px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:3rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Early feedback</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Brands that get it.</h2>
+</div>
+<div class="reveal d1" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">{tcards}</div>
+</div>
+</section>
+""", unsafe_allow_html=True)
 
 # ════════════ FAQ ════════════
 st.markdown("""
@@ -442,17 +411,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown(r"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:820px;margin:0 auto;">
-  <div class="reveal" style="text-align:center;margin-bottom:3.5rem;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Questions</div>
-    <h2 class="disp" style="font-size:clamp(34px,5.5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;
-      background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-      Frequently asked.</h2>
-  </div>
-  <div class="reveal d1">
-""", unsafe_allow_html=True)
-
 faqs = [
     ("What exactly is the Vettd Score?",
      "A single 0–100 score for any creator, built from six weighted signals — engagement, audience authenticity, brand-fit, audience quality, consistency and growth. Instead of reading 30 metrics, you get one transparent number, with the full breakdown of how it's calculated."),
@@ -469,15 +427,19 @@ faqs = [
     ("Is my data private?",
      "Yes. We only use the details you enter to generate your report, we don't sell your data, and you can request deletion any time. See our Legal page for the full policy."),
 ]
-for q, a in faqs:
-    st.markdown(f"""
-    <details class="faq-item">
-      <summary>{q}<span class="chev">+</span></summary>
-      <div class="faq-body">{a}</div>
-    </details>
-    """, unsafe_allow_html=True)
-
-st.markdown("</div></section>", unsafe_allow_html=True)
+faq_items = "".join([
+    f'<details class="faq-item"><summary>{q}<span class="chev">+</span></summary><div class="faq-body">{a}</div></details>'
+    for q, a in faqs
+])
+st.markdown(f"""
+<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:820px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:3rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Questions</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Frequently asked.</h2>
+</div>
+<div class="reveal d1">{faq_items}</div>
+</section>
+""", unsafe_allow_html=True)
 
 # ════════════ FINAL CTA + FOOTER ════════════
 st.markdown(r"""
