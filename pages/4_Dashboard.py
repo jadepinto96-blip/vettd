@@ -200,35 +200,75 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── CREATOR HEADER ──
+# ── CREATOR HEADER + CIRCULAR SCORE RING ──
 _brand_suffix = f"&nbsp;·&nbsp; {d['brand_industry']}" if d['brand_industry'] else ""
+import math
+_R = 56
+_CIRC = round(2 * math.pi * _R, 1)
+_OFFSET = round(_CIRC * (1 - vettd_score / 100), 1)
 st.markdown(f"""
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;">
+<style>
+@keyframes ringfill {{ from {{ stroke-dashoffset: {_CIRC}; }} to {{ stroke-dashoffset: {_OFFSET}; }} }}
+.score-ring-progress {{ animation: ringfill 1.4s cubic-bezier(.16,1,.3,1) forwards; }}
+</style>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:2rem;margin-bottom:2rem;">
 <div style="display:flex;align-items:center;gap:16px;">
-<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;">{initials}</div>
+<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;">{initials}</div>
 <div>
 <div style="font-size:22px;font-weight:800;color:#E8E8F0;letter-spacing:-0.5px;">{d['creator_name']}</div>
 <div style="font-size:12px;color:#5A5A78;margin-top:3px;">{d['username']} &nbsp;·&nbsp; {d['platform']} &nbsp;·&nbsp; {d['niche']} {_brand_suffix}</div>
 </div>
 </div>
-<div style="text-align:right;">
-<div style="font-size:11px;color:#5A5A78;margin-bottom:4px;">Vettd Score</div>
-<div style="font-size:48px;font-weight:900;line-height:1;background:linear-gradient(135deg,{score_color},{score_color}99);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{vettd_score}</div>
-<div style="font-size:12px;font-weight:700;color:{score_color};margin-top:2px;">{label}</div>
+<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+<div style="position:relative;width:140px;height:140px;">
+<svg width="140" height="140" viewBox="0 0 140 140">
+<defs><linearGradient id="ringgrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#A78BFA"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient></defs>
+<circle cx="70" cy="70" r="{_R}" fill="none" stroke="#1A1A2E" stroke-width="10"/>
+<circle class="score-ring-progress" cx="70" cy="70" r="{_R}" fill="none" stroke="url(#ringgrad)" stroke-width="10"
+  stroke-linecap="round" stroke-dasharray="{_CIRC}" stroke-dashoffset="{_OFFSET}" transform="rotate(-90 70 70)"/>
+</svg>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+<span class="disp" style="font-size:46px;font-weight:800;line-height:1;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{vettd_score}</span>
+</div>
+</div>
+<div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5A5A78;margin-top:8px;">Vettd Score</div>
+<div style="font-size:13px;font-weight:700;color:{score_color};margin-top:2px;">{label}</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── TOP METRICS ROW ──
-m1, m2, m3, m4, m5, m6, m7, m8 = st.columns(8)
-m1.metric("Followers", f"{d['followers']:,}")
-m2.metric("Engagement", f"{engagement_rate}%")
-m3.metric("Fake score", f"{fake_score}/100")
-m4.metric("Brand fit", f"{brand_fit}/100")
-m5.metric("Avg likes", f"{d['avg_likes']:,}")
-m6.metric("Avg comments", f"{d['avg_comments']:,}")
-m7.metric("Est. cost/post", f"£{est_cost_per_post:,.0f}")
-m8.metric("30d growth", f"{d['growth_rate_30d']}%")
+# ── TOP METRICS STRIP (numbers in a row, labels beneath) ──
+top_metrics = [
+    ("Followers", f"{d['followers']:,}"),
+    ("Engagement", f"{engagement_rate}%"),
+    ("Fake score", f"{fake_score}/100"),
+    ("Brand fit", f"{brand_fit}/100"),
+    ("Avg likes", f"{d['avg_likes']:,}"),
+    ("Avg comments", f"{d['avg_comments']:,}"),
+    ("Est. cost/post", f"£{est_cost_per_post:,.0f}"),
+    ("30d growth", f"{d['growth_rate_30d']}%"),
+]
+metric_cells = "".join([
+    f'<div class="mstrip-cell">'
+    f'<div class="mstrip-num">{val}</div>'
+    f'<div class="mstrip-lbl">{lbl}</div></div>'
+    for lbl, val in top_metrics
+])
+st.markdown(f"""
+<style>
+.mstrip {{ display:grid; grid-template-columns:repeat(8,1fr); background:#101019;
+  border:1px solid #1A1A2E; border-radius:16px; overflow:hidden; }}
+.mstrip-cell {{ padding:1.1rem .75rem; text-align:center; border-right:1px solid #16162A;
+  transition:background .3s ease; }}
+.mstrip-cell:last-child {{ border-right:none; }}
+.mstrip-cell:hover {{ background:#14141F; }}
+.mstrip-num {{ font-size:21px; font-weight:800; line-height:1;
+  background:linear-gradient(135deg,#EDEDF5,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }}
+.mstrip-lbl {{ font-size:10px; color:#6A6A90; text-transform:uppercase; letter-spacing:.08em; margin-top:8px; }}
+</style>
+<div class="mstrip">{metric_cells}</div>
+""", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
