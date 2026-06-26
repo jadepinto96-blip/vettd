@@ -214,6 +214,7 @@ with col_center:
         niche = st.selectbox("Niche", ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Gaming", "Lifestyle", "Finance", "Parenting", "Other"])
     with c5:
         brand_industry = st.text_input("Your brand industry", placeholder="e.g. Fashion")
+    brand_name = st.text_input("Your brand name (used in the report)", placeholder="e.g. Malabar Gold & Diamonds")
 
     # ── live data fetch (auto-fill when an API key is configured) ──
     _provider = active_provider()
@@ -355,6 +356,7 @@ with col_center:
                 "platform": platform,
                 "niche": niche,
                 "brand_industry": brand_industry,
+                "brand_name": brand_name,
                 "followers": followers,
                 "following": following,
                 "post_count": post_count,

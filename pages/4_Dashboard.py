@@ -238,6 +238,33 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# ── WRITTEN VERDICT (names the brand) ──
+_brand = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip() or "your brand"
+_fit_phrase = ("an excellent fit" if vettd_score >= 85 else
+               "a strong fit" if vettd_score >= 70 else
+               "a moderate fit" if vettd_score >= 55 else
+               "a weak fit" if vettd_score >= 40 else
+               "not recommended")
+_eng_note = "high engagement" if engagement_rate > 5 else "moderate engagement" if engagement_rate > 2 else "low engagement"
+_auth_note = ("a highly authentic audience" if d["audience_authenticity"] >= 80 else
+              "a reasonably authentic audience" if d["audience_authenticity"] >= 60 else
+              "some audience-quality concerns")
+_fitnote = ("strong brand alignment" if brand_fit >= 75 else
+            "decent brand alignment" if brand_fit >= 55 else "limited brand alignment")
+_verb = "would be" if vettd_score >= 55 else "may not be"
+st.markdown(f"""
+<div style="background:#101019;border:1px solid #1A1A2E;border-left:3px solid {score_color};
+  border-radius:0 14px 14px 0;padding:1.1rem 1.4rem;margin-bottom:1.5rem;">
+<div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:6px;">Verdict</div>
+<div style="font-size:15px;color:#D2D2E4;line-height:1.7;">
+<b style="color:#EDEDF5;">{d['creator_name']}</b> is <b style="color:{score_color};">{_fit_phrase}</b>
+for <b style="color:#A78BFA;">{_brand}</b>, scoring <b style="color:#A78BFA;">{vettd_score}/100</b> on Vettd.
+The profile shows {_eng_note} ({engagement_rate}%), {_auth_note} ({d['audience_authenticity']}% authentic), and {_fitnote}.
+Based on this, {d['creator_name']} {_verb} a sound choice for a {_brand} campaign in the {d['niche'].lower()} space.
+</div>
+</div>
+""", unsafe_allow_html=True)
+
 # ── TOP METRICS STRIP (numbers in a row, labels beneath) ──
 top_metrics = [
     ("Followers", f"{d['followers']:,}"),
