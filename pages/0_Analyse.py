@@ -2,6 +2,7 @@ import streamlit as st
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.styles import GLOBAL_CSS, SITE_FOOTER
+from utils.data_provider import fetch_creator, active_provider
 
 st.set_page_config(page_title="Vettd — Analyse a Creator", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
@@ -185,22 +186,56 @@ with col_center:
         niche = st.selectbox("Niche", ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Gaming", "Lifestyle", "Finance", "Parenting", "Other"])
     with c5:
         brand_industry = st.text_input("Your brand industry", placeholder="e.g. Fashion")
+
+    # ── live data fetch (auto-fill when an API key is configured) ──
+    _provider = active_provider()
+    fcol1, fcol2 = st.columns([1, 2])
+    with fcol1:
+        if _provider == "manual":
+            st.button("⚡ Fetch live data", use_container_width=True, disabled=True,
+                      help="Add a MODASH_API_KEY or RAPIDAPI_KEY in Streamlit secrets to enable live fetch.")
+        else:
+            if st.button("⚡ Fetch live data", use_container_width=True):
+                with st.spinner(f"Fetching @{username.lstrip('@')} via {_provider}…"):
+                    prof = fetch_creator(username, platform)
+                if prof:
+                    st.session_state.fetched = prof
+                    st.rerun()
+                else:
+                    st.session_state.fetched = None
+                    st.warning("Couldn't fetch that profile — fill in the details manually.")
+    with fcol2:
+        if _provider == "manual":
+            st.caption("Live fetch off — running on manual input. Add an API key in secrets to auto-fill.")
+        else:
+            f = st.session_state.get("fetched")
+            if f:
+                tag = "full data" if not f.get("_partial") else "basic stats only"
+                st.caption(f"✓ Auto-filled from {f['_source']} ({tag}). Edit any field below.")
+            else:
+                st.caption(f"Live fetch ready ({_provider}). Enter a username and click fetch.")
     st.markdown('</div>', unsafe_allow_html=True)
+
+    # helper: prefer fetched value, else fall back to default
+    _f = st.session_state.get("fetched") or {}
+    def pref(key, default):
+        v = _f.get(key)
+        return v if v is not None else default
 
     # ── SECTION 2: PROFILE ──
     st.markdown('<div class="input-section">', unsafe_allow_html=True)
     st.markdown('<div class="input-label">Profile stats</div>', unsafe_allow_html=True)
     p1, p2, p3, p4, p5 = st.columns(5)
     with p1:
-        followers = st.number_input("Followers", min_value=0, value=150000, step=1000)
+        followers = st.number_input("Followers", min_value=0, value=int(pref("followers", 150000)), step=1000)
     with p2:
-        following = st.number_input("Following", min_value=0, value=800, step=10)
+        following = st.number_input("Following", min_value=0, value=int(pref("following", 800)), step=10)
     with p3:
-        post_count = st.number_input("Total posts", min_value=0, value=420)
+        post_count = st.number_input("Total posts", min_value=0, value=int(pref("post_count", 420)))
     with p4:
-        posting_freq = st.number_input("Posts per week", min_value=0.0, value=4.0, step=0.5)
+        posting_freq = st.number_input("Posts per week", min_value=0.0, value=float(pref("posting_freq", 4.0)), step=0.5)
     with p5:
-        growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=2.5, step=0.1)
+        growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=float(pref("growth_rate_30d", 2.5)), step=0.1)
     st.markdown('</div>', unsafe_allow_html=True)
 
     # ── SECTION 3: ENGAGEMENT ──
@@ -208,13 +243,13 @@ with col_center:
     st.markdown('<div class="input-label">Engagement data</div>', unsafe_allow_html=True)
     e1, e2, e3, e4 = st.columns(4)
     with e1:
-        avg_likes = st.number_input("Avg likes / post", min_value=0, value=8500, step=100)
+        avg_likes = st.number_input("Avg likes / post", min_value=0, value=int(pref("avg_likes", 8500)), step=100)
     with e2:
-        avg_comments = st.number_input("Avg comments / post", min_value=0, value=320, step=10)
+        avg_comments = st.number_input("Avg comments / post", min_value=0, value=int(pref("avg_comments", 320)), step=10)
     with e3:
-        avg_saves = st.number_input("Avg saves / post", min_value=0, value=1200, step=50)
+        avg_saves = st.number_input("Avg saves / post", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
     with e4:
-        avg_shares = st.number_input("Avg shares / post", min_value=0, value=450, step=10)
+        avg_shares = st.number_input("Avg shares / post", min_value=0, value=int(pref("avg_shares", 450)), step=10)
     st.markdown('</div>', unsafe_allow_html=True)
 
     # ── SECTION 4: AUDIENCE (Pro+) ──
@@ -223,26 +258,26 @@ with col_center:
         st.markdown('<div class="input-label">Audience demographics — Pro</div>', unsafe_allow_html=True)
         a1, a2, a3 = st.columns(3)
         with a1:
-            female_pct = st.slider("Female audience %", 0, 100, 65)
+            female_pct = st.slider("Female audience %", 0, 100, int(pref("female_pct", 65)))
             male_pct = 100 - female_pct
             st.caption(f"Male {male_pct}% · Female {female_pct}%")
         with a2:
-            audience_authenticity = st.slider("Audience authenticity %", 0, 100, 82)
+            audience_authenticity = st.slider("Audience authenticity %", 0, 100, int(pref("audience_authenticity", 82)))
         with a3:
-            age_18_24 = st.slider("Age 18–24 %", 0, 100, 28)
-            age_25_34 = st.slider("Age 25–34 %", 0, 100, 35)
-            age_35_44 = st.slider("Age 35–44 %", 0, 100, 20)
+            age_18_24 = st.slider("Age 18–24 %", 0, 100, int(pref("age_18_24", 28)))
+            age_25_34 = st.slider("Age 25–34 %", 0, 100, int(pref("age_25_34", 35)))
+            age_35_44 = st.slider("Age 35–44 %", 0, 100, int(pref("age_35_44", 20)))
 
         l1, l2, l3 = st.columns(3)
         with l1:
-            loc1_name = st.text_input("Top location 1", value="United Kingdom")
-            loc1_pct = st.slider("Location 1 %", 0, 100, 42)
+            loc1_name = st.text_input("Top location 1", value=pref("loc1_name", "United Kingdom"))
+            loc1_pct = st.slider("Location 1 %", 0, 100, int(pref("loc1_pct", 42)))
         with l2:
-            loc2_name = st.text_input("Top location 2", value="United States")
-            loc2_pct = st.slider("Location 2 %", 0, 100, 28)
+            loc2_name = st.text_input("Top location 2", value=pref("loc2_name", "United States"))
+            loc2_pct = st.slider("Location 2 %", 0, 100, int(pref("loc2_pct", 28)))
         with l3:
-            loc3_name = st.text_input("Top location 3", value="Australia")
-            loc3_pct = st.slider("Location 3 %", 0, 100, 12)
+            loc3_name = st.text_input("Top location 3", value=pref("loc3_name", "Australia"))
+            loc3_pct = st.slider("Location 3 %", 0, 100, int(pref("loc3_pct", 12)))
         st.markdown('</div>', unsafe_allow_html=True)
     else:
         female_pct, male_pct = 60, 40
