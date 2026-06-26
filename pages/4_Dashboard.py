@@ -279,6 +279,26 @@ watchouts_html = "".join([
     f'<span style="color:#F59E0B;flex-shrink:0;margin-top:2px;">!</span>'
     f'<span style="font-size:14px;color:#C2C2D6;line-height:1.6;">{w}</span></div>' for w in rep["watchouts"]
 ])
+
+# highlight stats — a few key numbers WITH plain-English meaning (data + text mix)
+def _human(n):
+    return f"{n/1_000_000:.1f}M" if n >= 1_000_000 else f"{n/1_000:.1f}K" if n >= 1_000 else str(n)
+_eng_word = "above average" if engagement_rate > 5 else "around average" if engagement_rate >= 2 else "below average"
+_auth_word = "real, low fake risk" if d["audience_authenticity"] >= 80 else "worth a closer look" if d["audience_authenticity"] >= 60 else "quality concerns"
+_growth_word = "growing fast" if d["growth_rate_30d"] >= 3 else "growing steadily" if d["growth_rate_30d"] > 0 else "flat / declining"
+highlights = [
+    (_human(d["followers"]), "Followers", f"{rep['size']} creator", "#A78BFA"),
+    (f"{engagement_rate}%", "Engagement", _eng_word, "#60A5FA"),
+    (f"{d['audience_authenticity']}%", "Authenticity", _auth_word, "#22D3EE"),
+    (f"£{est_cost_per_post:,.0f}", "Est. cost / post", f"~£{est_cpe:.3f}/engagement", "#A78BFA"),
+]
+highlights_html = "".join([
+    f'<div style="background:#101019;border:1px solid #14142A;border-radius:16px;padding:1.25rem;text-align:center;">'
+    f'<div class="disp" style="font-size:30px;font-weight:800;line-height:1;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{val}</div>'
+    f'<div style="font-size:11px;color:#6A6A90;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;">{lbl}</div>'
+    f'<div style="font-size:12px;color:#A8A8C0;margin-top:6px;line-height:1.4;">{note}</div></div>'
+    for val, lbl, note, clr in highlights
+])
 st.markdown(f"""
 <div style="background:linear-gradient(160deg,rgba(124,58,237,.1),rgba(34,211,238,.04));
   border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden;">
@@ -288,6 +308,8 @@ st.markdown(f"""
 <div style="font-size:14px;color:#9090B0;margin-top:8px;line-height:1.6;font-style:italic;">{rep['archetype_desc']}</div>
 <div style="font-size:15px;color:#D2D2E4;line-height:1.8;margin-top:1.25rem;border-top:1px solid #1A1A2E;padding-top:1.25rem;">{rep['summary']}</div>
 </div>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">{highlights_html}</div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
 <div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">
