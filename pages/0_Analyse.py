@@ -204,7 +204,7 @@ with col_center:
     st.markdown('<div class="input-label">Creator details</div>', unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
-        creator_name = st.text_input("Creator name", placeholder="Emma Williams")
+        creator_name = st.text_input("Creator name (optional)", placeholder="Emma Williams")
     with c2:
         username = st.text_input("Username", placeholder="@emmalifestyle")
     c3, c4, c5 = st.columns(3)
@@ -342,9 +342,12 @@ with col_center:
     run = st.button("✦ Run Analysis", use_container_width=True, type="primary")
 
     if run:
-        if not creator_name:
-            st.error("Please enter the creator's name.")
+        if not creator_name and not username:
+            st.error("Please enter at least a username or a name.")
         else:
+            # name is optional — fall back to the username (many IG profiles have no display name)
+            if not creator_name:
+                creator_name = username.lstrip("@") or "Creator"
             st.session_state.vettd_data = {
                 "tier": tier,
                 "creator_name": creator_name,
