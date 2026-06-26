@@ -104,30 +104,35 @@ def _fetch_modash(username, platform):
         return None
 
 
-# ── Provider 2: RapidAPI Instagram scraper (basic stats only) ───────────────
+# ── Provider 2: RapidAPI — Instagram Scraper Stable API (basic stats only) ──
 def _fetch_rapidapi(username, platform):
     key = _secret("RAPIDAPI_KEY")
-    host = _secret("RAPIDAPI_HOST", "instagram-scraper-api2.p.rapidapi.com")
+    host = _secret("RAPIDAPI_HOST", "instagram-scraper-stable-api.p.rapidapi.com")
     handle = username.lstrip("@")
     try:
-        r = requests.get(
-            f"https://{host}/v1/info",
-            params={"username_or_id_or_url": handle},
-            headers={"x-rapidapi-key": key, "x-rapidapi-host": host},
-            timeout=15,
+        r = requests.post(
+            f"https://{host}/ig_get_fb_profile.php",
+            data={"username_or_url": handle, "data": "basic"},
+            headers={
+                "x-rapidapi-key": key,
+                "x-rapidapi-host": host,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            timeout=20,
         )
         if r.status_code != 200:
             return None
-        payload = r.json()
-        # Instagram Scraper API2 nests under data -> (sometimes) user.
-        data = payload.get("data", payload)
+        data = r.json()
+        # response may be the profile dict directly, or nested under data/user
+        if isinstance(data, dict) and isinstance(data.get("data"), dict):
+            data = data["data"]
         if isinstance(data, dict) and isinstance(data.get("user"), dict):
             data = data["user"]
 
         def first(*keys):
             for k in keys:
                 v = data.get(k)
-                if isinstance(v, dict):  # e.g. {"count": 1234}
+                if isinstance(v, dict):
                     v = v.get("count")
                 if v not in (None, "", 0):
                     return v
@@ -136,12 +141,9 @@ def _fetch_rapidapi(username, platform):
         prof = _empty_profile()
         prof["_source"] = "rapidapi"
         prof["_partial"] = True  # demographics not available from scrapers
-        prof["followers"] = first("follower_count", "followers", "followers_count", "edge_followed_by")
-        prof["following"] = first("following_count", "following", "follows_count", "edge_follow")
-        prof["post_count"] = first("media_count", "posts", "post_count", "edge_owner_to_timeline_media")
-        prof["avg_likes"] = first("avg_likes", "average_likes")
-        prof["avg_comments"] = first("avg_comments", "average_comments")
-        # only return if we actually got the core number
+        prof["followers"] = first("follower_count", "followers", "followers_count")
+        prof["following"] = first("following_count", "following", "follows_count")
+        prof["post_count"] = first("media_count", "posts", "post_count")
         return prof if prof["followers"] is not None else None
     except Exception:
         return None
