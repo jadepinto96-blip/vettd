@@ -386,6 +386,7 @@ with col_center:
                 "crisis_risk": crisis_risk,
                 "product_text": product_text,
                 "profile_pic": _fetched.get("profile_pic"),
+                "avg_views": _fetched.get("avg_views"),
             }
             # ── save to search history (most recent first, dedup by username) ──
             _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)

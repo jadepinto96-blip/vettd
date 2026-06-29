@@ -273,6 +273,8 @@ highlights = [
     (f"{d['audience_authenticity']}%", "Authenticity", _auth_word, "#22D3EE"),
     (f"£{est_cost_per_post:,.0f}", "Est. cost / post", f"~£{est_cpe:.3f}/engagement", "#A78BFA"),
 ]
+if d.get("avg_views"):
+    highlights.append((_human(d["avg_views"]), "Avg reel views", "live from recent reels", "#60A5FA"))
 highlights_html = "".join([
     f'<div style="background:#101019;border:1px solid #14142A;border-radius:16px;padding:1.25rem;text-align:center;">'
     f'<div class="disp" style="font-size:30px;font-weight:800;line-height:1;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{val}</div>'
@@ -291,7 +293,7 @@ st.markdown(f"""
 <b style="color:#EDEDF5;">{d['creator_name']}</b> · <b style="color:{score_color};">{_fit_phrase}</b> for <b style="color:#A78BFA;">{_brand}</b> · <b style="color:#A78BFA;">{vettd_score}/100</b></div>
 </div>
 
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">{highlights_html}</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;">{highlights_html}</div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
 <div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">

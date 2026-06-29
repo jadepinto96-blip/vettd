@@ -54,6 +54,7 @@ def _empty_profile():
         "loc2_name": None, "loc2_pct": None,
         "loc3_name": None, "loc3_pct": None,
         "profile_pic": None, "full_name": None, "niche_guess": None,
+        "avg_views": None,
         "_source": "manual", "_partial": True,
     }
 
@@ -172,7 +173,88 @@ def _fetch_rapidapi(username, platform):
         hd = data.get("hd_profile_pic_url_info") or {}
         prof["profile_pic"] = (hd.get("url") if isinstance(hd, dict) else None) or data.get("profile_pic_url")
         prof["niche_guess"] = _category_to_niche(data.get("category"))
-        return prof if prof["followers"] is not None else None
+        if prof["followers"] is None:
+            return None
+        # second call: recent reels → real avg likes / comments / views
+        media = _fetch_recent_media(handle, key, host)
+        if media:
+            if media.get("avg_likes"):
+                prof["avg_likes"] = media["avg_likes"]
+            if media.get("avg_comments"):
+                prof["avg_comments"] = media["avg_comments"]
+            if media.get("avg_views"):
+                prof["avg_views"] = media["avg_views"]
+        return prof
+    except Exception:
+        return None
+
+
+def _fetch_recent_media(handle, key, host):
+    """Pull recent reels and average their likes / comments / views. Robust to field-name variation."""
+    try:
+        r = requests.post(
+            f"https://{host}/get_ig_user_reels.php",
+            data={"username_or_url": handle, "amount": 12, "pagination_token": ""},
+            headers={"x-rapidapi-key": key, "x-rapidapi-host": host,
+                     "Content-Type": "application/x-www-form-urlencoded"},
+            timeout=25,
+        )
+        if r.status_code != 200:
+            return None
+        payload = r.json()
+
+        # find the list of media items wherever it lives
+        items = None
+        if isinstance(payload, list):
+            items = payload
+        elif isinstance(payload, dict):
+            for key_ in ("items", "data", "reels", "edges", "media"):
+                v = payload.get(key_)
+                if isinstance(v, list):
+                    items = v
+                    break
+                if isinstance(v, dict):
+                    for k2 in ("items", "data", "reels", "edges"):
+                        if isinstance(v.get(k2), list):
+                            items = v[k2]
+                            break
+                if items:
+                    break
+        if not items:
+            return None
+
+        def grab(node, *needles):
+            """find a numeric field whose key contains any needle, searching one level of nesting."""
+            if not isinstance(node, dict):
+                return None
+            for k, val in node.items():
+                kl = k.lower()
+                if any(n in kl for n in needles):
+                    if isinstance(val, (int, float)):
+                        return val
+                    if isinstance(val, dict) and isinstance(val.get("count"), (int, float)):
+                        return val["count"]
+            # one level deeper (e.g. node["media"], node["node"])
+            for k in ("media", "node", "item"):
+                if isinstance(node.get(k), dict):
+                    deep = grab(node[k], *needles)
+                    if deep is not None:
+                        return deep
+            return None
+
+        likes, comments, views = [], [], []
+        for it in items:
+            l = grab(it, "like")
+            c = grab(it, "comment")
+            v = grab(it, "play", "view")
+            if isinstance(l, (int, float)): likes.append(l)
+            if isinstance(c, (int, float)): comments.append(c)
+            if isinstance(v, (int, float)): views.append(v)
+
+        def avg(xs):
+            return int(sum(xs) / len(xs)) if xs else None
+
+        return {"avg_likes": avg(likes), "avg_comments": avg(comments), "avg_views": avg(views)}
     except Exception:
         return None
 
