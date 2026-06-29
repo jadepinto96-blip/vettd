@@ -224,17 +224,19 @@ def _fetch_recent_media(handle, key, host):
             return None
 
         def grab(node, *needles):
-            """find a numeric field whose key contains any needle, searching one level of nesting."""
+            """find a numeric count whose key contains any needle; recurses through node/media wrappers."""
             if not isinstance(node, dict):
                 return None
             for k, val in node.items():
                 kl = k.lower()
-                if any(n in kl for n in needles):
+                if any(n in kl for n in needles) and "disabl" not in kl:
+                    if isinstance(val, bool):           # skip flags like like_and_view_counts_disabled
+                        continue
                     if isinstance(val, (int, float)):
                         return val
                     if isinstance(val, dict) and isinstance(val.get("count"), (int, float)):
                         return val["count"]
-            # one level deeper (e.g. node["media"], node["node"])
+            # one level deeper (e.g. node["node"] -> node["media"])
             for k in ("media", "node", "item"):
                 if isinstance(node.get(k), dict):
                     deep = grab(node[k], *needles)
