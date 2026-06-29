@@ -220,15 +220,18 @@ with col_center:
 
     # ── live data fetch (auto-fill when an API key is configured) ──
     _provider = active_provider()
-    fcol1, fcol2 = st.columns([1, 2])
+    fcol0, fcol1, fcol2 = st.columns([1, 1, 2])
+    with fcol0:
+        reels_n = st.selectbox("Average over", [5, 10, 15, 20],
+                               index=1, format_func=lambda n: f"Last {n} reels")
     with fcol1:
         if _provider == "manual":
             st.button("⚡ Fetch live data", use_container_width=True, disabled=True,
                       help="Add a MODASH_API_KEY or RAPIDAPI_KEY in Streamlit secrets to enable live fetch.")
         else:
             if st.button("⚡ Fetch live data", use_container_width=True):
-                with st.spinner(f"Fetching @{username.lstrip('@')} via {_provider}…"):
-                    prof = fetch_creator(username, platform)
+                with st.spinner(f"Fetching @{username.lstrip('@')} (last {reels_n} reels)…"):
+                    prof = fetch_creator(username, platform, reels_n)
                 if prof:
                     st.session_state.fetched = prof
                     st.rerun()
@@ -387,6 +390,7 @@ with col_center:
                 "product_text": product_text,
                 "profile_pic": _fetched.get("profile_pic"),
                 "avg_views": _fetched.get("avg_views"),
+                "reels_n": _fetched.get("reels_n"),
             }
             # ── save to search history (most recent first, dedup by username) ──
             _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)

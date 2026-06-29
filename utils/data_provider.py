@@ -54,7 +54,7 @@ def _empty_profile():
         "loc2_name": None, "loc2_pct": None,
         "loc3_name": None, "loc3_pct": None,
         "profile_pic": None, "full_name": None, "niche_guess": None,
-        "avg_views": None,
+        "avg_views": None, "reels_n": None,
         "_source": "manual", "_partial": True,
     }
 
@@ -129,7 +129,7 @@ def _fetch_modash(username, platform):
 
 
 # ── Provider 2: RapidAPI — Instagram Scraper Stable API (basic stats only) ──
-def _fetch_rapidapi(username, platform):
+def _fetch_rapidapi(username, platform, reels_n=12):
     key = _secret("RAPIDAPI_KEY")
     host = _secret("RAPIDAPI_HOST", "instagram-scraper-stable-api.p.rapidapi.com")
     handle = username.lstrip("@")
@@ -176,7 +176,7 @@ def _fetch_rapidapi(username, platform):
         if prof["followers"] is None:
             return None
         # second call: recent reels → real avg likes / comments / views
-        media = _fetch_recent_media(handle, key, host)
+        media = _fetch_recent_media(handle, key, host, reels_n)
         if media:
             if media.get("avg_likes"):
                 prof["avg_likes"] = media["avg_likes"]
@@ -184,17 +184,18 @@ def _fetch_rapidapi(username, platform):
                 prof["avg_comments"] = media["avg_comments"]
             if media.get("avg_views"):
                 prof["avg_views"] = media["avg_views"]
+            prof["reels_n"] = media.get("reels_n")
         return prof
     except Exception:
         return None
 
 
-def _fetch_recent_media(handle, key, host):
-    """Pull recent reels and average their likes / comments / views. Robust to field-name variation."""
+def _fetch_recent_media(handle, key, host, reels_n=12):
+    """Pull recent reels and average their likes / comments / views over the last `reels_n`."""
     try:
         r = requests.post(
             f"https://{host}/get_ig_user_reels.php",
-            data={"username_or_url": handle, "amount": 12, "pagination_token": ""},
+            data={"username_or_url": handle, "amount": reels_n, "pagination_token": ""},
             headers={"x-rapidapi-key": key, "x-rapidapi-host": host,
                      "Content-Type": "application/x-www-form-urlencoded"},
             timeout=25,
@@ -244,6 +245,7 @@ def _fetch_recent_media(handle, key, host):
                         return deep
             return None
 
+        items = items[:reels_n]  # only the last N
         likes, comments, views = [], [], []
         for it in items:
             l = grab(it, "like")
@@ -256,15 +258,17 @@ def _fetch_recent_media(handle, key, host):
         def avg(xs):
             return int(sum(xs) / len(xs)) if xs else None
 
-        return {"avg_likes": avg(likes), "avg_comments": avg(comments), "avg_views": avg(views)}
+        return {"avg_likes": avg(likes), "avg_comments": avg(comments),
+                "avg_views": avg(views), "reels_n": len(items)}
     except Exception:
         return None
 
 
-def fetch_creator(username, platform):
+def fetch_creator(username, platform, reels_n=12):
     """
     Returns a normalised profile dict, or None if no provider is configured
     or the lookup failed (caller then keeps manual input).
+    `reels_n` = how many recent reels to average engagement over.
     """
     if not username:
         return None
@@ -272,5 +276,5 @@ def fetch_creator(username, platform):
     if provider == "modash":
         return _fetch_modash(username, platform)
     if provider == "rapidapi":
-        return _fetch_rapidapi(username, platform)
+        return _fetch_rapidapi(username, platform, reels_n)
     return None  # manual mode

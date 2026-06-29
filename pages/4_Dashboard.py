@@ -274,7 +274,9 @@ highlights = [
     (f"£{est_cost_per_post:,.0f}", "Est. cost / post", f"~£{est_cpe:.3f}/engagement", "#A78BFA"),
 ]
 if d.get("avg_views"):
-    highlights.append((_human(d["avg_views"]), "Avg reel views", "live from recent reels", "#60A5FA"))
+    _rn = d.get("reels_n")
+    highlights.append((_human(d["avg_views"]), "Avg reel views",
+                       f"avg of last {_rn} reels" if _rn else "live from recent reels", "#60A5FA"))
 highlights_html = "".join([
     f'<div style="background:#101019;border:1px solid #14142A;border-radius:16px;padding:1.25rem;text-align:center;">'
     f'<div class="disp" style="font-size:30px;font-weight:800;line-height:1;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{val}</div>'
