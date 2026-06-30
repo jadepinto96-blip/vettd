@@ -311,12 +311,14 @@ st.markdown(f"""
 
 # ════════════ PRICING ════════════
 plans = [
-    ("Starter","£29","/mo","5 searches/month","#8888A8","#101019",False,
-     ["Vettd Score","Engagement analytics","Fake follower score","Basic demographics","CSV export"]),
-    ("Pro","£99","/mo","50 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
-     ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF brand report"]),
+    ("Free","£0","","2 searches/month","#7A7A98","#101019",False,
+     ["Vettd Score","Basic profile stats","Engagement rate","Try before you buy"]),
+    ("Starter","£29","/mo","20 searches/month","#8888A8","#101019",False,
+     ["Everything in Free","Fake follower score","Basic demographics","CSV export"]),
+    ("Pro","£99","/mo","100 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
+     ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF report"]),
     ("Enterprise","Custom","","Unlimited searches","#22D3EE","#101019",False,
-     ["Everything in Pro","ROI prediction","Buyer intent signals","Auto campaign brief","API access","White-label reports"]),
+     ["Everything in Pro","ROI prediction","Market-fit + recommendations","Auto campaign brief","API access","White-label"]),
 ]
 def _plan_card(name,price,period,searches,color,bg,featured,flist):
     border = "1px solid rgba(124,58,237,.45)" if featured else "1px solid #14142A"
@@ -325,7 +327,7 @@ def _plan_card(name,price,period,searches,color,bg,featured,flist):
     popular = '<div style="position:absolute;top:16px;right:16px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#A78BFA;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.1em;">POPULAR</div>' if featured else ""
     checks = "".join([f'<div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#8888A8;margin-bottom:11px;"><span style="width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,{color},{color}88);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700;">✓</span>{f}</div>' for f in flist])
     price_html = (f'<span class="disp" style="font-size:42px;font-weight:700;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#5A5A78;">{period}</span>' if period else f'<span class="disp" style="font-size:42px;font-weight:700;color:#EDEDF5;">{price}</span>')
-    cta = 'Get started →' if name=='Starter' else ('Get Pro →' if name=='Pro' else 'Contact us →')
+    cta = {'Free': 'Start free →', 'Starter': 'Get Starter →', 'Pro': 'Get Pro →'}.get(name, 'Contact us →')
     btn_bg = 'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'
     btn_border = 'none' if featured else '1px solid #16162A'
     btn_color = 'white' if featured else '#A8A8C0'
@@ -344,7 +346,7 @@ st.markdown(f"""
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Pricing</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Start free. Scale when ready.</h2>
 </div>
-<div class="reveal d1" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;align-items:start;">{plan_cards}</div>
+<div class="reveal d1" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;align-items:start;">{plan_cards}</div>
 </div>
 </section>
 """, unsafe_allow_html=True)
