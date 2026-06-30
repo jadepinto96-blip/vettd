@@ -1,7 +1,7 @@
 import streamlit as st
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS
+from utils.styles import GLOBAL_CSS, SITE_FOOTER
 
 st.set_page_config(page_title="Legal — Vettd", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
@@ -52,8 +52,9 @@ st.markdown("""
 <p style="font-size:14px;color:#8888A8;line-height:1.85;margin:0;">Paid plans can be cancelled at any time and will not renew for the next billing period. If you're unsatisfied within the first 14 days of a new subscription, email us and we'll arrange a full refund. Refunds for partial periods after 14 days are handled case by case. Contact <a href="mailto:jadepinto96@gmail.com" style="color:#A78BFA;text-decoration:none;">jadepinto96@gmail.com</a> for any billing question.</p>
 </div>
 
-<div style="text-align:center;font-size:12px;color:#3A3A52;margin-top:2rem;">© 2026 Vettd · Built in Mumbai.</div>
 
 </div>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown(SITE_FOOTER, unsafe_allow_html=True)

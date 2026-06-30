@@ -229,15 +229,19 @@ a { transition: color 0.3s ease, opacity 0.3s ease !important; }
 
 # Reusable site footer — drop into any page with st.markdown(SITE_FOOTER, unsafe_allow_html=True)
 SITE_FOOTER = """
-<div style="font-family:'Inter',sans-serif;margin-top:5rem;border-top:1px solid #1A1A2E;
+<div style="font-family:'Inter',sans-serif;margin-top:5rem;border-top:1px solid #1A1A2E;position:relative;
   background:linear-gradient(180deg,transparent,rgba(124,58,237,.03));padding:4rem 3.5rem 2.5rem;">
+  <div style="position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.5),rgba(34,211,238,.4),transparent);"></div>
   <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;">
     <div>
       <div class="brandmark" style="font-size:24px;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);
         -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;">✦ VETTD</div>
       <div style="font-size:22px;font-weight:600;color:#EDEDF5;line-height:1.3;letter-spacing:-.02em;">
         Creator intelligence.<br>Simplified.</div>
-      <div style="font-size:12px;color:#3A3A52;margin-top:1.25rem;">Built in Mumbai. Made for brands everywhere.</div>
+      <a href="/Analyse" target="_self" style="display:inline-flex;align-items:center;gap:8px;margin-top:1.5rem;
+        background:linear-gradient(135deg,#7C3AED,#4F46E5);color:#fff;font-size:13px;font-weight:600;
+        padding:10px 20px;border-radius:999px;text-decoration:none;border:1px solid rgba(124,58,237,.5);">Launch app →</a>
+      <div style="font-size:12px;color:#3A3A52;margin-top:1.5rem;">Built in Mumbai. Made for brands everywhere.</div>
     </div>
     <div>
       <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Company</div>

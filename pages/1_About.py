@@ -1,7 +1,7 @@
 import streamlit as st
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS
+from utils.styles import GLOBAL_CSS, SITE_FOOTER
 
 st.set_page_config(page_title="About — Vettd", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
@@ -96,3 +96,5 @@ st.markdown(f"""
 </div>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown(SITE_FOOTER, unsafe_allow_html=True)
