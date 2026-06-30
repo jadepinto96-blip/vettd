@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.styles import GLOBAL_CSS, SITE_FOOTER
+from utils.data_provider import fetch_creator, active_provider
 from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
     calculate_brand_fit_score, calculate_audience_quality_score,
@@ -54,21 +55,26 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── SHARED BRAND INDUSTRY ──
-mid = st.columns([1, 2, 1])[1]
-with mid:
+# ── SHARED CONTROLS ──
+_provider = active_provider()
+ctl = st.columns([2, 1])
+with ctl[0]:
     brand_industry = st.text_input("Your brand industry (used for brand-fit scoring)", placeholder="e.g. Fashion, Beauty, Tech")
+with ctl[1]:
+    reels_n = st.selectbox("Reels to average", [5, 10, 15, 20], index=1, format_func=lambda n: f"Last {n} reels")
+if _provider != "manual":
+    st.caption("⚡ Live fetch on — enter usernames and hit Fetch on each creator to auto-pull reel views, likes & comments.")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ── THREE INPUT COLUMNS ──
 defaults = [
     {"name": "Creator A", "user": "@creatora", "niche": "Fashion", "followers": 150000, "following": 800,
-     "likes": 8500, "comments": 320, "saves": 1200, "shares": 450, "freq": 4.0, "growth": 2.5, "auth": 82},
+     "likes": 8500, "comments": 320, "saves": 1200, "shares": 450, "views": 600000, "freq": 4.0, "growth": 2.5, "auth": 82},
     {"name": "Creator B", "user": "@creatorb", "niche": "Lifestyle", "followers": 320000, "following": 1500,
-     "likes": 11000, "comments": 280, "saves": 900, "shares": 300, "freq": 3.0, "growth": 1.2, "auth": 70},
+     "likes": 11000, "comments": 280, "saves": 900, "shares": 300, "views": 950000, "freq": 3.0, "growth": 1.2, "auth": 70},
     {"name": "Creator C", "user": "@creatorc", "niche": "Beauty", "followers": 85000, "following": 400,
-     "likes": 6800, "comments": 410, "saves": 1500, "shares": 620, "freq": 5.0, "growth": 4.8, "auth": 90},
+     "likes": 6800, "comments": 410, "saves": 1500, "shares": 620, "views": 420000, "freq": 5.0, "growth": 4.8, "auth": 90},
 ]
 niches = ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Gaming", "Lifestyle", "Finance", "Parenting", "Other"]
 
@@ -87,19 +93,39 @@ for i, col in enumerate(cols):
         """, unsafe_allow_html=True)
         name = st.text_input("Name", value=dft["name"], key=f"name{i}")
         user = st.text_input("Username", value=dft["user"], key=f"user{i}")
-        niche = st.selectbox("Niche", niches, index=niches.index(dft["niche"]), key=f"niche{i}")
-        followers = st.number_input("Followers", min_value=0, value=dft["followers"], step=1000, key=f"fol{i}")
-        following = st.number_input("Following", min_value=0, value=dft["following"], step=10, key=f"flw{i}")
-        likes = st.number_input("Avg likes", min_value=0, value=dft["likes"], step=100, key=f"lk{i}")
-        comments = st.number_input("Avg comments", min_value=0, value=dft["comments"], step=10, key=f"cm{i}")
-        saves = st.number_input("Avg saves", min_value=0, value=dft["saves"], step=50, key=f"sv{i}")
+
+        # per-creator live fetch
+        cf = st.session_state.get(f"cmp_f{i}") or {}
+        def pf(key, d, _cf=cf):
+            v = _cf.get(key)
+            return v if v is not None else d
+        if _provider != "manual":
+            if st.button(f"⚡ Fetch", key=f"cfetch{i}", use_container_width=True):
+                p = fetch_creator(user, "Instagram", reels_n)
+                if p:
+                    st.session_state[f"cmp_f{i}"] = p
+                    st.rerun()
+                else:
+                    st.warning("Couldn't fetch — fill in manually.")
+            if cf:
+                st.caption(f"✓ Auto-filled from {cf.get('_source','api')}")
+
+        _ng = pf("niche_guess", dft["niche"])
+        niche = st.selectbox("Niche", niches, index=niches.index(_ng) if _ng in niches else 0, key=f"niche{i}")
+        followers = st.number_input("Followers", min_value=0, value=int(pf("followers", dft["followers"])), step=1000, key=f"fol{i}")
+        following = st.number_input("Following", min_value=0, value=int(pf("following", dft["following"])), step=10, key=f"flw{i}")
+        st.markdown('<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5A5A78;margin:.5rem 0 -.5rem;">Reel performance</div>', unsafe_allow_html=True)
+        views = st.number_input("Avg reel views", min_value=0, value=int(pf("avg_views", dft["views"])), step=10000, key=f"vw{i}")
+        likes = st.number_input("Avg likes", min_value=0, value=int(pf("avg_likes", dft["likes"])), step=100, key=f"lk{i}")
+        comments = st.number_input("Avg comments", min_value=0, value=int(pf("avg_comments", dft["comments"])), step=10, key=f"cm{i}")
         shares = st.number_input("Avg shares", min_value=0, value=dft["shares"], step=10, key=f"sh{i}")
+        saves = st.number_input("Avg saves", min_value=0, value=dft["saves"], step=50, key=f"sv{i}")
         freq = st.number_input("Posts/week", min_value=0.0, value=dft["freq"], step=0.5, key=f"fq{i}")
         growth = st.number_input("Growth 30d %", min_value=-10.0, value=dft["growth"], step=0.1, key=f"gr{i}")
         auth = st.slider("Audience authenticity %", 0, 100, dft["auth"], key=f"au{i}")
         user = ("@" + user.lstrip("@")) if user else ""
         inputs.append(dict(name=name, user=user, niche=niche, followers=followers, following=following,
-                           likes=likes, comments=comments, saves=saves, shares=shares,
+                           likes=likes, comments=comments, saves=saves, shares=shares, views=views,
                            freq=freq, growth=growth, auth=auth))
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -117,7 +143,13 @@ if run:
         vs = calculate_vettd_score(er, fake, bf, aq, cs, gs)
         label, _ = score_label(vs)
         cpp, cpe = estimate_cpe(c["followers"], er)
-        results.append(dict(**c, er=er, fake=fake, bf=bf, aq=aq, gs=gs, cs=cs, vs=vs, label=label, cpp=cpp, cpe=cpe))
+        view_rate = round(c.get("views", 0) / max(c["followers"], 1), 2)
+        results.append(dict(**c, er=er, fake=fake, bf=bf, aq=aq, gs=gs, cs=cs, vs=vs,
+                            label=label, cpp=cpp, cpe=cpe, view_rate=view_rate))
+
+    def _hn(n):
+        n = n or 0
+        return f"{n/1_000_000:.1f}M" if n >= 1_000_000 else f"{n/1_000:.0f}K" if n >= 1000 else str(int(n))
 
     winner = max(range(len(results)), key=lambda k: results[k]["vs"])
     w = results[winner]
@@ -166,6 +198,10 @@ if run:
                 <div style="font-size:12px;font-weight:600;color:{accent[i]};margin-top:4px;">{r['label']}</div>
               </div>
               <div class="cmp-stat"><span class="cmp-label">Followers</span><span class="cmp-val">{r['followers']:,}</span></div>
+              <div class="cmp-stat"><span class="cmp-label">Avg reel views</span><span class="cmp-val" style="color:#22D3EE;">{_hn(r['views'])}</span></div>
+              <div class="cmp-stat"><span class="cmp-label">Avg likes</span><span class="cmp-val">{_hn(r['likes'])}</span></div>
+              <div class="cmp-stat"><span class="cmp-label">Avg comments</span><span class="cmp-val">{_hn(r['comments'])}</span></div>
+              <div class="cmp-stat"><span class="cmp-label">Views/follower</span><span class="cmp-val">{r['view_rate']}×</span></div>
               <div class="cmp-stat"><span class="cmp-label">Engagement</span><span class="cmp-val">{r['er']}%</span></div>
               <div class="cmp-stat"><span class="cmp-label">Fake score</span><span class="cmp-val">{r['fake']}/100</span></div>
               <div class="cmp-stat"><span class="cmp-label">Brand fit</span><span class="cmp-val">{r['bf']}/100</span></div>
