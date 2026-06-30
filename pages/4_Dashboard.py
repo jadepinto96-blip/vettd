@@ -271,7 +271,7 @@ highlights = [
     (_human(d["followers"]), "Followers", f"{rep['size']} creator", "#A78BFA"),
     (f"{engagement_rate}%", "Engagement", _eng_word, "#60A5FA"),
     (f"{d['audience_authenticity']}%", "Authenticity", _auth_word, "#22D3EE"),
-    (f"£{est_cost_per_post:,.0f}", "Est. cost / post", f"~£{est_cpe:.3f}/engagement", "#A78BFA"),
+    (f"${est_cost_per_post:,.0f}", "Est. cost / post", f"~${est_cpe:.3f}/engagement", "#A78BFA"),
 ]
 if d.get("avg_views"):
     _rn = d.get("reels_n")
@@ -336,7 +336,7 @@ top_metrics = [
     ("Brand fit", f"{brand_fit}/100"),
     ("Avg likes", f"{d['avg_likes']:,}"),
     ("Avg comments", f"{d['avg_comments']:,}"),
-    ("Est. cost/post", f"£{est_cost_per_post:,.0f}"),
+    ("Est. cost/post", f"${est_cost_per_post:,.0f}"),
     ("30d growth", f"{d['growth_rate_30d']}%"),
 ]
 metric_cells = "".join([
@@ -426,7 +426,7 @@ with col_score:
       <div class="stat-row"><span class="stat-label">Total posts</span>
         <span class="stat-value">{d['post_count']:,}</span></div>
       <div class="stat-row"><span class="stat-label">Cost/engagement</span>
-        <span class="stat-value">£{est_cpe:.4f}</span></div>
+        <span class="stat-value">${est_cpe:.4f}</span></div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -559,7 +559,7 @@ with col_main:
               <div class="stat-row"><span class="stat-label">Growth score</span>
                 <span class="stat-value">{growth_score}/100</span></div>
               <div class="stat-row"><span class="stat-label">Est. cost/post</span>
-                <span class="stat-value">£{est_cost_per_post:,.0f}</span></div>
+                <span class="stat-value">${est_cost_per_post:,.0f}</span></div>
             </div>
             """, unsafe_allow_html=True)
         with c2:
@@ -626,7 +626,7 @@ with col_main:
                     <b style="color:#A78BFA;">Recommended for:</b> {d['brand_industry'] or d['niche']} campaigns<br>
                     <b style="color:#A78BFA;">Audience:</b> {d['female_pct']}% female, peak age 18–34<br>
                     <b style="color:#A78BFA;">Post format:</b> {'Reels / short-form video' if d['platform'] in ['Instagram','TikTok'] else 'Long-form video'}<br>
-                    <b style="color:#A78BFA;">Est. cost/post:</b> £{est_cost_per_post:,.0f}<br>
+                    <b style="color:#A78BFA;">Est. cost/post:</b> ${est_cost_per_post:,.0f}<br>
                     <b style="color:#A78BFA;">Key strength:</b> {'High engagement' if engagement_rate > 5 else 'Broad reach'}, {d['audience_authenticity']}% authentic<br>
                     <b style="color:#A78BFA;">Brand safety:</b> {d['crisis_risk']} risk
                   </div>

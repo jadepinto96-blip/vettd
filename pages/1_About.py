@@ -61,7 +61,7 @@ st.markdown(f"""
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem;">
 <div class="stat-tile" style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:20px;padding:1.75rem;">
-<div class="disp" style="font-size:36px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">£21B</div>
+<div class="disp" style="font-size:36px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">$21B</div>
 <div style="font-size:14px;color:#7A7A98;line-height:1.6;">global influencer marketing spend in 2025 — growing 15% year on year.</div>
 </div>
 <div class="stat-tile" style="background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:20px;padding:1.75rem;">

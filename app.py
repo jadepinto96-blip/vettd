@@ -178,7 +178,7 @@ st.markdown(r"""
           <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">""" + "".join([
     f'<div style="background:#101019;border:1px solid #16162A;border-radius:10px;padding:10px 12px;"><div style="font-size:9px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;">{lbl}</div><div style="font-size:17px;font-weight:700;color:{clr};margin-top:4px;">{val}</div></div>'
     for lbl,val,clr in [("Followers","150K","#EDEDF5"),("Engagement","6.5%","#A78BFA"),("Brand fit","80/100","#22D3EE"),
-                         ("Fake score","12/100","#10B981"),("Cost/post","£840","#EDEDF5"),("Growth 30d","+2.5%","#A78BFA")]
+                         ("Fake score","12/100","#10B981"),("Cost/post","$840","#EDEDF5"),("Growth 30d","+2.5%","#A78BFA")]
 ]) + r"""</div></div>
         <div style="background:#101019;border:1px solid #16162A;border-radius:12px;padding:1rem;display:flex;gap:1.5rem;">""" + "".join([
     f'<div style="flex:1;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#3A3A52;">{lbl}</span><span style="color:#A78BFA;">{v}</span></div><div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:{v}%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#22D3EE);"></div></div></div>'
@@ -295,7 +295,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ════════════ STATS BAND (count up) ════════════
-stats = [("£21B","market we're fixing","#A78BFA"),("80%","of brands guess on spend","#60A5FA"),
+stats = [("$21B","market we're fixing","#A78BFA"),("80%","of brands guess on spend","#60A5FA"),
          ("6×","faster than manual vetting","#22D3EE"),("0–100","one score, total clarity","#A78BFA")]
 stat_cells = "".join([
     f'<div style="background:#101019;padding:2.25rem 1.5rem;text-align:center;">'
@@ -311,11 +311,11 @@ st.markdown(f"""
 
 # ════════════ PRICING ════════════
 plans = [
-    ("Free","£0","","2 searches/month","#7A7A98","#101019",False,
+    ("Free","$0","","2 searches/month","#7A7A98","#101019",False,
      ["Vettd Score","Basic profile stats","Engagement rate","Try before you buy"]),
-    ("Starter","£29","/mo","20 searches/month","#8888A8","#101019",False,
+    ("Starter","$29","/mo","20 searches/month","#8888A8","#101019",False,
      ["Everything in Free","Fake follower score","Basic demographics","CSV export"]),
-    ("Pro","£99","/mo","100 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
+    ("Pro","$99","/mo","100 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
      ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF report"]),
     ("Enterprise","Custom","","Unlimited searches","#22D3EE","#101019",False,
      ["Everything in Pro","ROI prediction","Market-fit + recommendations","Auto campaign brief","API access","White-label"]),
@@ -353,7 +353,7 @@ st.markdown(f"""
 
 # ════════════ TESTIMONIALS ════════════
 testimonials = [
-    ("We wasted £40k on a campaign last year. Vettd would have told us in 30 seconds it was the wrong fit.","Priya S.","Head of Marketing, D2C Fashion","#A78BFA"),
+    ("We wasted $40k on a campaign last year. Vettd would have told us in 30 seconds it was the wrong fit.","Priya S.","Head of Marketing, D2C Fashion","#A78BFA"),
     ("The brand-fit score is exactly what was missing. Something that thinks like a strategist, not just a data tool.","Marcus T.","Founder, Creative Agency — London","#60A5FA"),
     ("I showed the Vettd report in a board meeting. The ROI prediction alone justified the subscription 10×.","Ananya R.","CMO, Lifestyle Startup — Mumbai","#22D3EE"),
 ]

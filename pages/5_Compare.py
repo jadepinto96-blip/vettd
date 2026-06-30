@@ -207,8 +207,8 @@ if run:
               <div class="cmp-stat"><span class="cmp-label">Brand fit</span><span class="cmp-val">{r['bf']}/100</span></div>
               <div class="cmp-stat"><span class="cmp-label">Aud. quality</span><span class="cmp-val">{r['aq']}/100</span></div>
               <div class="cmp-stat"><span class="cmp-label">Growth</span><span class="cmp-val">{r['gs']}/100</span></div>
-              <div class="cmp-stat"><span class="cmp-label">Est. cost/post</span><span class="cmp-val">£{r['cpp']:,.0f}</span></div>
-              <div class="cmp-stat"><span class="cmp-label">Cost/engagement</span><span class="cmp-val">£{r['cpe']:.4f}</span></div>
+              <div class="cmp-stat"><span class="cmp-label">Est. cost/post</span><span class="cmp-val">${r['cpp']:,.0f}</span></div>
+              <div class="cmp-stat"><span class="cmp-label">Cost/engagement</span><span class="cmp-val">${r['cpe']:.4f}</span></div>
             </div>
             """, unsafe_allow_html=True)
 
