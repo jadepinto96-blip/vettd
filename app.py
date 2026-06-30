@@ -444,6 +444,14 @@ st.markdown(r"""
   </div>
 </section>
 
+<!-- ════════════ GIANT WORDMARK ════════════ -->
+<div style="position:relative;z-index:2;overflow:hidden;padding:2rem 0 0;text-align:center;
+  -webkit-mask-image:linear-gradient(180deg,black 55%,transparent);mask-image:linear-gradient(180deg,black 55%,transparent);">
+  <div class="brandmark" style="font-size:clamp(80px,21vw,320px);font-weight:800;line-height:.8;letter-spacing:-.04em;
+    white-space:nowrap;background:linear-gradient(135deg,#A78BFA 0%,#60A5FA 45%,#22D3EE 90%);background-size:200% auto;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 7s linear infinite;opacity:.9;">VETTD</div>
+</div>
+
 <footer style="border-top:1px solid #0D0D1A;padding:2.5rem 3.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:relative;z-index:2;">
   <div class="brandmark" style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">✦ VETTD</div>
   <div style="font-size:12px;color:#222238;">Built in Mumbai. Made for brands everywhere.</div>
