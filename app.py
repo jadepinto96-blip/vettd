@@ -313,9 +313,9 @@ st.markdown(f"""
 plans = [
     ("Free","$0","","2 searches/month","#7A7A98","#101019",False,
      ["Vettd Score","Basic profile stats","Engagement rate","Try before you buy"]),
-    ("Starter","$29","/mo","20 searches/month","#8888A8","#101019",False,
+    ("Starter","$59","/mo","20 searches/month","#8888A8","#101019",False,
      ["Everything in Free","Fake follower score","Basic demographics","CSV export"]),
-    ("Pro","$99","/mo","100 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
+    ("Pro","$149","/mo","100 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
      ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF report"]),
     ("Enterprise","Custom","","Unlimited searches","#22D3EE","#101019",False,
      ["Everything in Pro","ROI prediction","Market-fit + recommendations","Auto campaign brief","API access","White-label"]),
