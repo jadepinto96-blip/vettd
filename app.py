@@ -33,13 +33,12 @@ html { scroll-behavior: smooth; }
 @keyframes gridmove { from { background-position:0 0;} to { background-position:60px 60px;} }
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
 
-/* scroll reveal — longer, softer ease for fluidity */
-.reveal { opacity:0; transform:translateY(60px); filter:blur(6px);
-  transition:opacity 1.3s cubic-bezier(.16,1,.3,1), transform 1.3s cubic-bezier(.16,1,.3,1), filter 1.3s cubic-bezier(.16,1,.3,1); }
-.reveal.in { opacity:1; transform:translateY(0); filter:blur(0); }
-.reveal.d1 { transition-delay:.1s; } .reveal.d2 { transition-delay:.2s; }
-.reveal.d3 { transition-delay:.3s; } .reveal.d4 { transition-delay:.4s; }
-.reveal.d5 { transition-delay:.5s; }
+/* entrance fade — CSS-only (auto-plays, never depends on JS, so content is always visible) */
+@keyframes reveal-in { from { opacity:0; transform:translateY(36px); } to { opacity:1; transform:translateY(0); } }
+.reveal { opacity:1; animation:reveal-in .9s cubic-bezier(.16,1,.3,1) both; }
+.reveal.d1 { animation-delay:.08s; } .reveal.d2 { animation-delay:.16s; }
+.reveal.d3 { animation-delay:.24s; } .reveal.d4 { animation-delay:.32s; }
+.reveal.d5 { animation-delay:.4s; }
 
 /* hover lift cards */
 .lift { transition: transform .5s cubic-bezier(.16,1,.3,1), border-color .4s, box-shadow .4s; }
@@ -87,7 +86,7 @@ st.markdown(r"""
 
 <!-- ════════════ HERO ════════════ -->
 <section style="display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:8rem 2rem 3rem;position:relative;z-index:2;overflow:hidden;">
+  text-align:center;padding:6rem 2rem 2rem;position:relative;z-index:2;overflow:hidden;">
 
   <div data-orb style="position:absolute;top:18%;left:12%;width:520px;height:520px;border-radius:50%;will-change:transform;transition:transform .6s cubic-bezier(.16,1,.3,1);
     background:radial-gradient(circle,rgba(124,58,237,.16),transparent 70%);animation:pulse-glow 7s ease-in-out infinite;"></div>
@@ -138,7 +137,7 @@ st.markdown(r"""
 
 # ════════════ MOCK DASHBOARD ════════════
 st.markdown(r"""
-<section style="padding:3rem 3rem 5rem;position:relative;z-index:2;">
+<section style="padding:2.5rem 3rem 3rem;position:relative;overflow:hidden;z-index:2;">
   <div class="reveal" style="text-align:center;margin-bottom:3rem;">
     <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">The product</div>
     <h2 class="disp" style="font-size:clamp(32px,5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;
@@ -212,7 +211,7 @@ feature_cards = "".join([
     for icon,color,dark,title,desc in features
 ])
 st.markdown(f"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Capabilities</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Everything a brand needs.</h2>
@@ -236,7 +235,7 @@ step_cards = "".join([
     for num,color,title,desc in steps
 ])
 st.markdown(f"""
-<section id="how" style="padding:6rem 3rem;position:relative;z-index:2;border-top:1px solid #14142A;border-bottom:1px solid #14142A;background:linear-gradient(180deg,rgba(124,58,237,.05),transparent);">
+<section id="how" style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;border-top:1px solid #14142A;border-bottom:1px solid #14142A;background:linear-gradient(180deg,rgba(124,58,237,.05),transparent);">
 <div style="max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Simple by design</div>
@@ -275,7 +274,7 @@ new_rows = "".join([
     f'<span style="font-size:14px;color:#D2D2E4;line-height:1.5;font-weight:500;">{x}</span></div>' for x in vettd_way
 ])
 st.markdown(f"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:1120px;margin:0 auto;">
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Why Vettd</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">A decision, not a spreadsheet.</h2>
@@ -305,7 +304,7 @@ stat_cells = "".join([
     for val,lbl,clr in stats
 ])
 st.markdown(f"""
-<section style="padding:5rem 3rem;position:relative;z-index:2;max-width:1000px;margin:0 auto;">
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1000px;margin:0 auto;">
 <div class="reveal" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;">{stat_cells}</div>
 </section>
 """, unsafe_allow_html=True)
@@ -339,7 +338,7 @@ def _plan_card(name,price,period,searches,color,bg,featured,flist):
             f'<a href="/Analyse" target="_self" style="display:block;margin-top:1.5rem;text-align:center;background:{btn_bg};border:{btn_border};color:{btn_color};font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;">{cta}</a></div>')
 plan_cards = "".join([_plan_card(*p) for p in plans])
 st.markdown(f"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;">
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;">
 <div style="max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Pricing</div>
@@ -367,7 +366,7 @@ tcards = "".join([
     for quote,name,role,color in testimonials
 ])
 st.markdown(f"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent);">
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent);">
 <div style="max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Early feedback</div>
@@ -416,7 +415,7 @@ faq_items = "".join([
     for q, a in faqs
 ])
 st.markdown(f"""
-<section style="padding:6rem 3rem;position:relative;z-index:2;max-width:820px;margin:0 auto;">
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:820px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Questions</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Frequently asked.</h2>
@@ -427,7 +426,7 @@ st.markdown(f"""
 
 # ════════════ FINAL CTA + FOOTER ════════════
 st.markdown(r"""
-<section style="padding:5rem 3rem 4rem;position:relative;z-index:2;text-align:center;overflow:hidden;">
+<section style="padding:3.5rem 3rem 3rem;position:relative;z-index:2;text-align:center;overflow:hidden;">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:850px;height:430px;border-radius:50%;
     background:radial-gradient(ellipse,rgba(124,58,237,.14),transparent 70%);"></div>
   <div class="reveal" style="max-width:720px;margin:0 auto;position:relative;">
