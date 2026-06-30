@@ -87,7 +87,7 @@ st.markdown(r"""
 
 <!-- ════════════ HERO ════════════ -->
 <section style="display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:8rem 2rem 3rem;position:relative;z-index:2;">
+  text-align:center;padding:8rem 2rem 3rem;position:relative;z-index:2;overflow:hidden;">
 
   <div data-orb style="position:absolute;top:18%;left:12%;width:520px;height:520px;border-radius:50%;will-change:transform;transition:transform .6s cubic-bezier(.16,1,.3,1);
     background:radial-gradient(circle,rgba(124,58,237,.16),transparent 70%);animation:pulse-glow 7s ease-in-out infinite;"></div>
