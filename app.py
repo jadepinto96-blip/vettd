@@ -331,13 +331,15 @@ def _plan_card(name,price,period,searches,color,bg,featured,flist):
     btn_bg = 'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'
     btn_border = 'none' if featured else '1px solid #16162A'
     btn_color = 'white' if featured else '#A8A8C0'
+    # Free → open the tool; paid plans → Contact (no checkout yet)
+    btn_link = "/Analyse" if name == "Free" else "/Contact"
     return (f'<div class="lift" style="background:{bg};border:{border};border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;{glow}">'
             f'{topline}{popular}'
             f'<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:{color};margin-bottom:14px;">{name}</div>'
             f'<div style="margin-bottom:6px;">{price_html}</div>'
             f'<div style="font-size:12px;color:#5A5A78;margin-bottom:1.5rem;">{searches}</div>'
             f'<div style="border-top:1px solid #16162A;padding-top:1.4rem;">{checks}</div>'
-            f'<a href="/Analyse" target="_self" style="display:block;margin-top:1.5rem;text-align:center;background:{btn_bg};border:{btn_border};color:{btn_color};font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;">{cta}</a></div>')
+            f'<a href="{btn_link}" target="_self" style="display:block;margin-top:1.5rem;text-align:center;background:{btn_bg};border:{btn_border};color:{btn_color};font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;">{cta}</a></div>')
 plan_cards = "".join([_plan_card(*p) for p in plans])
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;">
