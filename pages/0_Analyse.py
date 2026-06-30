@@ -200,7 +200,6 @@ with col_center:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ── SECTION 1: CREATOR ──
-    st.markdown('<div class="input-section">', unsafe_allow_html=True)
     st.markdown('<div class="input-label">Creator details</div>', unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
@@ -248,7 +247,6 @@ with col_center:
                 st.caption(f"✓ Auto-filled from {f['_source']} ({tag}). Edit any field below.")
             else:
                 st.caption(f"Live fetch ready ({_provider}). Enter a username and click fetch.")
-    st.markdown('</div>', unsafe_allow_html=True)
 
     # helper: prefer fetched value, else fall back to default
     _f = st.session_state.get("fetched") or {}
@@ -257,7 +255,6 @@ with col_center:
         return v if v is not None else default
 
     # ── SECTION 2: PROFILE ──
-    st.markdown('<div class="input-section">', unsafe_allow_html=True)
     st.markdown('<div class="input-label">Profile stats</div>', unsafe_allow_html=True)
     p1, p2, p3, p4, p5 = st.columns(5)
     with p1:
@@ -270,10 +267,8 @@ with col_center:
         posting_freq = st.number_input("Posts per week", min_value=0.0, value=float(pref("posting_freq", 4.0)), step=0.5)
     with p5:
         growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=float(pref("growth_rate_30d", 2.5)), step=0.1)
-    st.markdown('</div>', unsafe_allow_html=True)
 
     # ── SECTION 3: ENGAGEMENT ──
-    st.markdown('<div class="input-section">', unsafe_allow_html=True)
     st.markdown('<div class="input-label">Engagement data</div>', unsafe_allow_html=True)
     e1, e2, e3, e4 = st.columns(4)
     with e1:
@@ -284,11 +279,9 @@ with col_center:
         avg_saves = st.number_input("Avg saves / post", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
     with e4:
         avg_shares = st.number_input("Avg shares / post", min_value=0, value=int(pref("avg_shares", 450)), step=10)
-    st.markdown('</div>', unsafe_allow_html=True)
 
     # ── SECTION 4: AUDIENCE (Pro+) ──
     if tier_gate("Pro"):
-        st.markdown('<div class="input-section">', unsafe_allow_html=True)
         st.markdown('<div class="input-label">Audience demographics — Pro</div>', unsafe_allow_html=True)
         a1, a2, a3 = st.columns(3)
         with a1:
@@ -312,7 +305,6 @@ with col_center:
         with l3:
             loc3_name = st.text_input("Top location 3", value=pref("loc3_name", "Australia"))
             loc3_pct = st.slider("Location 3 %", 0, 100, int(pref("loc3_pct", 12)))
-        st.markdown('</div>', unsafe_allow_html=True)
     else:
         female_pct, male_pct = 60, 40
         audience_authenticity = 75
@@ -323,7 +315,6 @@ with col_center:
 
     # ── SECTION 5: ADVANCED (Enterprise+) ──
     if tier_gate("Enterprise"):
-        st.markdown('<div class="input-section">', unsafe_allow_html=True)
         st.markdown('<div class="input-label">Advanced signals — Enterprise</div>', unsafe_allow_html=True)
         adv1, adv2, adv3, adv4 = st.columns(4)
         with adv1:
@@ -338,7 +329,6 @@ with col_center:
             "Product you're selling (powers Brand–Product Market Fit)",
             placeholder="e.g. vitamin C serum, running shoes, budgeting app"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
     else:
         buyer_intent, sentiment_score, brand_safety, crisis_risk = 60, 70, 80, "Low"
         product_text = ""
