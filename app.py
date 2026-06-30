@@ -220,6 +220,77 @@ st.markdown(f"""
 </section>
 """, unsafe_allow_html=True)
 
+# ════════════ FEATURE SHOWCASE (description + visual of what the tool shows) ════════════
+import math as _m
+_circ = round(2 * _m.pi * 42, 1)
+def _ring(val, c1="#A78BFA", c2="#22D3EE"):
+    off = round(_circ * (1 - val / 100), 1)
+    return (f'<svg width="104" height="104" viewBox="0 0 104 104"><defs><linearGradient id="sg{val}" x1="0" y1="0" x2="1" y2="1">'
+            f'<stop offset="0%" stop-color="{c1}"/><stop offset="100%" stop-color="{c2}"/></linearGradient></defs>'
+            f'<circle cx="52" cy="52" r="42" fill="none" stroke="#1A1A2E" stroke-width="8"/>'
+            f'<circle cx="52" cy="52" r="42" fill="none" stroke="url(#sg{val})" stroke-width="8" stroke-linecap="round" '
+            f'stroke-dasharray="{_circ}" stroke-dashoffset="{off}" transform="rotate(-90 52 52)"/>'
+            f'<text x="52" y="60" text-anchor="middle" font-size="26" font-weight="800" fill="#EDEDF5">{val}</text></svg>')
+
+def _bars(items):
+    return "".join([
+        f'<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:#7A7A98;margin-bottom:3px;"><span>{lbl}</span><span style="color:#A78BFA;font-weight:600;">{v}</span></div>'
+        f'<div style="background:#12121E;border-radius:999px;height:5px;"><div style="width:{v}%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#22D3EE);"></div></div></div>'
+        for lbl, v in items])
+
+# Visual A — Vettd Score mini report
+vis_score = f"""<div style="background:#0D0D14;border:1px solid #16162A;border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
+<div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1.25rem;">
+<div>{_ring(74,'#60A5FA','#22D3EE')}</div>
+<div><div style="font-size:11px;color:#5A5A78;text-transform:uppercase;letter-spacing:.1em;">Vettd Score</div>
+<div style="font-size:15px;font-weight:700;color:#60A5FA;margin-top:2px;">Strong fit</div>
+<div style="font-size:12px;color:#7A7A98;margin-top:6px;">@emmalifestyle · Fashion</div></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.25rem;">
+{''.join(f'<div style="background:#101019;border:1px solid #16162A;border-radius:10px;padding:9px;text-align:center;"><div style="font-size:9px;color:#5A5A78;text-transform:uppercase;letter-spacing:.08em;">{l}</div><div style="font-size:15px;font-weight:800;color:#EDEDF5;margin-top:3px;">{v}</div></div>' for l,v in [('Followers','150K'),('Engagement','6.5%'),('Fake','12'),])}
+</div>{_bars([('Engagement',65),('Authenticity',88),('Brand fit',80)])}</div>"""
+
+# Visual B — Market fit + recommendations
+vis_fit = f"""<div style="background:#0D0D14;border:1px solid #16162A;border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+<div><div style="font-size:11px;color:#5A5A78;text-transform:uppercase;letter-spacing:.1em;">Product–Market Fit</div>
+<div style="font-size:13px;color:#7A7A98;margin-top:2px;">Serum × @techreviewer</div></div>
+<div class="disp" style="font-size:36px;font-weight:800;color:#F59E0B;">56</div></div>
+{_bars([('Niche match',40),('Audience',62),('Authenticity',82)])}
+<div style="font-size:10px;color:#10B981;text-transform:uppercase;letter-spacing:.1em;margin:1rem 0 .6rem;">Better-matched creators</div>
+{''.join(f'<div style="display:flex;justify-content:space-between;background:#101019;border:1px solid #16162A;border-radius:10px;padding:8px 12px;margin-bottom:6px;"><span style="font-size:12px;color:#EDEDF5;">{h}</span><span style="font-size:12px;font-weight:800;color:#10B981;">{s}</span></div>' for h,s in [('@gloskincare','91'),('@dewyroutine','88')])}</div>"""
+
+# Visual C — compare + overlap
+vis_cmp = f"""<div style="background:#0D0D14;border:1px solid #16162A;border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
+{''.join(f'<div style="display:flex;align-items:center;justify-content:space-between;background:#101019;border:1px solid #16162A;border-radius:12px;padding:10px 14px;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:{c};"></span><span style="font-size:13px;color:#EDEDF5;">{n}</span></div><span class="disp" style="font-size:20px;font-weight:800;color:{c};">{s}</span></div>' for n,s,c in [('@creator_a','84','#A78BFA'),('@creator_b','71','#60A5FA'),('@creator_c','68','#22D3EE')])}
+<div style="margin-top:1rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:12px 14px;text-align:center;">
+<div style="font-size:24px;font-weight:800;color:#EF4444;">72%</div>
+<div style="font-size:11px;color:#A8A8C0;margin-top:2px;">A ↔ B audience overlap · pick one</div></div></div>"""
+
+rows = [
+    ("One score. The whole creator.", "Followers lie. Vettd condenses engagement, authenticity, brand-fit, audience quality, consistency and growth into a single 0–100 score — with the full breakdown of how it got there.", vis_score, False),
+    ("Will this product actually fit?", "Vettd scores your specific product against the creator's audience — niche, gender, age, authenticity. When the fit is weak, it recommends better-matched creators instead.", vis_fit, True),
+    ("Compare creators. Don't pay twice.", "Put creators side by side, see who wins, and catch when two of them share the same audience — so you stop paying twice to reach the same people.", vis_cmp, False),
+]
+show_html = ""
+for title, body, vis, vis_left in rows:
+    text_block = (f'<div class="reveal" style="align-self:center;">'
+                  f'<h3 class="disp" style="font-size:clamp(26px,3.4vw,38px);font-weight:700;letter-spacing:-.02em;margin:0 0 1rem;'
+                  f'background:linear-gradient(135deg,#FFFFFF,#A78BFA 75%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{title}</h3>'
+                  f'<p style="font-size:15.5px;color:#7A7A98;line-height:1.8;margin:0;">{body}</p></div>')
+    vis_block = f'<div class="reveal d1">{vis}</div>'
+    inner = (vis_block + text_block) if vis_left else (text_block + vis_block)
+    show_html += f'<div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-bottom:3.5rem;">{inner}</div>'
+
+st.markdown(f"""
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:3rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">See it in action</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#22D3EE 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">What you actually get.</h2>
+</div>
+{show_html}
+</section>
+""", unsafe_allow_html=True)
+
 # ════════════ HOW IT WORKS ════════════
 steps = [
     ("01","#7C3AED","Enter the creator","Type in any creator's stats. Takes under two minutes — no integrations required."),
