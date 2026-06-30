@@ -17,7 +17,7 @@ st.markdown("""
 <style>
 [data-testid="stSidebar"], [data-testid="collapsedControl"] { display:none !important; }
 #MainMenu, footer, header, [data-testid="stToolbar"] { display:none !important; }
-.block-container { padding:0 !important; max-width:100% !important; }
+.block-container { padding:1rem 1.25rem 3rem !important; max-width:720px !important; margin:0 auto !important; }
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 .disp { font-family:'Space Grotesk','Inter',sans-serif; }
 </style>
