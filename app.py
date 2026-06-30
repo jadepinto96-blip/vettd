@@ -427,7 +427,7 @@ st.markdown(f"""
 
 # ════════════ FINAL CTA + FOOTER ════════════
 st.markdown(r"""
-<section style="padding:9rem 3rem;position:relative;z-index:2;text-align:center;">
+<section style="padding:5rem 3rem 4rem;position:relative;z-index:2;text-align:center;">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:850px;height:430px;border-radius:50%;
     background:radial-gradient(ellipse,rgba(124,58,237,.14),transparent 70%);"></div>
   <div class="reveal" style="max-width:720px;margin:0 auto;position:relative;">
@@ -444,15 +444,7 @@ st.markdown(r"""
   </div>
 </section>
 
-<!-- ════════════ GIANT WORDMARK ════════════ -->
-<div style="position:relative;z-index:2;overflow:hidden;padding:2rem 0 0;text-align:center;
-  -webkit-mask-image:linear-gradient(180deg,black 55%,transparent);mask-image:linear-gradient(180deg,black 55%,transparent);">
-  <div class="brandmark" style="font-size:clamp(80px,21vw,320px);font-weight:800;line-height:.8;letter-spacing:-.04em;
-    white-space:nowrap;background:linear-gradient(135deg,#A78BFA 0%,#60A5FA 45%,#22D3EE 90%);background-size:200% auto;
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 7s linear infinite;opacity:.9;">VETTD</div>
-</div>
-
-<footer style="border-top:1px solid #14142A;padding:4rem 3.5rem 2.5rem;position:relative;z-index:2;">
+<footer style="border-top:1px solid #14142A;padding:3rem 3.5rem 2rem;position:relative;z-index:2;">
   <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;align-items:start;">
     <div>
       <div class="brandmark" style="font-size:22px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.25rem;">✦ VETTD</div>
