@@ -452,14 +452,35 @@ st.markdown(r"""
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 7s linear infinite;opacity:.9;">VETTD</div>
 </div>
 
-<footer style="border-top:1px solid #0D0D1A;padding:2.5rem 3.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:relative;z-index:2;">
-  <div class="brandmark" style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">✦ VETTD</div>
-  <div style="font-size:12px;color:#222238;">Built in Mumbai. Made for brands everywhere.</div>
-  <div style="display:flex;gap:1.5rem;">
-    <a href="/About" target="_self" style="font-size:12px;color:#3A3A52;text-decoration:none;">About</a>
-    <a href="/Founder" target="_self" style="font-size:12px;color:#3A3A52;text-decoration:none;">Founder</a>
-    <a href="/Contact" target="_self" style="font-size:12px;color:#3A3A52;text-decoration:none;">Contact</a>
-    <a href="mailto:jadepinto96@gmail.com" style="font-size:12px;color:#3A3A52;text-decoration:none;">jadepinto96@gmail.com</a>
+<footer style="border-top:1px solid #14142A;padding:4rem 3.5rem 2.5rem;position:relative;z-index:2;">
+  <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;align-items:start;">
+    <div>
+      <div class="brandmark" style="font-size:22px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.25rem;">✦ VETTD</div>
+      <a href="/About" target="_self" style="display:inline-flex;align-items:center;gap:10px;background:#101019;border:1px solid #1E1E32;
+        color:#EDEDF5;font-size:13px;font-weight:600;padding:11px 20px;border-radius:999px;text-decoration:none;transition:border-color .3s,background .3s;"
+        onmouseover="this.style.borderColor='rgba(124,58,237,.5)';this.style.background='#14141F'"
+        onmouseout="this.style.borderColor='#1E1E32';this.style.background='#101019'">How Vettd works <span style="color:#A78BFA;">»</span></a>
+      <div style="font-size:12px;color:#3A3A52;margin-top:1.75rem;line-height:1.6;">© 2026 Vettd. All rights reserved.<br>Built in Mumbai. Made for brands everywhere.</div>
+    </div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:#EDEDF5;margin-bottom:1.1rem;">Product</div>
+      <a href="/Analyse" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Analyse a creator</a>
+      <a href="/Compare" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Compare creators</a>
+      <a href="/#how" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">How it works</a>
+      <a href="/About" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">About</a>
+    </div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:#EDEDF5;margin-bottom:1.1rem;">Policy</div>
+      <a href="/Legal" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Terms &amp; Conditions</a>
+      <a href="/Legal" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Privacy Policy</a>
+      <a href="/Legal" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Refund Policy</a>
+    </div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:#EDEDF5;margin-bottom:1.1rem;">Connect</div>
+      <a href="/Contact" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Contact us</a>
+      <a href="/Founder" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Founder</a>
+      <a href="mailto:jadepinto96@gmail.com" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Email</a>
+    </div>
   </div>
 </footer>
 </div>
