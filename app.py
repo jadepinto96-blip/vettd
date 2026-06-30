@@ -54,7 +54,7 @@ html { scroll-behavior: smooth; }
 """, unsafe_allow_html=True)
 
 st.markdown(r"""
-<div style="font-family:'Inter',sans-serif;background:#0B0B16;color:#EDEDF5;overflow-x:hidden;position:relative;">
+<div style="font-family:'Inter',sans-serif;background:#0B0B16;color:#EDEDF5;overflow:hidden;position:relative;">
 
 <canvas id="particles" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55;"></canvas>
 <div class="cursor-glow" id="cglow"></div>
@@ -427,7 +427,7 @@ st.markdown(f"""
 
 # ════════════ FINAL CTA + FOOTER ════════════
 st.markdown(r"""
-<section style="padding:5rem 3rem 4rem;position:relative;z-index:2;text-align:center;">
+<section style="padding:5rem 3rem 4rem;position:relative;z-index:2;text-align:center;overflow:hidden;">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:850px;height:430px;border-radius:50%;
     background:radial-gradient(ellipse,rgba(124,58,237,.14),transparent 70%);"></div>
   <div class="reveal" style="max-width:720px;margin:0 auto;position:relative;">
