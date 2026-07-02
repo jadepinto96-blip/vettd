@@ -20,8 +20,8 @@ st.markdown("""
 [data-testid="stSidebar"], [data-testid="collapsedControl"] { display:none !important; }
 #MainMenu, footer, header, [data-testid="stToolbar"] { display:none !important; }
 .block-container { padding:0 2rem 3rem !important; max-width:100% !important; }
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-.disp { font-family:'Space Grotesk','Inter',sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
+.disp { font-family:'Sora','Inter',sans-serif; }
 .cmp-card { background:#101019; border:1px solid #14142A; border-radius:18px; padding:1.5rem;
   transition:border-color .4s, transform .4s cubic-bezier(.16,1,.3,1); }
 .cmp-stat { display:flex; justify-content:space-between; align-items:center; padding:8px 0;

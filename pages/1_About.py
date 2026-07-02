@@ -11,8 +11,8 @@ st.markdown("""
 [data-testid="stSidebar"], [data-testid="collapsedControl"] { display:none !important; }
 #MainMenu, footer, header, [data-testid="stToolbar"] { display:none !important; }
 .block-container { padding:0 !important; max-width:100% !important; }
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-.disp { font-family:'Space Grotesk','Inter',sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
+.disp { font-family:'Sora','Inter',sans-serif; }
 .stat-tile { transition: transform .4s cubic-bezier(.16,1,.3,1), border-color .4s ease, box-shadow .4s ease; }
 .stat-tile:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(124,58,237,.18); }
 .score-row { transition: transform .4s cubic-bezier(.16,1,.3,1), border-color .4s ease, background .4s ease; }

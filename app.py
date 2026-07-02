@@ -8,7 +8,7 @@ st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 * { box-sizing: border-box; }
 
@@ -23,7 +23,7 @@ html { scroll-behavior: smooth; }
 ::-webkit-scrollbar-thumb { background: #1A1A2E; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #2A2A3E; }
 
-.disp { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+.disp { font-family: 'Sora', 'Inter', sans-serif; }
 
 @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
 @keyframes pulse-glow { 0%,100% { opacity:.35; transform:scale(1);} 50% { opacity:.65; transform:scale(1.08);} }
