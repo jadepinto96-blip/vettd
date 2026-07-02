@@ -17,7 +17,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div style="font-family:'Inter',sans-serif;background:#0B0B16;color:#EDEDF5;min-height:100vh;">
+<div style="font-family:'Inter',sans-serif;background:var(--bg-deep);color:var(--text-1);min-height:100vh;">
 
 <nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,22,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
 <a href="/" target="_self" class="brandmark" style="font-size:21px;font-weight:700;letter-spacing:-.5px;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
@@ -34,22 +34,22 @@ st.markdown("""
 <div style="text-align:center;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.25rem;">Legal</div>
 <h1 class="disp" style="font-size:clamp(34px,6vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 60%,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Terms &amp; policies.</h1>
-<div style="font-size:12px;color:#3A3A52;margin-top:1rem;">Last updated 26 June 2026 · These are plain-language summaries, not formal legal advice.</div>
+<div style="font-size:12px;color:var(--text-4);margin-top:1rem;">Last updated 26 June 2026 · These are plain-language summaries, not formal legal advice.</div>
 </div>
 
-<div id="privacy" style="background:#0A0A14;border:1px solid #14142A;border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;">
+<div id="privacy" style="background:var(--bg-base);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:12px;">Privacy Policy</div>
-<p style="font-size:14px;color:#8888A8;line-height:1.85;margin:0;">Vettd collects only the information you provide — the creator details you enter and, if you contact us, your name and email. We use third-party data providers to retrieve publicly available creator metrics. We do not sell your personal data. Any data you enter is used solely to generate your report. You can request deletion of your data at any time by emailing <a href="mailto:jadepinto96@gmail.com" style="color:#A78BFA;text-decoration:none;">jadepinto96@gmail.com</a>.</p>
+<p style="font-size:14px;color:var(--text-2);line-height:1.85;margin:0;">Vettd collects only the information you provide — the creator details you enter and, if you contact us, your name and email. We use third-party data providers to retrieve publicly available creator metrics. We do not sell your personal data. Any data you enter is used solely to generate your report. You can request deletion of your data at any time by emailing <a href="mailto:jadepinto96@gmail.com" style="color:#A78BFA;text-decoration:none;">jadepinto96@gmail.com</a>.</p>
 </div>
 
-<div id="terms" style="background:#0A0A14;border:1px solid #14142A;border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;">
+<div id="terms" style="background:var(--bg-base);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#60A5FA;margin-bottom:12px;">Terms &amp; Conditions</div>
-<p style="font-size:14px;color:#8888A8;line-height:1.85;margin:0;">Vettd provides creator-intelligence estimates and scores for informational purposes to support — not replace — your own judgement. Scores are derived from available data and modelling, and we make no guarantee of campaign outcomes. By using Vettd you agree not to misuse the platform, scrape it, or resell its outputs without permission. Vettd is provided "as is" and we are not liable for decisions made based on its reports.</p>
+<p style="font-size:14px;color:var(--text-2);line-height:1.85;margin:0;">Vettd provides creator-intelligence estimates and scores for informational purposes to support — not replace — your own judgement. Scores are derived from available data and modelling, and we make no guarantee of campaign outcomes. By using Vettd you agree not to misuse the platform, scrape it, or resell its outputs without permission. Vettd is provided "as is" and we are not liable for decisions made based on its reports.</p>
 </div>
 
-<div id="refund" style="background:#0A0A14;border:1px solid #14142A;border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;">
+<div id="refund" style="background:var(--bg-base);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#22D3EE;margin-bottom:12px;">Refund Policy</div>
-<p style="font-size:14px;color:#8888A8;line-height:1.85;margin:0;">Paid plans can be cancelled at any time and will not renew for the next billing period. If you're unsatisfied within the first 14 days of a new subscription, email us and we'll arrange a full refund. Refunds for partial periods after 14 days are handled case by case. Contact <a href="mailto:jadepinto96@gmail.com" style="color:#A78BFA;text-decoration:none;">jadepinto96@gmail.com</a> for any billing question.</p>
+<p style="font-size:14px;color:var(--text-2);line-height:1.85;margin:0;">Paid plans can be cancelled at any time and will not renew for the next billing period. If you're unsatisfied within the first 14 days of a new subscription, email us and we'll arrange a full refund. Refunds for partial periods after 14 days are handled case by case. Contact <a href="mailto:jadepinto96@gmail.com" style="color:#A78BFA;text-decoration:none;">jadepinto96@gmail.com</a> for any billing question.</p>
 </div>
 
 

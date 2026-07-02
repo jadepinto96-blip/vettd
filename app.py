@@ -12,16 +12,16 @@ st.markdown("""
 
 * { box-sizing: border-box; }
 
-[data-testid="stAppViewContainer"] { background: #0B0B16 !important; }
+[data-testid="stAppViewContainer"] { background: var(--bg-deep) !important; }
 [data-testid="stSidebar"], [data-testid="collapsedControl"],
 #MainMenu, footer, header, [data-testid="stToolbar"] { display: none !important; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
 html { scroll-behavior: smooth; }
 
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0B0B16; }
-::-webkit-scrollbar-thumb { background: #1A1A2E; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #2A2A3E; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border); }
 
 .disp { font-family: 'Sora', 'Inter', sans-serif; }
 
@@ -53,7 +53,7 @@ html { scroll-behavior: smooth; }
 """, unsafe_allow_html=True)
 
 st.markdown(r"""
-<div style="font-family:'Inter',sans-serif;background:#0B0B16;color:#EDEDF5;overflow:hidden;position:relative;">
+<div style="font-family:'Inter',sans-serif;background:var(--bg-deep);color:var(--text-1);overflow:hidden;position:relative;">
 
 <canvas id="particles" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55;"></canvas>
 <div class="cursor-glow" id="cglow"></div>
@@ -127,7 +127,7 @@ st.markdown(r"""
       onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 64px rgba(124,58,237,.7)'"
       onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 44px rgba(124,58,237,.42)'">Vet a creator free <span style="font-size:18px;">→</span></a>
     <a href="#how" style="display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.1);color:#A0A0C0;font-weight:500;font-size:15px;padding:17px 38px;border-radius:999px;text-decoration:none;
+      border:1px solid rgba(255,255,255,.1);color:var(--text-2);font-weight:500;font-size:15px;padding:17px 38px;border-radius:999px;text-decoration:none;
       transition:background .3s,border-color .3s;" onmouseover="this.style.background='rgba(255,255,255,.06)';this.style.borderColor='rgba(255,255,255,.2)'"
       onmouseout="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='rgba(255,255,255,.1)'">See how it works</a>
   </div>
@@ -139,48 +139,48 @@ st.markdown(r"""
 st.markdown(r"""
 <section style="padding:2.5rem 3rem 3rem;position:relative;overflow:hidden;z-index:2;">
   <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">The product</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">The product</div>
     <h2 class="disp" style="font-size:clamp(32px,5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;
       background:linear-gradient(135deg,#FFFFFF,#A78BFA 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">A full report. In one glance.</h2>
   </div>
   <div class="reveal d1 lift" style="max-width:1080px;margin:0 auto;background:rgba(255,255,255,.02);
     border:1px solid rgba(255,255,255,.08);border-radius:24px;overflow:hidden;
     box-shadow:0 40px 120px rgba(124,58,237,.18),0 0 60px rgba(34,211,238,.05);">
-    <div style="background:#101019;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;">
+    <div style="background:var(--surface);padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;">
       <div style="display:flex;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#FF5F57;"></span>
         <span style="width:10px;height:10px;border-radius:50%;background:#FEBC2E;"></span>
         <span style="width:10px;height:10px;border-radius:50%;background:#28C840;"></span></div>
-      <div style="flex:1;background:#12121E;border-radius:6px;padding:5px 12px;font-size:11px;color:#3A3A52;max-width:300px;margin:0 auto;text-align:center;">get-vettd.streamlit.app</div>
+      <div style="flex:1;background:var(--border);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--text-4);max-width:300px;margin:0 auto;text-align:center;">get-vettd.streamlit.app</div>
     </div>
     <div style="padding:1.5rem;display:flex;gap:1.5rem;min-height:380px;">
-      <div style="width:180px;flex-shrink:0;background:#101019;border-radius:12px;padding:1rem;">
+      <div style="width:180px;flex-shrink:0;background:var(--surface);border-radius:12px;padding:1rem;">
         <div class="brandmark" style="font-size:14px;font-weight:700;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.5rem;">✦ Vettd</div>
         <div style="font-size:10px;color:#222238;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Creator</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6A6A90;">@emmalifestyle</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:1rem;font-size:11px;color:#6A6A90;">Instagram</div>
+        <div style="background:var(--surface);border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6A6A90;">@emmalifestyle</div>
+        <div style="background:var(--surface);border-radius:6px;padding:6px 8px;margin-bottom:1rem;font-size:11px;color:#6A6A90;">Instagram</div>
         <div style="font-size:10px;color:#222238;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Profile</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6A6A90;">150,000 followers</div>
-        <div style="background:#0D0D1A;border-radius:6px;padding:6px 8px;margin-bottom:1.5rem;font-size:11px;color:#6A6A90;">Fashion · 4×/week</div>
+        <div style="background:var(--surface);border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:11px;color:#6A6A90;">150,000 followers</div>
+        <div style="background:var(--surface);border-radius:6px;padding:6px 8px;margin-bottom:1.5rem;font-size:11px;color:#6A6A90;">Fashion · 4×/week</div>
         <div style="background:linear-gradient(135deg,#7C3AED,#4F46E5);border-radius:8px;padding:8px;text-align:center;font-size:11px;font-weight:700;color:white;">✦ Run analysis</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;gap:1rem;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
           <div style="display:flex;align-items:center;gap:12px;">
             <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;">EW</div>
-            <div><div style="font-size:15px;font-weight:700;color:#EDEDF5;">Emma Williams</div>
-              <div style="font-size:11px;color:#3A3A52;">@emmalifestyle · Instagram · Fashion</div></div></div>
+            <div><div style="font-size:15px;font-weight:700;color:var(--text-1);">Emma Williams</div>
+              <div style="font-size:11px;color:var(--text-4);">@emmalifestyle · Instagram · Fashion</div></div></div>
           <div style="background:#16122E;border:1px solid rgba(124,58,237,.3);border-radius:999px;padding:4px 14px;font-size:11px;font-weight:600;color:#A78BFA;">Pro</div></div>
         <div style="display:flex;gap:1rem;">
-          <div style="background:#101019;border:1px solid #16162A;border-radius:14px;padding:1.25rem;text-align:center;min-width:120px;">
-            <div style="font-size:10px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Vettd Score</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;text-align:center;min-width:120px;">
+            <div style="font-size:10px;color:var(--text-4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Vettd Score</div>
             <div class="disp" style="font-size:54px;font-weight:700;line-height:1;background:linear-gradient(135deg,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">74</div>
             <div style="font-size:11px;font-weight:600;color:#60A5FA;margin-top:6px;">Strong fit</div></div>
           <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">""" + "".join([
-    f'<div style="background:#101019;border:1px solid #16162A;border-radius:10px;padding:10px 12px;"><div style="font-size:9px;color:#3A3A52;text-transform:uppercase;letter-spacing:.1em;">{lbl}</div><div style="font-size:17px;font-weight:700;color:{clr};margin-top:4px;">{val}</div></div>'
-    for lbl,val,clr in [("Followers","150K","#EDEDF5"),("Engagement","6.5%","#A78BFA"),("Brand fit","80/100","#22D3EE"),
-                         ("Fake score","12/100","#10B981"),("Cost/post","$840","#EDEDF5"),("Growth 30d","+2.5%","#A78BFA")]
+    f'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;"><div style="font-size:9px;color:var(--text-4);text-transform:uppercase;letter-spacing:.1em;">{lbl}</div><div style="font-size:17px;font-weight:700;color:{clr};margin-top:4px;">{val}</div></div>'
+    for lbl,val,clr in [("Followers","150K","var(--text-1)"),("Engagement","6.5%","#A78BFA"),("Brand fit","80/100","#22D3EE"),
+                         ("Fake score","12/100","#10B981"),("Cost/post","$840","var(--text-1)"),("Growth 30d","+2.5%","#A78BFA")]
 ]) + r"""</div></div>
-        <div style="background:#101019;border:1px solid #16162A;border-radius:12px;padding:1rem;display:flex;gap:1.5rem;">""" + "".join([
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;gap:1.5rem;">""" + "".join([
     f'<div style="flex:1;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#3A3A52;">{lbl}</span><span style="color:#A78BFA;">{v}</span></div><div style="background:#12121E;border-radius:999px;height:4px;"><div style="width:{v}%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#22D3EE);"></div></div></div>'
     for lbl,v in [("Engagement",65),("Authenticity",88),("Brand fit",80),("Consistency",80)]
 ]) + r"""</div>
@@ -200,20 +200,20 @@ features = [
     ("⟡","#22D3EE","#0891B2","Multi-platform","Instagram, TikTok and YouTube unified. Compare creators side by side."),
 ]
 feature_cards = "".join([
-    f'<div class="lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;"'
+    f'<div class="lift" style="background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;"'
     f' onmouseover="this.style.borderColor=\'{color}40\';this.style.boxShadow=\'0 20px 60px {color}18\'"'
-    f' onmouseout="this.style.borderColor=\'#14142A\';this.style.boxShadow=\'none\'">'
+    f' onmouseout="this.style.borderColor=\'var(--border)\';this.style.boxShadow=\'none\'">'
     f'<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}55,transparent);"></div>'
     f'<div style="width:52px;height:52px;border-radius:14px;margin-bottom:1.5rem;background:linear-gradient(135deg,{color}1f,{dark}10);'
     f'border:1px solid {color}35;display:flex;align-items:center;justify-content:center;font-size:22px;color:{color};">{icon}</div>'
-    f'<div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;letter-spacing:-.01em;">{title}</div>'
-    f'<div style="font-size:13.5px;color:#5A5A78;line-height:1.75;">{desc}</div></div>'
+    f'<div style="font-size:17px;font-weight:700;color:var(--text-1);margin-bottom:10px;letter-spacing:-.01em;">{title}</div>'
+    f'<div style="font-size:13.5px;color:var(--text-3);line-height:1.75;">{desc}</div></div>'
     for icon,color,dark,title,desc in features
 ])
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Capabilities</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">Capabilities</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Everything a brand needs.</h2>
 </div>
 <div class="reveal d1" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">{feature_cards}</div>
@@ -227,10 +227,10 @@ def _ring(val, c1="#A78BFA", c2="#22D3EE"):
     off = round(_circ * (1 - val / 100), 1)
     return (f'<svg width="104" height="104" viewBox="0 0 104 104"><defs><linearGradient id="sg{val}" x1="0" y1="0" x2="1" y2="1">'
             f'<stop offset="0%" stop-color="{c1}"/><stop offset="100%" stop-color="{c2}"/></linearGradient></defs>'
-            f'<circle cx="52" cy="52" r="42" fill="none" stroke="#1A1A2E" stroke-width="8"/>'
+            f'<circle cx="52" cy="52" r="42" fill="none" stroke="var(--border)" stroke-width="8"/>'
             f'<circle cx="52" cy="52" r="42" fill="none" stroke="url(#sg{val})" stroke-width="8" stroke-linecap="round" '
             f'stroke-dasharray="{_circ}" stroke-dashoffset="{off}" transform="rotate(-90 52 52)"/>'
-            f'<text x="52" y="60" text-anchor="middle" font-size="26" font-weight="800" fill="#EDEDF5">{val}</text></svg>')
+            f'<text x="52" y="60" text-anchor="middle" font-size="26" font-weight="800" fill="var(--text-1)">{val}</text></svg>')
 
 def _bars(items):
     return "".join([
@@ -239,29 +239,29 @@ def _bars(items):
         for lbl, v in items])
 
 # Visual A — Vettd Score mini report
-vis_score = f"""<div style="background:#0D0D14;border:1px solid #16162A;border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
+vis_score = f"""<div style="background:#0D0D14;border:1px solid var(--border);border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
 <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1.25rem;">
 <div>{_ring(74,'#60A5FA','#22D3EE')}</div>
-<div><div style="font-size:11px;color:#5A5A78;text-transform:uppercase;letter-spacing:.1em;">Vettd Score</div>
+<div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;">Vettd Score</div>
 <div style="font-size:15px;font-weight:700;color:#60A5FA;margin-top:2px;">Strong fit</div>
 <div style="font-size:12px;color:#7A7A98;margin-top:6px;">@emmalifestyle · Fashion</div></div></div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.25rem;">
-{''.join(f'<div style="background:#101019;border:1px solid #16162A;border-radius:10px;padding:9px;text-align:center;"><div style="font-size:9px;color:#5A5A78;text-transform:uppercase;letter-spacing:.08em;">{l}</div><div style="font-size:15px;font-weight:800;color:#EDEDF5;margin-top:3px;">{v}</div></div>' for l,v in [('Followers','150K'),('Engagement','6.5%'),('Fake','12'),])}
+{''.join(f'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px;text-align:center;"><div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;">{l}</div><div style="font-size:15px;font-weight:800;color:var(--text-1);margin-top:3px;">{v}</div></div>' for l,v in [('Followers','150K'),('Engagement','6.5%'),('Fake','12'),])}
 </div>{_bars([('Engagement',65),('Authenticity',88),('Brand fit',80)])}</div>"""
 
 # Visual B — Market fit + recommendations
-vis_fit = f"""<div style="background:#0D0D14;border:1px solid #16162A;border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
+vis_fit = f"""<div style="background:#0D0D14;border:1px solid var(--border);border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-<div><div style="font-size:11px;color:#5A5A78;text-transform:uppercase;letter-spacing:.1em;">Product–Market Fit</div>
+<div><div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;">Product–Market Fit</div>
 <div style="font-size:13px;color:#7A7A98;margin-top:2px;">Serum × @techreviewer</div></div>
 <div class="disp" style="font-size:36px;font-weight:800;color:#F59E0B;">56</div></div>
 {_bars([('Niche match',40),('Audience',62),('Authenticity',82)])}
 <div style="font-size:10px;color:#10B981;text-transform:uppercase;letter-spacing:.1em;margin:1rem 0 .6rem;">Better-matched creators</div>
-{''.join(f'<div style="display:flex;justify-content:space-between;background:#101019;border:1px solid #16162A;border-radius:10px;padding:8px 12px;margin-bottom:6px;"><span style="font-size:12px;color:#EDEDF5;">{h}</span><span style="font-size:12px;font-weight:800;color:#10B981;">{s}</span></div>' for h,s in [('@gloskincare','91'),('@dewyroutine','88')])}</div>"""
+{''.join(f'<div style="display:flex;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin-bottom:6px;"><span style="font-size:12px;color:var(--text-1);">{h}</span><span style="font-size:12px;font-weight:800;color:#10B981;">{s}</span></div>' for h,s in [('@gloskincare','91'),('@dewyroutine','88')])}</div>"""
 
 # Visual C — compare + overlap
-vis_cmp = f"""<div style="background:#0D0D14;border:1px solid #16162A;border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
-{''.join(f'<div style="display:flex;align-items:center;justify-content:space-between;background:#101019;border:1px solid #16162A;border-radius:12px;padding:10px 14px;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:{c};"></span><span style="font-size:13px;color:#EDEDF5;">{n}</span></div><span class="disp" style="font-size:20px;font-weight:800;color:{c};">{s}</span></div>' for n,s,c in [('@creator_a','84','#A78BFA'),('@creator_b','71','#60A5FA'),('@creator_c','68','#22D3EE')])}
+vis_cmp = f"""<div style="background:#0D0D14;border:1px solid var(--border);border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
+{''.join(f'<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:{c};"></span><span style="font-size:13px;color:var(--text-1);">{n}</span></div><span class="disp" style="font-size:20px;font-weight:800;color:{c};">{s}</span></div>' for n,s,c in [('@creator_a','84','#A78BFA'),('@creator_b','71','#60A5FA'),('@creator_c','68','#22D3EE')])}
 <div style="margin-top:1rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:12px 14px;text-align:center;">
 <div style="font-size:24px;font-weight:800;color:#EF4444;">72%</div>
 <div style="font-size:11px;color:#A8A8C0;margin-top:2px;">A ↔ B audience overlap · pick one</div></div></div>"""
@@ -284,7 +284,7 @@ for title, body, vis, vis_left in rows:
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">See it in action</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">See it in action</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#22D3EE 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">What you actually get.</h2>
 </div>
 {show_html}
@@ -296,29 +296,29 @@ modules = [
     ("Vettd Predict", "#A78BFA",
      "Forecast a campaign's return before you spend — estimated ROI, cost per acquisition, and content-performance prediction per creator.",
      '<div style="text-align:center;"><div class="disp" style="font-size:34px;font-weight:800;color:#10B981;">+23.5K</div>'
-     '<div style="font-size:11px;color:#5A5A78;">projected ROI</div>'
+     '<div style="font-size:11px;color:var(--text-3);">projected ROI</div>'
      '<div style="margin-top:10px;height:6px;background:#12121E;border-radius:999px;"><div style="width:78%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#22D3EE);"></div></div></div>'),
     ("Vettd Match", "#60A5FA",
      "Score your exact product against a creator's audience and get better-matched creators when the fit is weak — niche, gender, age, intent.",
      '<div style="display:flex;align-items:center;gap:12px;"><div class="disp" style="font-size:32px;font-weight:800;color:#F59E0B;">56</div>'
-     '<div style="flex:1;"><div style="font-size:10px;color:#5A5A78;">product–audience fit</div>'
-     '<div style="margin-top:6px;display:flex;gap:4px;"><span style="flex:1;height:5px;background:#7C3AED;border-radius:999px;"></span><span style="flex:1;height:5px;background:#4F46E5;border-radius:999px;"></span><span style="flex:1;height:5px;background:#16162A;border-radius:999px;"></span></div></div></div>'),
+     '<div style="flex:1;"><div style="font-size:10px;color:var(--text-3);">product–audience fit</div>'
+     '<div style="margin-top:6px;display:flex;gap:4px;"><span style="flex:1;height:5px;background:#7C3AED;border-radius:999px;"></span><span style="flex:1;height:5px;background:#4F46E5;border-radius:999px;"></span><span style="flex:1;height:5px;background:var(--border);border-radius:999px;"></span></div></div></div>'),
     ("Vettd Guard", "#22D3EE",
      "Protect the spend — fake-follower and bot-network detection, brand-safety scoring, and a crisis-risk flag before you commit.",
-     '<div style="display:flex;justify-content:space-between;align-items:center;"><div><div class="disp" style="font-size:28px;font-weight:800;color:#10B981;">88</div><div style="font-size:10px;color:#5A5A78;">brand safety</div></div>'
+     '<div style="display:flex;justify-content:space-between;align-items:center;"><div><div class="disp" style="font-size:28px;font-weight:800;color:#10B981;">88</div><div style="font-size:10px;color:var(--text-3);">brand safety</div></div>'
      '<span style="font-size:11px;font-weight:700;color:#10B981;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);padding:4px 12px;border-radius:999px;">Low risk</span></div>'),
     ("Vettd Pulse", "#A78BFA",
      "Understand how people really feel — comment-sentiment analysis across a creator's audience, split into positive, neutral and negative.",
      '<div style="display:flex;align-items:flex-end;gap:6px;height:56px;">'
      + "".join(f'<div style="flex:1;background:{c};border-radius:4px 4px 0 0;height:{h}%;"></div>' for c,h in [('#10B981',80),('#60A5FA',45),('#EF4444',25),('#10B981',65),('#60A5FA',55),('#10B981',72)])
-     + '</div><div style="font-size:10px;color:#5A5A78;margin-top:6px;">positive · neutral · negative</div>'),
+     + '</div><div style="font-size:10px;color:var(--text-3);margin-top:6px;">positive · neutral · negative</div>'),
 ]
 mod_cards = "".join([
-    f'<div class="lift" style="background:#0D0D14;border:1px solid #14142A;border-radius:20px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;"'
-    f' onmouseover="this.style.borderColor=\'{c}55\'" onmouseout="this.style.borderColor=\'#14142A\'">'
-    f'<div style="background:#101019;border:1px solid #16162A;border-radius:14px;padding:1.1rem;min-height:96px;display:flex;flex-direction:column;justify-content:center;">{vis}</div>'
+    f'<div class="lift" style="background:#0D0D14;border:1px solid var(--border);border-radius:20px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;"'
+    f' onmouseover="this.style.borderColor=\'{c}55\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+    f'<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem;min-height:96px;display:flex;flex-direction:column;justify-content:center;">{vis}</div>'
     f'<div><div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:{c};margin-bottom:2px;">Module</div>'
-    f'<div class="disp" style="font-size:19px;font-weight:700;color:#EDEDF5;">{name}</div></div>'
+    f'<div class="disp" style="font-size:19px;font-weight:700;color:var(--text-1);">{name}</div></div>'
     f'<div style="font-size:13px;color:#7A7A98;line-height:1.65;flex:1;">{desc}</div>'
     f'<a href="/Contact" target="_self" style="font-size:13px;font-weight:600;color:{c};text-decoration:none;">Learn more →</a></div>'
     for name, c, desc, vis in modules
@@ -326,7 +326,7 @@ mod_cards = "".join([
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:1rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">What we offer · Enterprise</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">What we offer · Enterprise</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Build the plan you need.</h2>
 <p style="font-size:16px;color:#7A7A98;max-width:620px;margin:1.25rem auto 0;line-height:1.7;">Enterprise isn't one-size-fits-all. Pick the advanced modules that match your goals — forecasting, product-fit, brand safety, or sentiment — and we tailor the plan around them.</p>
 </div>
@@ -341,18 +341,18 @@ steps = [
     ("03","#22D3EE","Make the call","Download the report, share the link, decide with total confidence."),
 ]
 step_cards = "".join([
-    f'<div class="lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">'
+    f'<div class="lift" style="background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">'
     f'<div style="position:absolute;top:-20px;right:10px;font-size:120px;font-weight:800;color:{color}14;font-family:\'Space Grotesk\',sans-serif;line-height:1;">{num}</div>'
     f'<div class="disp" style="font-size:46px;font-weight:700;line-height:1;margin-bottom:1.25rem;background:linear-gradient(135deg,{color},{color}99);-webkit-background-clip:text;-webkit-text-fill-color:transparent;position:relative;">{num}</div>'
-    f'<div style="font-size:17px;font-weight:700;color:#EDEDF5;margin-bottom:10px;position:relative;">{title}</div>'
-    f'<div style="font-size:13.5px;color:#5A5A78;line-height:1.75;position:relative;">{desc}</div></div>'
+    f'<div style="font-size:17px;font-weight:700;color:var(--text-1);margin-bottom:10px;position:relative;">{title}</div>'
+    f'<div style="font-size:13.5px;color:var(--text-3);line-height:1.75;position:relative;">{desc}</div></div>'
     for num,color,title,desc in steps
 ])
 st.markdown(f"""
 <section id="how" style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;border-top:1px solid #14142A;border-bottom:1px solid #14142A;background:linear-gradient(180deg,rgba(124,58,237,.05),transparent);">
 <div style="max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Simple by design</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">Simple by design</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Three steps to a decision.</h2>
 </div>
 <div class="reveal d1" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;">{step_cards}</div>
@@ -380,7 +380,7 @@ vettd_way = [
 old_rows = "".join([
     f'<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">'
     f'<span style="flex-shrink:0;width:20px;height:20px;border-radius:50%;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#EF4444;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;">✕</span>'
-    f'<span style="font-size:14px;color:#8888A8;line-height:1.5;">{x}</span></div>' for x in old_way
+    f'<span style="font-size:14px;color:var(--text-2);line-height:1.5;">{x}</span></div>' for x in old_way
 ])
 new_rows = "".join([
     f'<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">'
@@ -390,12 +390,12 @@ new_rows = "".join([
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Why Vettd</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">Why Vettd</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">A decision, not a spreadsheet.</h2>
 <p style="font-size:16px;color:#7A7A98;max-width:560px;margin:1.25rem auto 0;line-height:1.7;">Most creator tools hand you a database and a wall of metrics, then leave the hard part — the decision — to you. Vettd is built the other way around.</p>
 </div>
 <div class="reveal d1" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
-<div style="background:#0D0D14;border:1px solid #14142A;border-radius:22px;padding:2.25rem;">
+<div style="background:#0D0D14;border:1px solid var(--border);border-radius:22px;padding:2.25rem;">
 <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7A7A98;margin-bottom:1.5rem;">Traditional creator tools</div>
 {old_rows}
 </div>
@@ -412,9 +412,9 @@ st.markdown(f"""
 stats = [("$21B","market we're fixing","#A78BFA"),("80%","of brands guess on spend","#60A5FA"),
          ("6×","faster than manual vetting","#22D3EE"),("0–100","one score, total clarity","#A78BFA")]
 stat_cells = "".join([
-    f'<div style="background:#101019;padding:2.25rem 1.5rem;text-align:center;">'
+    f'<div style="background:var(--surface);padding:2.25rem 1.5rem;text-align:center;">'
     f'<div class="disp" style="font-size:44px;font-weight:700;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{val}</div>'
-    f'<div style="font-size:12px;color:#5A5A78;margin-top:8px;letter-spacing:.04em;">{lbl}</div></div>'
+    f'<div style="font-size:12px;color:var(--text-3);margin-top:8px;letter-spacing:.04em;">{lbl}</div></div>'
     for val,lbl,clr in stats
 ])
 st.markdown(f"""
@@ -425,17 +425,17 @@ st.markdown(f"""
 
 # ════════════ PRICING ════════════
 plans = [
-    ("Free","$0","","2 searches/month","#7A7A98","#101019",False,
+    ("Free","$0","","2 searches/month","#7A7A98","var(--surface)",False,
      ["Vettd Score","Basic profile stats","Engagement rate","Try before you buy"]),
-    ("Starter","$59","/mo","20 searches/month","#8888A8","#101019",False,
+    ("Starter","$59","/mo","20 searches/month","var(--text-2)","var(--surface)",False,
      ["Everything in Free","Fake follower score","Basic demographics","CSV export"]),
     ("Pro","$149","/mo","100 searches/month","#A78BFA","rgba(124,58,237,.08)",True,
      ["Everything in Starter","Full audience demographics","Brand-fit score","Multi-platform report","Competitor comparison","PDF report"]),
-    ("Enterprise","Custom","","Unlimited searches","#22D3EE","#101019",False,
+    ("Enterprise","Custom","","Unlimited searches","#22D3EE","var(--surface)",False,
      ["Everything in Pro","ROI prediction","Market-fit + recommendations","Auto campaign brief","API access","White-label"]),
 ]
 def _plan_card(name,price,period,searches,color,bg,featured,flist):
-    border = "1px solid rgba(124,58,237,.45)" if featured else "1px solid #14142A"
+    border = "1px solid rgba(124,58,237,.45)" if featured else "1px solid var(--border)"
     glow = "box-shadow:0 30px 80px rgba(124,58,237,.18);" if featured else ""
     topline = '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>' if featured else ""
     popular = '<div style="position:absolute;top:16px;right:16px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#A78BFA;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.1em;">POPULAR</div>' if featured else ""
@@ -443,7 +443,7 @@ def _plan_card(name,price,period,searches,color,bg,featured,flist):
     price_html = (f'<span class="disp" style="font-size:42px;font-weight:700;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#5A5A78;">{period}</span>' if period else f'<span class="disp" style="font-size:42px;font-weight:700;color:#EDEDF5;">{price}</span>')
     cta = {'Free': 'Try it free →', 'Starter': 'Get Starter →', 'Pro': 'Get Pro →'}.get(name, 'Contact us →')
     btn_bg = 'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'
-    btn_border = 'none' if featured else '1px solid #16162A'
+    btn_border = 'none' if featured else '1px solid var(--border)'
     btn_color = 'white' if featured else '#A8A8C0'
     # Free → open the tool; paid plans → Contact (no checkout yet)
     btn_link = "/Analyse" if name == "Free" else "/Contact"
@@ -451,15 +451,15 @@ def _plan_card(name,price,period,searches,color,bg,featured,flist):
             f'{topline}{popular}'
             f'<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:{color};margin-bottom:14px;">{name}</div>'
             f'<div style="margin-bottom:6px;">{price_html}</div>'
-            f'<div style="font-size:12px;color:#5A5A78;margin-bottom:1.5rem;">{searches}</div>'
-            f'<div style="border-top:1px solid #16162A;padding-top:1.4rem;">{checks}</div>'
+            f'<div style="font-size:12px;color:var(--text-3);margin-bottom:1.5rem;">{searches}</div>'
+            f'<div style="border-top:1px solid var(--border);padding-top:1.4rem;">{checks}</div>'
             f'<a href="{btn_link}" target="_self" style="display:block;margin-top:1.5rem;text-align:center;background:{btn_bg};border:{btn_border};color:{btn_color};font-weight:600;font-size:14px;padding:13px;border-radius:999px;text-decoration:none;">{cta}</a></div>')
 plan_cards = "".join([_plan_card(*p) for p in plans])
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;">
 <div style="max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Pricing</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">Pricing</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Start free. Scale when ready.</h2>
 </div>
 <div class="reveal d1" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;align-items:start;">{plan_cards}</div>
@@ -474,20 +474,20 @@ testimonials = [
     ("I showed the Vettd report in a board meeting. The ROI prediction alone justified the subscription 10×.","Ananya R.","CMO, Lifestyle Startup — Mumbai","#22D3EE"),
 ]
 tcards = "".join([
-    f'<div class="lift" style="background:#101019;border:1px solid #14142A;border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">'
+    f'<div class="lift" style="background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:2.25rem;position:relative;overflow:hidden;">'
     f'<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>'
     f'<div class="disp" style="font-size:48px;color:{color};line-height:.6;margin-bottom:1.25rem;opacity:.6;">&ldquo;</div>'
     f'<p style="font-size:14.5px;color:#A8A8C0;line-height:1.85;margin:0 0 1.5rem;">{quote}</p>'
-    f'<div style="border-top:1px solid #14142A;padding-top:1rem;">'
-    f'<div style="font-size:13px;font-weight:600;color:#EDEDF5;">{name}</div>'
-    f'<div style="font-size:11px;color:#5A5A78;margin-top:3px;">{role}</div></div></div>'
+    f'<div style="border-top:1px solid var(--border);padding-top:1rem;">'
+    f'<div style="font-size:13px;font-weight:600;color:var(--text-1);">{name}</div>'
+    f'<div style="font-size:11px;color:var(--text-3);margin-top:3px;">{role}</div></div></div>'
     for quote,name,role,color in testimonials
 ])
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent);">
 <div style="max-width:1120px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Early feedback</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">Early feedback</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Brands that get it.</h2>
 </div>
 <div class="reveal d1" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">{tcards}</div>
@@ -498,13 +498,13 @@ st.markdown(f"""
 # ════════════ FAQ ════════════
 st.markdown("""
 <style>
-.faq-item { background:#0D0D14; border:1px solid #14142A; border-radius:16px; margin-bottom:12px;
+.faq-item { background:#0D0D14; border:1px solid var(--border); border-radius:16px; margin-bottom:12px;
   transition:border-color .35s ease, background .35s ease; overflow:hidden; }
 .faq-item:hover { border-color:rgba(124,58,237,.35); }
-.faq-item[open] { border-color:rgba(124,58,237,.4); background:#101019; }
+.faq-item[open] { border-color:rgba(124,58,237,.4); background:var(--surface); }
 .faq-item summary { list-style:none; cursor:pointer; padding:1.25rem 1.5rem;
   display:flex; justify-content:space-between; align-items:center; gap:1rem;
-  font-size:15px; font-weight:600; color:#EDEDF5; }
+  font-size:15px; font-weight:600; color:var(--text-1); }
 .faq-item summary::-webkit-details-marker { display:none; }
 .faq-item summary .chev { color:#7C3AED; font-size:20px; transition:transform .35s cubic-bezier(.16,1,.3,1); flex-shrink:0; }
 .faq-item[open] summary .chev { transform:rotate(45deg); }
@@ -535,7 +535,7 @@ faq_items = "".join([
 st.markdown(f"""
 <section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:820px;margin:0 auto;">
 <div class="reveal" style="text-align:center;margin-bottom:3rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Questions</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;">Questions</div>
 <h2 class="disp" style="font-size:clamp(34px,5.5vw,52px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Frequently asked.</h2>
 </div>
 <div class="reveal d1">{faq_items}</div>
@@ -551,7 +551,7 @@ st.markdown(r"""
     <h2 class="disp" style="font-size:clamp(40px,7vw,68px);font-weight:700;letter-spacing:-.04em;line-height:1;margin:0 0 1.5rem;
       background:linear-gradient(135deg,#FFFFFF 0%,#A78BFA 45%,#22D3EE 85%);background-size:200% auto;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 6s linear infinite;">Ready to vet your next creator?</h2>
-    <p style="font-size:17px;color:#5A5A78;line-height:1.7;margin:0 0 2.5rem;">Join brands using Vettd to make smarter influencer decisions.</p>
+    <p style="font-size:17px;color:var(--text-3);line-height:1.7;margin:0 0 2.5rem;">Join brands using Vettd to make smarter influencer decisions.</p>
     <a href="/Analyse" target="_self" style="display:inline-block;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:white;
       font-weight:700;font-size:16px;padding:19px 50px;border-radius:999px;text-decoration:none;
       box-shadow:0 0 64px rgba(124,58,237,.42);border:1px solid rgba(124,58,237,.5);transition:transform .3s,box-shadow .3s;"
@@ -561,31 +561,31 @@ st.markdown(r"""
   </div>
 </section>
 
-<footer style="border-top:1px solid #14142A;padding:3rem 3.5rem 2rem;position:relative;z-index:2;">
+<footer style="border-top:1px solid var(--border);padding:3rem 3.5rem 2rem;position:relative;z-index:2;">
   <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;align-items:start;">
     <div>
       <div class="brandmark" style="font-size:22px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.25rem;">✦ VETTD</div>
-      <a href="/About" target="_self" style="display:inline-flex;align-items:center;gap:10px;background:#101019;border:1px solid #1E1E32;
-        color:#EDEDF5;font-size:13px;font-weight:600;padding:11px 20px;border-radius:999px;text-decoration:none;transition:border-color .3s,background .3s;"
+      <a href="/About" target="_self" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);
+        color:var(--text-1);font-size:13px;font-weight:600;padding:11px 20px;border-radius:999px;text-decoration:none;transition:border-color .3s,background .3s;"
         onmouseover="this.style.borderColor='rgba(124,58,237,.5)';this.style.background='#14141F'"
-        onmouseout="this.style.borderColor='#1E1E32';this.style.background='#101019'">How Vettd works <span style="color:#A78BFA;">»</span></a>
-      <div style="font-size:12px;color:#3A3A52;margin-top:1.75rem;line-height:1.6;">© 2026 Vettd. All rights reserved.<br>Built in Mumbai. Made for brands everywhere.</div>
+        onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface)'">How Vettd works <span style="color:#A78BFA;">»</span></a>
+      <div style="font-size:12px;color:var(--text-4);margin-top:1.75rem;line-height:1.6;">© 2026 Vettd. All rights reserved.<br>Built in Mumbai. Made for brands everywhere.</div>
     </div>
     <div>
-      <div style="font-size:14px;font-weight:700;color:#EDEDF5;margin-bottom:1.1rem;">Product</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text-1);margin-bottom:1.1rem;">Product</div>
       <a href="/Analyse" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Analyse a creator</a>
       <a href="/Compare" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Compare creators</a>
       <a href="/#how" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">How it works</a>
       <a href="/About" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">About</a>
     </div>
     <div>
-      <div style="font-size:14px;font-weight:700;color:#EDEDF5;margin-bottom:1.1rem;">Policy</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text-1);margin-bottom:1.1rem;">Policy</div>
       <a href="/Legal" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Terms &amp; Conditions</a>
       <a href="/Legal" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Privacy Policy</a>
       <a href="/Legal" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Refund Policy</a>
     </div>
     <div>
-      <div style="font-size:14px;font-weight:700;color:#EDEDF5;margin-bottom:1.1rem;">Connect</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text-1);margin-bottom:1.1rem;">Connect</div>
       <a href="/Contact" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Contact us</a>
       <a href="/Founder" target="_self" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Founder</a>
       <a href="mailto:jadepinto96@gmail.com" style="display:block;font-size:13px;color:#7A7A98;text-decoration:none;margin-bottom:.8rem;">Email</a>

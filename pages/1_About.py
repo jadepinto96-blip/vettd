@@ -16,7 +16,7 @@ st.markdown("""
 .stat-tile { transition: transform .4s cubic-bezier(.16,1,.3,1), border-color .4s ease, box-shadow .4s ease; }
 .stat-tile:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(124,58,237,.18); }
 .score-row { transition: transform .4s cubic-bezier(.16,1,.3,1), border-color .4s ease, background .4s ease; }
-.score-row:hover { transform: translateX(8px); border-color: rgba(124,58,237,.4) !important; background:#101019 !important; }
+.score-row:hover { transform: translateX(8px); border-color: rgba(124,58,237,.4) !important; background:var(--surface) !important; }
 .score-row:hover .score-badge { transform: scale(1.12) rotate(-3deg); }
 .score-badge { transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
 </style>
@@ -32,14 +32,14 @@ score_components = [
 ]
 score_rows = ""
 for name, weight, desc, color in score_components:
-    score_rows += f"""<div class="score-row" style="display:flex;align-items:flex-start;gap:1rem;background:#0A0A14;border:1px solid #14142A;border-radius:14px;padding:1.25rem;">
+    score_rows += f"""<div class="score-row" style="display:flex;align-items:flex-start;gap:1rem;background:var(--bg-base);border:1px solid var(--border);border-radius:14px;padding:1.25rem;">
 <div class="score-badge" style="min-width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,{color}22,{color}11);border:1px solid {color}44;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:{color};">{weight}</div>
-<div><div style="font-size:14px;font-weight:600;color:#EDEDF5;margin-bottom:4px;">{name}</div>
+<div><div style="font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:4px;">{name}</div>
 <div style="font-size:13px;color:#6A6A90;line-height:1.6;">{desc}</div></div>
 </div>"""
 
 st.markdown(f"""
-<div style="font-family:'Inter',sans-serif;background:#0B0B16;color:#EDEDF5;min-height:100vh;">
+<div style="font-family:'Inter',sans-serif;background:var(--bg-deep);color:var(--text-1);min-height:100vh;">
 
 <nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,22,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
 <a href="/" target="_self" class="brandmark" style="font-size:21px;font-weight:700;letter-spacing:-.5px;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
@@ -78,12 +78,12 @@ st.markdown(f"""
 </div>
 </div>
 
-<div style="background:#0A0A14;border:1px solid #14142A;border-radius:24px;padding:2.5rem;margin-bottom:3rem;">
+<div style="background:var(--bg-base);border:1px solid var(--border);border-radius:24px;padding:2.5rem;margin-bottom:3rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;margin-bottom:1rem;">What Vettd does</div>
-<p style="font-size:16px;color:#8888A8;line-height:1.9;margin:0;">Vettd is a creator intelligence platform that gives brands a single, transparent score for any influencer — built from real engagement data, audience demographics, brand alignment, and predictive analytics. No more spreadsheets, no more guesswork, no more wasted budget.<br><br>From a creator's fake follower score to their audience's buying intent, Vettd surfaces everything a brand needs to make a confident decision — in seconds.</p>
+<p style="font-size:16px;color:var(--text-2);line-height:1.9;margin:0;">Vettd is a creator intelligence platform that gives brands a single, transparent score for any influencer — built from real engagement data, audience demographics, brand alignment, and predictive analytics. No more spreadsheets, no more guesswork, no more wasted budget.<br><br>From a creator's fake follower score to their audience's buying intent, Vettd surfaces everything a brand needs to make a confident decision — in seconds.</p>
 </div>
 
-<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1.25rem;">How the Vettd Score works</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text-3);margin-bottom:1.25rem;">How the Vettd Score works</div>
 <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:3rem;">
 {score_rows}
 </div>

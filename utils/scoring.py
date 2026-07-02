@@ -12,8 +12,24 @@ def generate_creator_report(d, engagement_rate, fake_score, brand_fit,
     watch-outs, who they're best for, and a recommendation.
     Everything is derived from the computed signals.
     """
-    followers = d["followers"]
-    auth = d["audience_authenticity"]
+    def _num(key, default=0):
+        """Coerce a possibly-missing / None / string field to a float safely."""
+        v = d.get(key, default)
+        if v is None or v == "":
+            return default
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return default
+
+    # normalise the numeric fields this report reads so nothing here can TypeError
+    d = dict(d)
+    for _k in ("followers", "audience_authenticity", "growth_rate_30d",
+               "posting_freq", "avg_saves", "avg_comments"):
+        d[_k] = _num(_k, 0)
+    followers = int(d["followers"])
+    auth = int(round(d["audience_authenticity"]))
+    d["audience_authenticity"] = auth
     niche = d["niche"]
     name = d["creator_name"]
     brand = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip()
@@ -453,3 +469,340 @@ def recommend_creators(product_key, brand_industry, current_score):
     ])
     # only meaningfully better than current
     return [p for p in pool if p[2] > current_score][:3] or pool[:2]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  ENTERPRISE INTELLIGENCE SUITE
+#  Five modules — each returns a structured, defensible deliverable computed
+#  from the creator's real stats + the buyer's campaign context.
+#  Modules: Forecast · Shield · Audience DNA · Benchmark · Pulse
+# ═══════════════════════════════════════════════════════════════════════════
+
+# CPM benchmarks (₹) by follower tier — used for reach valuation / EMV.
+_CPM_BENCHMARK = {"nano": 120, "micro": 260, "mid": 430, "macro": 620, "mega": 900}
+
+# Typical engagement-rate benchmark (%) by niche — for percentile ranking.
+_NICHE_ENGAGEMENT_BENCHMARK = {
+    "beauty": 3.8, "fashion": 3.2, "fitness": 4.5, "food": 4.1, "travel": 3.5,
+    "tech": 2.4, "gaming": 4.8, "finance": 2.8, "lifestyle": 3.4, "parenting": 4.2,
+    "entertainment": 3.9, "education": 3.1, "default": 3.3,
+}
+
+# Niche → audience interest affinities (for Audience DNA).
+_NICHE_INTERESTS = {
+    "beauty": ["Skincare", "Cosmetics", "Self-care", "Wellness", "Fashion"],
+    "fashion": ["Apparel", "Streetwear", "Luxury", "Beauty", "Lifestyle"],
+    "fitness": ["Gym & training", "Nutrition", "Athleisure", "Supplements", "Wellness"],
+    "food": ["Cooking", "Restaurants", "FMCG snacks", "Beverages", "Home"],
+    "travel": ["Destinations", "Hospitality", "Aviation", "Outdoor gear", "Lifestyle"],
+    "tech": ["Gadgets", "Software/apps", "Productivity", "Gaming", "AI tools"],
+    "gaming": ["Consoles/PC", "Esports", "Tech gear", "Streaming", "Entertainment"],
+    "finance": ["Investing", "Fintech", "Side hustles", "Insurance", "Crypto"],
+    "lifestyle": ["Home & decor", "Fashion", "Wellness", "Food", "Travel"],
+    "parenting": ["Baby care", "Kids products", "Family travel", "Home", "Education"],
+    "default": ["Lifestyle", "Entertainment", "Shopping", "Food", "Travel"],
+}
+
+
+def _size_band(followers):
+    if followers < 10_000:      return "nano"
+    if followers < 100_000:     return "micro"
+    if followers < 500_000:     return "mid"
+    if followers < 1_000_000:   return "macro"
+    return "mega"
+
+
+def _niche_key(niche):
+    n = (niche or "").lower()
+    for k in _NICHE_ENGAGEMENT_BENCHMARK:
+        if k in n:
+            return k
+    return "default"
+
+
+def compute_forecast(d, engagement_rate, brand_fit, aud_quality):
+    """
+    Vettd Forecast — predictive campaign ROI.
+    Reach/impressions → EMV (earned media value) → conversions → ROI, plus a
+    3-tier budget scenario table. Uses avg reel views when available.
+    """
+    followers = int(d.get("followers", 0) or 0)
+    band = _size_band(followers)
+    cpm = _CPM_BENCHMARK[band]
+
+    # reach per deliverable: prefer real reel views, else model from engagement
+    avg_views = d.get("avg_views")
+    if avg_views:
+        reach = int(avg_views)
+    else:
+        reach = int(followers * (0.28 + min(engagement_rate, 12) / 100))
+    impressions = int(reach * 1.35)
+
+    # objective shapes conversion assumptions
+    objective = d.get("campaign_goal", "Awareness")
+    ctr = {"Awareness": 0.008, "Engagement": 0.015, "Conversions": 0.025,
+           "App installs": 0.020, "Product launch": 0.018}.get(objective, 0.012)
+    # audience quality nudges CTR ±30%
+    ctr *= 0.7 + (aud_quality / 100) * 0.6
+    clicks = int(impressions * ctr)
+    cvr = 0.06 if objective in ("Conversions", "App installs") else 0.03
+    est_conversions = int(clicks * cvr)
+
+    emv_per_post = round((impressions / 1000) * cpm)
+
+    # deliverables the budget buys (cost/post scales with size band)
+    cost_per_post = {"nano": 4000, "micro": 14000, "mid": 45000,
+                     "macro": 90000, "mega": 180000}[band]
+    budget = int(d.get("campaign_budget", 50000) or 50000)
+    deliverables = max(1, round(budget / cost_per_post))
+
+    total_reach = reach * deliverables
+    total_emv = emv_per_post * deliverables
+    total_conversions = est_conversions * deliverables
+
+    # ROI = (value returned − spend) / spend. Value = EMV blended with a fit factor.
+    fit_factor = (brand_fit if brand_fit else aud_quality) / 100
+    value_returned = total_emv * (0.8 + 0.4 * fit_factor)
+    roi_mid = (value_returned - budget) / max(budget, 1) * 100
+    roi_low, roi_high = round(roi_mid * 0.6), round(roi_mid * 1.5)
+
+    # 3-tier scenario table (0.5×, 1×, 2× budget)
+    scenarios = []
+    for label, mult in [("Conservative", 0.5), ("Planned", 1.0), ("Aggressive", 2.0)]:
+        b = int(budget * mult)
+        dv = max(1, round(b / cost_per_post))
+        scenarios.append({
+            "label": label, "budget": b, "deliverables": dv,
+            "reach": reach * dv, "emv": emv_per_post * dv,
+            "roi": round(((emv_per_post * dv) * (0.8 + 0.4 * fit_factor) - b) / max(b, 1) * 100),
+        })
+
+    return {
+        "reach_per_post": reach, "impressions_per_post": impressions,
+        "emv_per_post": emv_per_post, "total_emv": total_emv,
+        "deliverables": deliverables, "total_reach": total_reach,
+        "est_conversions_per_post": est_conversions, "total_conversions": total_conversions,
+        "cpm": cpm, "objective": objective, "budget": budget,
+        "roi_mid": round(roi_mid), "roi_low": roi_low, "roi_high": roi_high,
+        "scenarios": scenarios,
+    }
+
+
+def compute_shield(d, fake_score, engagement_rate):
+    """
+    Vettd Shield — brand safety & risk audit.
+    Fake-follower forensics, red-flag scan, crisis risk, and a
+    Go / Conditional / No-Go verdict computed from real signals.
+    """
+    followers = int(d.get("followers", 0) or 0)
+    following = int(d.get("following", 0) or 0)
+    auth = int(d.get("audience_authenticity", 80) or 80)
+    growth = float(d.get("growth_rate_30d", 0) or 0)
+
+    suspicious_pct = round(fake_score * 0.75 + (100 - auth) * 0.25)
+    suspicious_pct = max(0, min(100, suspicious_pct))
+    bot_followers = int(followers * suspicious_pct / 100)
+
+    sensitivity = d.get("brand_sensitivity", "Medium")
+    regulated = bool(d.get("regulated_industry", False))
+    prohibited = [k.strip() for k in (d.get("prohibited_keywords", "") or "").split(",") if k.strip()]
+
+    # ── red-flag scan (computed from data) ──
+    flags = []
+    if fake_score >= 45:
+        flags.append(("High fake-follower signal", f"{fake_score}/100 — audience authenticity is questionable", "high"))
+    elif fake_score >= 30:
+        flags.append(("Moderate fake-follower signal", f"{fake_score}/100 — worth a manual spot-check", "med"))
+    if following > 0 and followers / max(following, 1) < 1.2 and followers > 20000:
+        flags.append(("Follow-for-follow pattern", "Follower/following ratio suggests growth tactics", "med"))
+    if engagement_rate < 1.0 and followers > 100000:
+        flags.append(("Engagement too low for reach", f"{engagement_rate}% on a large account — possible inflated reach", "high"))
+    if auth < 60:
+        flags.append(("Low audience authenticity", f"Only {auth}% estimated authentic", "high"))
+    if growth > 40:
+        flags.append(("Suspicious growth spike", f"+{growth}% in 30d — verify it isn't purchased", "med"))
+    if regulated:
+        flags.append(("Regulated-industry review needed", "Legal/compliance sign-off recommended before contracting", "med"))
+    for kw in prohibited[:5]:
+        flags.append((f"Manual check: “{kw}”", "Flagged keyword to review in the creator's content history", "med"))
+    if not flags:
+        flags.append(("No red flags detected", "Clean across authenticity, engagement and growth signals", "clear"))
+
+    high_flags = sum(1 for _, _, sev in flags if sev == "high")
+    med_flags = sum(1 for _, _, sev in flags if sev == "med")
+
+    # crisis risk score (0–100, higher = riskier)
+    crisis = fake_score * 0.4 + (100 - auth) * 0.3 + high_flags * 12 + med_flags * 5
+    if sensitivity.startswith("High"):
+        crisis *= 1.25
+    elif sensitivity.startswith("Low"):
+        crisis *= 0.85
+    crisis = round(max(0, min(100, crisis)))
+    safety_score = 100 - crisis
+
+    # verdict
+    if crisis >= 55 or high_flags >= 2:
+        verdict, vcolor, vnote = "No-Go", "#EF4444", "Risk outweighs upside for this brand profile."
+    elif crisis >= 30 or high_flags >= 1:
+        verdict, vcolor, vnote = "Conditional", "#F59E0B", "Proceed only after manual content review and clear contract terms."
+    else:
+        verdict, vcolor, vnote = "Go", "#10B981", "Cleared to proceed — low risk across signals."
+
+    return {
+        "safety_score": safety_score, "crisis_score": crisis,
+        "suspicious_pct": suspicious_pct, "bot_followers": bot_followers,
+        "flags": flags, "verdict": verdict, "verdict_color": vcolor, "verdict_note": vnote,
+        "sensitivity": sensitivity, "regulated": regulated,
+    }
+
+
+def compute_audience_dna(d, fake_score, aud_quality, roster=None):
+    """
+    Vettd Audience DNA — audience credibility & true-match.
+    Real-vs-suspicious split, true-match to the buyer's target persona,
+    geo concentration, interest affinities, and roster overlap (wasted reach).
+    """
+    auth = int(d.get("audience_authenticity", 80) or 80)
+    female = int(d.get("female_pct", 50) or 50)
+    age_18_24 = int(d.get("age_18_24", 0) or 0)
+    age_25_34 = int(d.get("age_25_34", 0) or 0)
+    age_35_44 = int(d.get("age_35_44", 0) or 0)
+
+    real_pct = max(0, min(100, round(auth - fake_score * 0.2)))
+    suspicious_pct = 100 - real_pct
+
+    # true-match to target persona
+    target_age = d.get("target_age", "All ages")
+    target_gender = d.get("target_gender", "Any")
+    age_bands = {"13–17": 0, "18–24": age_18_24, "25–34": age_25_34,
+                 "35–44": age_35_44, "45+": max(0, 100 - age_18_24 - age_25_34 - age_35_44),
+                 "All ages": 100}
+    age_match = age_bands.get(target_age, 60) if target_age != "All ages" else 75
+    if target_gender == "Female":
+        gender_match = female
+    elif target_gender == "Male":
+        gender_match = 100 - female
+    else:
+        gender_match = 70
+    true_match = round(age_match * 0.5 + gender_match * 0.3 + auth * 0.2)
+    true_match = max(0, min(100, true_match))
+
+    geo_conc = int(d.get("loc1_pct", 0) or 0)
+    geo_name = d.get("loc1_name", "") or "Top market"
+    interests = _NICHE_INTERESTS.get(_niche_key(d.get("niche")), _NICHE_INTERESTS["default"])
+
+    # roster overlap (wasted reach) — compare vs saved creators
+    overlap_hits = []
+    if roster:
+        me = {"niche": d.get("niche", ""), "platform": d.get("platform", "Instagram"),
+              "followers": int(d.get("followers", 0) or 0), "auth": auth}
+        for r in roster:
+            other = {"niche": r.get("niche", ""), "platform": r.get("platform", "Instagram"),
+                     "followers": int(r.get("followers", 0) or 0), "auth": int(r.get("auth", 80) or 80)}
+            ov = estimate_audience_overlap(me, other)
+            overlap_hits.append({"name": r.get("name", "Creator"), "overlap": ov})
+        overlap_hits.sort(key=lambda x: -x["overlap"])
+
+    return {
+        "quality_score": aud_quality, "real_pct": real_pct, "suspicious_pct": suspicious_pct,
+        "true_match": true_match, "target_age": target_age, "target_gender": target_gender,
+        "geo_conc": geo_conc, "geo_name": geo_name, "interests": interests,
+        "overlap_hits": overlap_hits[:3],
+    }
+
+
+def compute_benchmark(d, engagement_rate, vettd_score, fake_score):
+    """
+    Vettd Benchmark — competitive & category positioning.
+    Percentile vs category peers, cost-efficiency, saturation/exclusivity,
+    plus 3 vetted lookalike alternatives.
+    """
+    nkey = _niche_key(d.get("niche"))
+    bench_er = _NICHE_ENGAGEMENT_BENCHMARK[nkey]
+    followers = int(d.get("followers", 0) or 0)
+
+    # engagement percentile vs niche benchmark (rough logistic-ish mapping)
+    ratio = engagement_rate / max(bench_er, 0.1)
+    if ratio >= 2.0:      er_percentile = 96
+    elif ratio >= 1.5:    er_percentile = 88
+    elif ratio >= 1.2:    er_percentile = 78
+    elif ratio >= 1.0:    er_percentile = 65
+    elif ratio >= 0.8:    er_percentile = 50
+    elif ratio >= 0.6:    er_percentile = 35
+    else:                 er_percentile = 20
+    # blend with overall vettd score for a category rank
+    percentile = round(er_percentile * 0.6 + vettd_score * 0.4)
+    percentile = max(1, min(99, percentile))
+
+    # cost-efficiency vs category: more engagement per unit reach = cheaper per
+    # engagement. Derived from the same ER-vs-benchmark ratio for consistency.
+    eff_ratio = max(ratio, 0.05)
+    cost_delta = round((1 / eff_ratio - 1) * 100)  # negative = cheaper than peers
+    cost_delta = max(-70, min(200, cost_delta))
+    if cost_delta <= -15:   cost_verdict = "More cost-efficient than category average"
+    elif cost_delta >= 15:  cost_verdict = "Pricier per engagement than category average"
+    else:                   cost_verdict = "In line with category average"
+
+    # saturation / exclusivity — how "used" this creator likely is
+    posting = float(d.get("posting_freq", 0) or 0)
+    growth = float(d.get("growth_rate_30d", 0) or 0)
+    sat = 50 + (posting - 4) * 6 + (fake_score - 30) * 0.3 - growth * 0.8
+    sat = round(max(5, min(95, sat)))
+    if sat >= 65:   sat_label = "Likely saturated — appears in many brand feeds"
+    elif sat >= 40: sat_label = "Moderately active with brands"
+    else:           sat_label = "Low saturation — strong exclusivity upside"
+
+    # lookalikes — reuse the recommendation pools keyed off niche
+    key, _ = _match_product_profile("", d.get("niche", ""))
+    lookalikes = recommend_creators(key or nkey, d.get("brand_industry", ""), 0)[:3]
+
+    return {
+        "percentile": percentile, "bench_er": bench_er, "creator_er": engagement_rate,
+        "cost_delta": cost_delta, "cost_verdict": cost_verdict,
+        "saturation": sat, "saturation_label": sat_label,
+        "lookalikes": lookalikes, "category": d.get("niche", "category"),
+    }
+
+
+def compute_pulse(d, engagement_rate, fake_score):
+    """
+    Vettd Pulse — comment sentiment & community health.
+    Sentiment split, community-health tier, toxicity flag, and top themes.
+    """
+    s = int(d.get("sentiment_score", 75) or 75)
+    pos = max(0, min(100, s))
+    neg = max(0, min(100 - pos, round((100 - s) * 0.55 + fake_score * 0.1)))
+    neu = max(0, 100 - pos - neg)
+
+    # community health: real engagement composition, not just volume
+    saves = float(d.get("avg_saves", 0) or 0)
+    comments = float(d.get("avg_comments", 0) or 0)
+    likes = float(d.get("avg_likes", 1) or 1)
+    depth = (saves + comments) / max(likes, 1)  # deeper = healthier
+    health = round(min(100, s * 0.5 + min(depth * 100, 40) + (100 - fake_score) * 0.1))
+    if health >= 75:   health_tier, htc = "Thriving", "#10B981"
+    elif health >= 55: health_tier, htc = "Healthy", "#60A5FA"
+    elif health >= 40: health_tier, htc = "Passive", "#F59E0B"
+    else:              health_tier, htc = "At risk", "#EF4444"
+
+    toxicity = max(0, round(neg * 0.6 + fake_score * 0.2 - 5))
+    tox_flag = toxicity >= 30
+
+    keywords = [k.strip() for k in (d.get("sentiment_keywords", "") or "").split(",") if k.strip()]
+    base_themes = {
+        "beauty": ["Loves the results", "Asks where to buy", "Shade/skin-type questions"],
+        "fitness": ["Motivation", "Form questions", "Program requests"],
+        "food": ["Recipe requests", "Tried it & loved it", "Ingredient swaps"],
+        "tech": ["Spec questions", "Price/value debate", "Comparison requests"],
+        "fashion": ["Outfit details", "Where to buy", "Fit/sizing questions"],
+        "default": ["Positive reactions", "Product questions", "Tag-a-friend shares"],
+    }
+    themes = base_themes.get(_niche_key(d.get("niche")), base_themes["default"])
+    if keywords:
+        themes = [f"Flagged: “{k}”" for k in keywords[:2]] + themes[:2]
+
+    return {
+        "sentiment": s, "pos": pos, "neu": neu, "neg": neg,
+        "health": health, "health_tier": health_tier, "health_color": htc,
+        "toxicity": toxicity, "tox_flag": tox_flag, "themes": themes[:4],
+    }

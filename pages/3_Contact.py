@@ -24,7 +24,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div style="font-family:'Inter',sans-serif;background:#0B0B16;">
+<div style="font-family:'Inter',sans-serif;background:var(--bg-deep);">
 <nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,22,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
 <a href="/" target="_self" class="brandmark" style="font-size:21px;font-weight:700;letter-spacing:-.5px;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
 <div style="display:flex;gap:2.75rem;align-items:center;">
@@ -44,24 +44,24 @@ st.markdown("""
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:2.5rem;">
-<div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.25rem;text-align:center;">
+<div style="background:var(--bg-base);border:1px solid var(--border);border-radius:16px;padding:1.25rem;text-align:center;">
 <div style="font-size:22px;margin-bottom:8px;color:#A78BFA;">✦</div>
 <div style="font-size:13px;font-weight:600;color:#A78BFA;margin-bottom:4px;">General enquiries</div>
-<div style="font-size:12px;color:#5A5A78;">Questions about Vettd</div>
+<div style="font-size:12px;color:var(--text-3);">Questions about Vettd</div>
 </div>
-<div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.25rem;text-align:center;">
+<div style="background:var(--bg-base);border:1px solid var(--border);border-radius:16px;padding:1.25rem;text-align:center;">
 <div style="font-size:22px;margin-bottom:8px;color:#60A5FA;">◈</div>
 <div style="font-size:13px;font-weight:600;color:#60A5FA;margin-bottom:4px;">Enterprise sales</div>
-<div style="font-size:12px;color:#5A5A78;">Custom plans for agencies</div>
+<div style="font-size:12px;color:var(--text-3);">Custom plans for agencies</div>
 </div>
-<div style="background:#0A0A14;border:1px solid #14142A;border-radius:16px;padding:1.25rem;text-align:center;">
+<div style="background:var(--bg-base);border:1px solid var(--border);border-radius:16px;padding:1.25rem;text-align:center;">
 <div style="font-size:22px;margin-bottom:8px;color:#22D3EE;">⬡</div>
 <div style="font-size:13px;font-weight:600;color:#22D3EE;margin-bottom:4px;">Partnerships</div>
-<div style="font-size:12px;color:#5A5A78;">Integrations &amp; collaborations</div>
+<div style="font-size:12px;color:var(--text-3);">Integrations &amp; collaborations</div>
 </div>
 </div>
 
-<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#3A3A52;margin-bottom:1rem;">Send a message</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text-4);margin-bottom:1rem;">Send a message</div>
 </div>
 """, unsafe_allow_html=True)
 

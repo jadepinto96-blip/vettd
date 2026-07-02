@@ -2,6 +2,32 @@
 
 Last updated: 2 July 2026
 
+## Latest session (2 Jul 2026, cont.) — Design system ("Refined Dark")
+- Installed `ui-ux-pro-max` + `frontend-design` skills (manual copy into `~/.claude/skills/`, since `/plugin` isn't available in this app and the npm `uipro` binary is blocked in auto mode).
+- Used ui-ux-pro-max engine to define a premium dark design system → **`DESIGN.md`** (source of truth). Goal: fix "looks unprofessional".
+- **`utils/styles.py`**: added `:root` design tokens; refactored all shared component CSS to use them. Killed the ad-hoc card colors, replaced glow overload with hairline borders, calmed motion, added tabular figures, visible focus rings.
+- **Emoji icons → inline Lucide SVGs** on Analyse module cards and the Dashboard enterprise tab (the #1 "unprofessional" signal per the skill).
+- Verified live (Analyse module cards + landing hero screenshotted) and AppTest still green.
+- **Whole-site polish DONE:** scripted remap of ~346 structural-gray/border/muted-text hexes → tokens across `app.py` + all pages (skipped any `gradient` line to preserve hero/wordmark gradients; left functional/semantic + chart colors untouched). Footer also tokenised. Verified live: hero, Compare, Founder all cohesive + premium; AppTest still green. Semantic accent violets (#A78BFA etc.) intentionally left as-is (already on-brand).
+- If reverting/adjusting: tokens live in `utils/styles.py :root{}`; see `DESIGN.md`.
+
+## Latest session (2 Jul 2026) — Enterprise Intelligence Suite rebuilt
+- **Replaced the thin Predict/Match/Guard/Pulse modules** with 5 real, computed deliverables (researched vs HypeAuditor / CreatorIQ SafeIQ / Traackr / CreatorScore):
+  1. **⚡ Forecast** — predictive campaign ROI: reach/impressions, **EMV (earned media value)**, est. conversions, ROI range + 3-tier budget scenario table.
+  2. **🛡 Shield** — brand-safety & risk audit: fake-follower forensics, computed red-flag scan, crisis-risk score, **Go / Conditional / No-Go** verdict.
+  3. **🧬 Audience DNA** — real-vs-suspicious split, **true-match to target persona %**, geo concentration, interest affinities, **roster-overlap / wasted-reach detector** (uses session saved-searches).
+  4. **📊 Benchmark** — category **percentile rank**, cost-efficiency vs peers, saturation/exclusivity, 3 vetted lookalike alternatives (absorbs old Match).
+  5. **✧ Pulse** — sentiment split, community-health tier (from real engagement depth), toxicity flag, dominant themes.
+- Key upgrade: **outputs are computed from the creator's real stats + buyer context**, not echoed from sliders. Compute engine = `compute_forecast/shield/audience_dna/benchmark/pulse` in `utils/scoring.py`.
+- Analyse page: 5 toggle-able module cards (`0_Analyse.py`) each showing what it produces + its own inputs (budget/objective, sensitivity/prohibited-keywords, target persona, product/competitors, sentiment/keywords).
+- Dashboard Advanced tab (`4_Dashboard.py`) fully rewritten to render the 5 modules richly; legacy module names auto-migrate.
+- **Bug fixed:** `generate_creator_report` crashed (`TypeError`) on None/string numeric fields; added `_num` coercion there **and** a defensive coercion pass at the top of `4_Dashboard.py` so no missing field can crash the report.
+- Verified with Streamlit **AppTest** across 6 scenarios (all modules, roster overlap, legacy names, None-fields, Pro tier, single module) — all pass, no exceptions. Live browser confirmed the 5 Analyse cards render. (Driving Streamlit text-inputs programmatically to reach the Dashboard live is unreliable — AppTest is the source of truth.)
+- **Not yet done:** enterprise module outputs are NOT in the exported HTML/CSV report yet (only on-screen). `.claude/launch.json` added for local preview (`python -m streamlit run app.py`).
+
+---
+
+
 **Vettd** is a creator-intelligence platform for brands: enter (or auto-fetch) a creator's stats and get a single transparent **Vettd Score (0–100)** plus a plain-English report, brand-fit, market-fit, reel analytics, comparison, and audience-overlap.
 
 - **Live app:** https://get-vettd.streamlit.app

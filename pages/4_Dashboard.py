@@ -11,8 +11,9 @@ from utils.scoring import (
     calculate_brand_fit_score, calculate_audience_quality_score,
     calculate_growth_score, calculate_consistency_score,
     calculate_vettd_score, score_label, estimate_cpe,
-    calculate_market_fit_score, recommend_creators,
-    generate_creator_report
+    generate_creator_report,
+    compute_forecast, compute_shield, compute_audience_dna,
+    compute_benchmark, compute_pulse,
 )
 
 st.set_page_config(page_title="Vettd — Report", page_icon="✦", layout="wide")
@@ -29,8 +30,8 @@ header { display: none !important; }
 .block-container { padding: 2rem 3rem !important; max-width: 100% !important; }
 
 div[data-testid="stMetric"] {
-    background: #101019;
-    border: 1px solid #1A1A2E;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 14px;
     padding: 1rem 1.25rem;
     position: relative;
@@ -66,11 +67,11 @@ div[data-testid="stMetricValue"] {
 }
 
 .stTabs [data-baseweb="tab-list"] {
-    background: #101019;
+    background: var(--surface);
     border-radius: 12px;
     padding: 4px;
     gap: 4px;
-    border: 1px solid #12121E;
+    border: 1px solid var(--border);
 }
 .stTabs [data-baseweb="tab"] {
     background: transparent;
@@ -82,7 +83,7 @@ div[data-testid="stMetricValue"] {
     border: none;
 }
 .stTabs [aria-selected="true"] {
-    background: #0D0D1A !important;
+    background: var(--surface) !important;
     color: #A78BFA !important;
 }
 
@@ -91,15 +92,15 @@ div[data-testid="stMetricValue"] {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #0D0D1A;
+    border-bottom: 1px solid var(--surface);
     font-size: 13px;
 }
 .stat-row:last-child { border-bottom: none; }
 .stat-label { color: #444466; }
-.stat-value { color: #E8E8F0; font-weight: 600; }
+.stat-value { color: var(--text-1); font-weight: 600; }
 
 .progress-bar-bg {
-    background: #0D0D1A;
+    background: var(--surface);
     border-radius: 999px;
     height: 5px;
     margin: 3px 0 10px;
@@ -112,15 +113,15 @@ div[data-testid="stMetricValue"] {
 }
 
 .section-card {
-    background: #101019;
-    border: 1px solid #12121E;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1.5rem;
 }
 
 .brief-block {
-    background: #0B0B16;
-    border: 1px solid #12121E;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
     border-left: 3px solid #7C3AED;
     border-radius: 0 12px 12px 0;
     padding: 1rem 1.25rem;
@@ -130,9 +131,9 @@ div[data-testid="stMetricValue"] {
 }
 
 [data-testid="stDownloadButton"] button {
-    background: #101019 !important;
+    background: var(--surface) !important;
     color: #A78BFA !important;
-    border: 1px solid #1A1A2E !important;
+    border: 1px solid var(--border) !important;
     font-size: 13px !important;
     border-radius: 10px !important;
 }
@@ -142,9 +143,9 @@ div[data-testid="stMetricValue"] {
 # ── GUARD: redirect if no data ──
 if "vettd_data" not in st.session_state:
     st.markdown("""
-    <div style="text-align:center;padding:5rem;color:#333355;">
+    <div style="text-align:center;padding:5rem;color:var(--text-4);">
         <div style="font-size:48px;margin-bottom:1rem;">✦</div>
-        <div style="font-size:18px;font-weight:600;color:#E8E8F0;margin-bottom:8px;">No analysis data found</div>
+        <div style="font-size:18px;font-weight:600;color:var(--text-1);margin-bottom:8px;">No analysis data found</div>
         <div style="font-size:14px;color:#444466;margin-bottom:2rem;">Run an analysis first to see the dashboard.</div>
     </div>
     """, unsafe_allow_html=True)
@@ -158,6 +159,28 @@ TIERS = {"Starter": 1, "Pro": 2, "Enterprise": 3}
 
 def tier_gate(required):
     return TIERS[tier] >= TIERS[required]
+
+# ── DEFENSIVE COERCION ──
+# Core numeric fields must never be None/blank or downstream math crashes.
+# (Real inputs come from number_inputs, but saved searches or partial live
+# fetches can have gaps — coerce once here so the whole report is safe.)
+def _num(key, default=0):
+    v = d.get(key, default)
+    if v is None or v == "":
+        return default
+    try:
+        return float(v) if isinstance(v, str) and "." in v else (int(v) if not isinstance(v, float) else v)
+    except (TypeError, ValueError):
+        return default
+
+for _k, _dflt in (("followers", 0), ("following", 0), ("post_count", 0),
+                  ("posting_freq", 0), ("growth_rate_30d", 0), ("avg_likes", 0),
+                  ("avg_comments", 0), ("avg_saves", 0), ("avg_shares", 0),
+                  ("female_pct", 50), ("male_pct", 50), ("audience_authenticity", 80),
+                  ("age_18_24", 0), ("age_25_34", 0), ("age_35_44", 0),
+                  ("loc1_pct", 0), ("loc2_pct", 0), ("loc3_pct", 0),
+                  ("sentiment_score", 75), ("campaign_budget", 50000)):
+    d[_k] = _num(_k, _dflt)
 
 # ── CALCULATIONS ──
 engagement_rate = calculate_engagement_rate(d["followers"], d["avg_likes"], d["avg_comments"], d["avg_saves"])
@@ -188,17 +211,17 @@ score_colors = {
 score_color = score_colors.get(label, "#A78BFA")
 
 plot_bg = "rgba(0,0,0,0)"
-axis_color = "#0D0D1A"
+axis_color = "var(--surface)"
 text_color = "#444466"
 
 initials = "".join([w[0].upper() for w in d["creator_name"].split()[:2]])
-tier_colors = {"Starter": "#555570", "Pro": "#A78BFA", "Enterprise": "#06B6D4"}
+tier_colors = {"Starter": "var(--text-3)", "Pro": "#A78BFA", "Enterprise": "#06B6D4"}
 tc = tier_colors[tier]
 
 # ── NAV ──
 st.markdown(f"""
 <div style="display:flex;justify-content:space-between;align-items:center;
-    padding:1rem 0 1.5rem;border-bottom:1px solid #0D0D1A;margin-bottom:2rem;">
+    padding:1rem 0 1.5rem;border-bottom:1px solid var(--surface);margin-bottom:2rem;">
   <a href="/" target="_self" style="font-size:18px;font-weight:800;
       background:linear-gradient(135deg,#A78BFA,#60A5FA,#06B6D4);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ Vettd</a>
@@ -206,7 +229,7 @@ st.markdown(f"""
     <span style="background:rgba({','.join(str(int(tc.lstrip('#')[j:j+2],16)) for j in (0,2,4))},0.15);
         border:1px solid {tc}44;color:{tc};font-size:11px;font-weight:700;
         padding:4px 14px;border-radius:999px;letter-spacing:0.08em;">{tier}</span>
-    <span style="font-size:12px;color:#333355;">{datetime.now().strftime('%d %b %Y · %H:%M')}</span>
+    <span style="font-size:12px;color:var(--text-4);">{datetime.now().strftime('%d %b %Y · %H:%M')}</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -226,8 +249,8 @@ st.markdown(f"""
 <div style="display:flex;align-items:center;gap:16px;">
 {(f'<img src="{d["profile_pic"]}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #7C3AED;flex-shrink:0;" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';"/><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:none;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;">{initials}</div>') if d.get("profile_pic") else (f'<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;">{initials}</div>')}
 <div>
-<div style="font-size:22px;font-weight:800;color:#E8E8F0;letter-spacing:-0.5px;">{d['creator_name']}</div>
-<div style="font-size:12px;color:#5A5A78;margin-top:3px;">{d['username']} &nbsp;·&nbsp; {d['platform']} &nbsp;·&nbsp; {d['niche']} {_brand_suffix}</div>
+<div style="font-size:22px;font-weight:800;color:var(--text-1);letter-spacing:-0.5px;">{d['creator_name']}</div>
+<div style="font-size:12px;color:var(--text-3);margin-top:3px;">{d['username']} &nbsp;·&nbsp; {d['platform']} &nbsp;·&nbsp; {d['niche']} {_brand_suffix}</div>
 </div>
 </div>
 <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
@@ -235,7 +258,7 @@ st.markdown(f"""
 <svg width="140" height="140" viewBox="0 0 140 140">
 <defs><linearGradient id="ringgrad" x1="0%" y1="0%" x2="100%" y2="100%">
 <stop offset="0%" stop-color="#A78BFA"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient></defs>
-<circle cx="70" cy="70" r="{_R}" fill="none" stroke="#1A1A2E" stroke-width="10"/>
+<circle cx="70" cy="70" r="{_R}" fill="none" stroke="var(--border)" stroke-width="10"/>
 <circle class="score-ring-progress" cx="70" cy="70" r="{_R}" fill="none" stroke="url(#ringgrad)" stroke-width="10"
   stroke-linecap="round" stroke-dasharray="{_CIRC}" stroke-dashoffset="{_OFFSET}" transform="rotate(-90 70 70)"/>
 </svg>
@@ -243,7 +266,7 @@ st.markdown(f"""
 <span class="disp" style="font-size:46px;font-weight:800;line-height:1;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{vettd_score}</span>
 </div>
 </div>
-<div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5A5A78;margin-top:8px;">Vettd Score</div>
+<div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-top:8px;">Vettd Score</div>
 <div style="font-size:13px;font-weight:700;color:{score_color};margin-top:2px;">{label}</div>
 </div>
 </div>
@@ -294,7 +317,7 @@ if d.get("avg_views"):
     highlights.append((_human(d["avg_views"]), "Avg reel views",
                        f"avg of last {_rn} reels" if _rn else "live from recent reels", "#60A5FA"))
 highlights_html = "".join([
-    f'<div style="background:#101019;border:1px solid #14142A;border-radius:16px;padding:1.25rem;text-align:center;">'
+    f'<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.25rem;text-align:center;">'
     f'<div class="disp" style="font-size:30px;font-weight:800;line-height:1;background:linear-gradient(135deg,{clr},#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{val}</div>'
     f'<div style="font-size:11px;color:#6A6A90;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;">{lbl}</div>'
     f'<div style="font-size:12px;color:#A8A8C0;margin-top:6px;line-height:1.4;">{note}</div></div>'
@@ -307,31 +330,31 @@ st.markdown(f"""
 <div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#22D3EE;margin-bottom:6px;">Creator archetype</div>
 <div class="disp" style="font-size:30px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;">{rep['archetype']}</div>
 <div style="font-size:14px;color:#9090B0;margin-top:8px;line-height:1.6;font-style:italic;">{rep['archetype_desc']}</div>
-<div style="font-size:15px;color:#D2D2E4;margin-top:1.1rem;border-top:1px solid #1A1A2E;padding-top:1.1rem;">
-<b style="color:#EDEDF5;">{d['creator_name']}</b> · <b style="color:{score_color};">{_fit_phrase}</b>{_for} · <b style="color:#A78BFA;">{vettd_score}/100</b></div>
+<div style="font-size:15px;color:#D2D2E4;margin-top:1.1rem;border-top:1px solid var(--border);padding-top:1.1rem;">
+<b style="color:var(--text-1);">{d['creator_name']}</b> · <b style="color:{score_color};">{_fit_phrase}</b>{_for} · <b style="color:#A78BFA;">{vettd_score}/100</b></div>
 </div>
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;">{highlights_html}</div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
-<div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.5rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#10B981;margin-bottom:1rem;">Strengths</div>
 {strengths_html}
 </div>
-<div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.5rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#F59E0B;margin-bottom:1rem;">Watch-outs</div>
 {watchouts_html}
 </div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
-<div style="background:#101019;border:1px solid #14142A;border-radius:18px;padding:1.5rem;">
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.5rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#60A5FA;margin-bottom:.6rem;">Best suited for</div>
 <div style="font-size:14px;color:#C2C2D6;line-height:1.7;">{rep['best_for']}</div>
 </div>
-<div style="background:#101019;border:1px solid {score_color}55;border-radius:18px;padding:1.5rem;">
+<div style="background:var(--surface);border:1px solid {score_color}55;border-radius:18px;padding:1.5rem;">
 <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:{score_color};margin-bottom:.6rem;">Recommendation</div>
-<div style="font-size:14px;color:#EDEDF5;line-height:1.7;font-weight:500;">{rep['recommendation']}</div>
+<div style="font-size:14px;color:var(--text-1);line-height:1.7;font-weight:500;">{rep['recommendation']}</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
@@ -339,7 +362,7 @@ st.markdown(f"""
 # ── DEEP DIVE (full data & charts, below the readable report) ──
 st.markdown("""
 <div style="display:flex;align-items:center;gap:14px;margin:1rem 0 1.5rem;">
-<div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5A5A78;white-space:nowrap;">🔍 Deep dive — full data &amp; charts</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);white-space:nowrap;">🔍 Deep dive — full data &amp; charts</div>
 <div style="flex:1;height:1px;background:linear-gradient(90deg,#1A1A2E,transparent);"></div>
 </div>
 """, unsafe_allow_html=True)
@@ -363,9 +386,9 @@ metric_cells = "".join([
 ])
 st.markdown(f"""
 <style>
-.mstrip {{ display:grid; grid-template-columns:repeat(8,1fr); background:#101019;
-  border:1px solid #1A1A2E; border-radius:16px; overflow:hidden; }}
-.mstrip-cell {{ padding:1.1rem .75rem; text-align:center; border-right:1px solid #16162A;
+.mstrip {{ display:grid; grid-template-columns:repeat(8,1fr); background:var(--surface);
+  border:1px solid var(--border); border-radius:16px; overflow:hidden; }}
+.mstrip-cell {{ padding:1.1rem .75rem; text-align:center; border-right:1px solid var(--border);
   transition:background .3s ease; }}
 .mstrip-cell:last-child {{ border-right:none; }}
 .mstrip-cell:hover {{ background:#14141F; }}
@@ -383,12 +406,12 @@ col_score, col_main = st.columns([1, 3], gap="large")
 
 with col_score:
     st.markdown(f"""
-    <div style="background:#101019;border:1px solid #12121E;border-radius:20px;
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;
         padding:1.75rem;position:relative;overflow:hidden;">
       <div style="position:absolute;top:0;left:0;right:0;height:1px;
           background:linear-gradient(90deg,transparent,{score_color}55,transparent);"></div>
       <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-          color:#333355;margin-bottom:1.5rem;">Score breakdown</div>
+          color:var(--text-4);margin-bottom:1.5rem;">Score breakdown</div>
     """, unsafe_allow_html=True)
 
     components = {
@@ -410,7 +433,7 @@ with col_score:
             st.markdown(f"""
             <div style="margin-bottom:2px;">
               <div style="display:flex;justify-content:space-between;font-size:12px;">
-                <span style="color:#555570;">{k}</span>
+                <span style="color:var(--text-3);">{k}</span>
                 <span style="color:#888899;font-size:10px;">{weights[k]} &nbsp;
                   <span style="color:#A78BFA;font-weight:700;">{int(v)}</span>
                 </span>
@@ -421,7 +444,7 @@ with col_score:
             </div>
             """, unsafe_allow_html=True)
     else:
-        st.markdown('<div style="font-size:12px;color:#333355;padding:1rem 0;">Upgrade to Pro for score breakdown</div>', unsafe_allow_html=True)
+        st.markdown('<div style="font-size:12px;color:var(--text-4);padding:1rem 0;">Upgrade to Pro for score breakdown</div>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -433,7 +456,7 @@ with col_score:
     st.markdown(f"""
     <div class="section-card">
       <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-          color:#333355;margin-bottom:1rem;">Quick stats</div>
+          color:var(--text-4);margin-bottom:1rem;">Quick stats</div>
       <div class="stat-row"><span class="stat-label">Follower ratio</span>
         <span class="stat-value">{round(d['followers']/max(d['following'],1),1)}:1</span></div>
       <div class="stat-row"><span class="stat-label">Like:comment</span>
@@ -476,7 +499,7 @@ with col_main:
             st.markdown(f"""
             <div class="section-card" style="height:100%;">
               <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-                  color:#333355;margin-bottom:1rem;">Engagement signals</div>
+                  color:var(--text-4);margin-bottom:1rem;">Engagement signals</div>
               <div class="stat-row"><span class="stat-label">Engagement rate</span>
                 <span class="stat-value" style="color:#A78BFA;">{engagement_rate}%</span></div>
               <div class="stat-row"><span class="stat-label">Like:comment ratio</span>
@@ -535,7 +558,7 @@ with col_main:
             st.markdown(f"""
             <div class="section-card">
               <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-                  color:#333355;margin-bottom:1.25rem;">Top audience locations</div>
+                  color:var(--text-4);margin-bottom:1.25rem;">Top audience locations</div>
               <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
                 <span style="color:#888899;">{d['loc1_name']}</span>
                 <span style="color:#A78BFA;font-weight:600;">{d['loc1_pct']}%</span>
@@ -556,7 +579,7 @@ with col_main:
             </div>
             """, unsafe_allow_html=True)
         else:
-            st.markdown('<div style="text-align:center;padding:3rem;color:#333355;">Upgrade to Pro for full audience demographics.</div>', unsafe_allow_html=True)
+            st.markdown('<div style="text-align:center;padding:3rem;color:var(--text-4);">Upgrade to Pro for full audience demographics.</div>', unsafe_allow_html=True)
 
     with tab3:
         c1, c2 = st.columns([2, 3])
@@ -564,7 +587,7 @@ with col_main:
             st.markdown(f"""
             <div class="section-card">
               <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-                  color:#333355;margin-bottom:1rem;">Brand intelligence</div>
+                  color:var(--text-4);margin-bottom:1rem;">Brand intelligence</div>
               <div class="stat-row"><span class="stat-label">Brand-fit score</span>
                 <span class="stat-value" style="color:#A78BFA;">{f'{brand_fit}/100' if has_brand else 'add a brand'}</span></div>
               <div class="stat-row"><span class="stat-label">Niche</span>
@@ -609,126 +632,260 @@ with col_main:
 
     with tab4:
         if tier_gate("Enterprise"):
-            mods = d.get("modules") or ["Predict", "Match", "Guard", "Pulse"]
-            _fit_for_roi = brand_fit if has_brand else aud_quality
-            roi_estimate = round((engagement_rate * _fit_for_roi * d["audience_authenticity"]) / 1000, 1)
-            virality_score = round((d["avg_shares"] / max(d["followers"], 1)) * 1000 + d["growth_rate_30d"] * 5, 1)
-            loyalty_score = round((d["avg_saves"] + d["avg_comments"]) / max(d["followers"] / 100, 1), 1)
-            inactive_pct = round(100 - d["audience_authenticity"] * 0.8, 1)
+            # migrate any legacy module names from an older saved search
+            _legacy = {"Predict": "Forecast", "Guard": "Shield", "Match": "Benchmark"}
+            mods = [_legacy.get(m, m) for m in (d.get("modules") or ["Forecast", "Shield", "Audience", "Benchmark", "Pulse"])]
+
+            _svg = {
+                "zap": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+                "shield": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>',
+                "users": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+                "bars": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>',
+                "activity": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+            }
+            _MOD_DEF = {
+                "Forecast":  (_svg["zap"], "#F5A623", "Forecast", "Predictive Campaign ROI"),
+                "Shield":    (_svg["shield"], "#F0616D", "Shield", "Brand Safety & Risk Audit"),
+                "Audience":  (_svg["users"], "#22D3EE", "Audience DNA", "Credibility & True-Match"),
+                "Benchmark": (_svg["bars"], "#60A5FA", "Benchmark", "Competitive Positioning"),
+                "Pulse":     (_svg["activity"], "#34D399", "Pulse", "Sentiment & Community Health"),
+            }
+            _ic_wrap = 'display:inline-flex;width:13px;height:13px;vertical-align:-2px;margin-right:5px;'
 
             # active-module chips
-            _mdefs = {"Predict": ("⚡", "#A78BFA"), "Match": ("◈", "#60A5FA"), "Guard": ("⬡", "#22D3EE"), "Pulse": ("✧", "#A78BFA")}
             chips = "".join([
-                f'<span style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px;'
-                f'background:{clr}18;border:1px solid {clr}44;color:{clr};">{ic} {m}</span>'
-                if m in mods else
-                f'<span style="font-size:11px;padding:5px 12px;border-radius:999px;border:1px solid #16162A;color:#3A3A52;text-decoration:line-through;">{m}</span>'
-                for m, (ic, clr) in _mdefs.items()])
-            st.markdown(f'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center;">'
-                        f'<span style="font-size:11px;color:#5A5A78;text-transform:uppercase;letter-spacing:.1em;margin-right:4px;">Modules:</span>{chips}</div>',
+                (f'<span style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px;display:inline-flex;align-items:center;'
+                 f'background:{clr}14;border:1px solid {clr}33;color:{clr};"><span style="{_ic_wrap}">{ic}</span>{title}</span>')
+                if key in mods else
+                f'<span style="font-size:11px;padding:5px 12px;border-radius:999px;border:1px solid var(--border);color:var(--text-4);text-decoration:line-through;">{title}</span>'
+                for key, (ic, clr, title, _sub) in _MOD_DEF.items()])
+            st.markdown(f'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center;">'
+                        f'<span style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-right:4px;">Suite:</span>{chips}</div>',
                         unsafe_allow_html=True)
 
-            _cards = []
-            if "Predict" in mods:
-                _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:1rem;">⚡ Vettd Predict</div>'
-                    f'<div class="stat-row"><span class="stat-label">ROI potential</span><span class="stat-value" style="color:#10B981;">{min(roi_estimate,100)}/100</span></div>'
-                    f'<div class="stat-row"><span class="stat-label">Virality likelihood</span><span class="stat-value">{min(virality_score,100):.1f}/100</span></div>'
-                    f'<div class="stat-row"><span class="stat-label">Audience loyalty</span><span class="stat-value">{min(loyalty_score,100):.1f}/100</span></div>'
-                    f'<div class="stat-row"><span class="stat-label">Buyer intent</span><span class="stat-value">{d["buyer_intent"]}/100</span></div>'
-                    f'<div class="stat-row"><span class="stat-label">Est. cost / post</span><span class="stat-value">${est_cost_per_post:,.0f}</span></div></div>')
-            if "Guard" in mods:
-                _cr = d["crisis_risk"]; _crc = '#10B981' if _cr=='Low' else '#F59E0B' if _cr=='Medium' else '#EF4444'
-                _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#22D3EE;margin-bottom:1rem;">⬡ Vettd Guard</div>'
-                    f'<div class="stat-row"><span class="stat-label">Brand safety</span><span class="stat-value" style="color:#10B981;">{d["brand_safety"]}/100</span></div>'
-                    f'<div class="stat-row"><span class="stat-label">Fake follower score</span><span class="stat-value">{fake_score}/100</span></div>'
-                    f'<div class="stat-row"><span class="stat-label">Inactive follower est.</span><span class="stat-value" style="color:#F59E0B;">{inactive_pct}%</span></div>'
-                    f'<div class="stat-row"><span class="stat-label">Crisis risk</span><span class="stat-value" style="color:{_crc};">{_cr}</span></div></div>')
-            if "Pulse" in mods:
-                _s = d["sentiment_score"]; _pos=_s; _neg=max(0,100-_s-15); _neu=100-_pos-_neg
-                _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:1rem;">✧ Vettd Pulse</div>'
-                    f'<div class="stat-row"><span class="stat-label">Comment sentiment</span><span class="stat-value" style="color:#10B981;">{_s}/100</span></div>'
-                    f'<div style="margin-top:12px;display:flex;height:10px;border-radius:999px;overflow:hidden;">'
-                    f'<div style="width:{_pos}%;background:#10B981;"></div><div style="width:{_neu}%;background:#60A5FA;"></div><div style="width:{_neg}%;background:#EF4444;"></div></div>'
-                    f'<div style="display:flex;justify-content:space-between;font-size:11px;color:#5A5A78;margin-top:6px;"><span>Positive {_pos}%</span><span>Neutral {_neu}%</span><span>Negative {_neg}%</span></div></div>')
-            # campaign brief always included as a general Enterprise deliverable
-            _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Auto campaign brief</div>'
-                f'<div class="brief-block"><b style="color:#A78BFA;">Creator:</b> {d["creator_name"]} ({d["username"]})<br>'
-                f'<b style="color:#A78BFA;">Platform:</b> {d["platform"]} &nbsp;|&nbsp; <b style="color:#A78BFA;">Niche:</b> {d["niche"]}<br>'
-                f'<b style="color:#A78BFA;">Recommended for:</b> {d["brand_industry"] or d["niche"]} campaigns<br>'
-                f'<b style="color:#A78BFA;">Audience:</b> {d["female_pct"]}% female, peak age 18–34<br>'
-                f'<b style="color:#A78BFA;">Est. cost/post:</b> ${est_cost_per_post:,.0f}<br>'
-                f'<b style="color:#A78BFA;">Key strength:</b> {"High engagement" if engagement_rate > 5 else "Broad reach"}, {d["audience_authenticity"]}% authentic</div></div>')
-            st.markdown(f'<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">{"".join(_cards)}</div>', unsafe_allow_html=True)
+            def _mod_header(key):
+                ic, clr, title, sub = _MOD_DEF[key]
+                return (f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:1.1rem;">'
+                        f'<div style="width:34px;height:34px;border-radius:9px;background:{clr}1A;display:flex;'
+                        f'align-items:center;justify-content:center;color:{clr};"><span style="width:18px;height:18px;display:inline-flex;">{ic}</span></div>'
+                        f'<div><div style="font-size:15px;font-weight:700;color:var(--text-1);letter-spacing:-.3px;">{title}</div>'
+                        f'<div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;">{sub}</div></div></div>')
 
-            # ── VETTD MATCH: BRAND–PRODUCT MARKET FIT ──
-            if "Match" in mods:
-              # ── BRAND–PRODUCT MARKET FIT (flagship Enterprise metric) ──
-              mf_score, mf_breakdown, mf_key = calculate_market_fit_score(
-                  d.get("product_text", ""), d["brand_industry"], d["niche"],
-                  d["female_pct"], d["age_18_24"], d["age_25_34"], d["age_35_44"],
-                  d["audience_authenticity"], engagement_rate, d["followers"],
-              )
-              if mf_score >= 75:
-                  mf_color, mf_verdict = "#10B981", "Excellent product–audience match"
-              elif mf_score >= 60:
-                  mf_color, mf_verdict = "#60A5FA", "Good match"
-              elif mf_score >= 45:
-                  mf_color, mf_verdict = "#F59E0B", "Weak match — consider alternatives"
-              else:
-                  mf_color, mf_verdict = "#EF4444", "Poor match — not recommended"
+            # roster for overlap detection (this session's other saved searches)
+            _roster = [
+                {"name": h.get("name", "Creator"), "niche": h.get("niche", ""),
+                 "platform": h.get("data", {}).get("platform", "Instagram"),
+                 "followers": h.get("data", {}).get("followers", 0),
+                 "auth": h.get("data", {}).get("audience_authenticity", 80)}
+                for h in st.session_state.get("history", [])
+                if h.get("username") != d.get("username")
+            ]
 
-              product_label = (d.get("product_text") or d["brand_industry"] or "your product")
-
-              bars = "".join([
-                  f'<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
-                  f'<span style="color:#5A5A78;">{k}</span><span style="color:{mf_color};font-weight:600;">{v}</span></div>'
-                  f'<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:{v}%;background:linear-gradient(90deg,{mf_color},{mf_color}88);"></div></div></div>'
-                  for k, v in mf_breakdown.items()
-              ])
-
-              st.markdown(f"""
-              <div class="section-card" style="margin-top:1.5rem;position:relative;overflow:hidden;border-color:{mf_color}33;">
-                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,{mf_color},transparent);"></div>
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
-                  <div style="flex:1;min-width:260px;">
-                    <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:{mf_color};margin-bottom:6px;">★ Brand–Product Market Fit</div>
-                    <div style="font-size:13px;color:#8888A8;line-height:1.6;margin-bottom:1rem;">
-                      How well <b style="color:#EDEDF5;">{product_label}</b> fits {d['creator_name']}'s specific audience —
-                      niche, gender, age, authenticity and price-point alignment.</div>
-                    {bars}
+            # ═══ FORECAST ═══
+            if "Forecast" in mods:
+                fc = compute_forecast(d, engagement_rate, brand_fit, aud_quality)
+                _roi = fc["roi_mid"]; _roic = "#10B981" if _roi >= 0 else "#EF4444"
+                scen_rows = "".join([
+                    f'<tr style="border-top:1px solid var(--border);">'
+                    f'<td style="padding:9px 6px;color:#C2C2D6;font-weight:600;">{s["label"]}</td>'
+                    f'<td style="padding:9px 6px;text-align:right;color:var(--text-2);">₹{s["budget"]:,}</td>'
+                    f'<td style="padding:9px 6px;text-align:right;color:var(--text-2);">{s["deliverables"]}</td>'
+                    f'<td style="padding:9px 6px;text-align:right;color:var(--text-2);">{s["reach"]:,}</td>'
+                    f'<td style="padding:9px 6px;text-align:right;color:#A78BFA;">₹{s["emv"]:,}</td>'
+                    f'<td style="padding:9px 6px;text-align:right;color:{"#10B981" if s["roi"]>=0 else "#EF4444"};font-weight:700;">{s["roi"]:+d}%</td></tr>'
+                    for s in fc["scenarios"]])
+                st.markdown(f"""
+                <div class="section-card" style="margin-bottom:1.25rem;border-color:#FCD34D22;">
+                  {_mod_header("Forecast")}
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.25rem;">
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:var(--text-1);">{fc["reach_per_post"]:,}</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Reach / deliverable</div></div>
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:#A78BFA;">₹{fc["emv_per_post"]:,}</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">EMV / deliverable</div></div>
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:var(--text-1);">{fc["total_conversions"]:,}</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Est. conversions</div></div>
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:{_roic};">{_roi:+d}%</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Projected ROI</div></div>
                   </div>
-                  <div style="text-align:center;min-width:140px;">
-                    <div class="disp" style="font-size:56px;font-weight:800;line-height:1;color:{mf_color};">{mf_score}</div>
-                    <div style="font-size:12px;font-weight:600;color:{mf_color};max-width:150px;">{mf_verdict}</div>
+                  <div style="font-size:12px;color:var(--text-2);margin-bottom:.75rem;line-height:1.6;">
+                    For a <b style="color:var(--text-1);">₹{fc["budget"]:,}</b> {fc["objective"].lower()} campaign
+                    (~{fc["deliverables"]} deliverables): projected total reach <b style="color:var(--text-1);">{fc["total_reach"]:,}</b>,
+                    total EMV <b style="color:#A78BFA;">₹{fc["total_emv"]:,}</b>, ROI range
+                    <b style="color:{_roic};">{fc["roi_low"]:+d}% to {fc["roi_high"]:+d}%</b>.</div>
+                  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <thead><tr style="color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;font-size:10px;">
+                      <th style="text-align:left;padding:6px;">Scenario</th><th style="text-align:right;padding:6px;">Budget</th>
+                      <th style="text-align:right;padding:6px;">Posts</th><th style="text-align:right;padding:6px;">Reach</th>
+                      <th style="text-align:right;padding:6px;">EMV</th><th style="text-align:right;padding:6px;">ROI</th></tr></thead>
+                    <tbody>{scen_rows}</tbody>
+                  </table>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # ═══ SHIELD ═══
+            if "Shield" in mods:
+                sh = compute_shield(d, fake_score, engagement_rate)
+                _sevc = {"high": "#EF4444", "med": "#F59E0B", "clear": "#10B981"}
+                flag_html = "".join([
+                    f'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;">'
+                    f'<span style="color:{_sevc.get(sev,"#F59E0B")};flex-shrink:0;margin-top:1px;font-size:13px;">'
+                    f'{"●" if sev=="high" else "▲" if sev=="med" else "✓"}</span>'
+                    f'<span style="font-size:12.5px;color:#C2C2D6;line-height:1.5;"><b style="color:var(--text-1);">{ttl}</b> — {desc}</span></div>'
+                    for ttl, desc, sev in sh["flags"]])
+                st.markdown(f"""
+                <div class="section-card" style="margin-bottom:1.25rem;border-color:{sh["verdict_color"]}33;position:relative;overflow:hidden;">
+                  <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,{sh["verdict_color"]},transparent);"></div>
+                  {_mod_header("Shield")}
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.25rem;">
+                    <div style="flex:1;min-width:280px;">
+                      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem;">
+                        <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:12px;">
+                          <div style="font-size:20px;font-weight:800;color:#10B981;">{sh["safety_score"]}</div>
+                          <div style="font-size:10px;color:var(--text-3);margin-top:2px;">Safety score</div></div>
+                        <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:12px;">
+                          <div style="font-size:20px;font-weight:800;color:#F59E0B;">{sh["suspicious_pct"]}%</div>
+                          <div style="font-size:10px;color:var(--text-3);margin-top:2px;">Suspicious followers</div></div>
+                        <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:12px;">
+                          <div style="font-size:20px;font-weight:800;color:var(--text-1);">{sh["crisis_score"]}</div>
+                          <div style="font-size:10px;color:var(--text-3);margin-top:2px;">Crisis risk</div></div>
+                      </div>
+                      <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:.6rem;">Red-flag scan</div>
+                      {flag_html}
+                    </div>
+                    <div style="text-align:center;min-width:150px;background:{sh["verdict_color"]}12;border:1px solid {sh["verdict_color"]}44;border-radius:14px;padding:1.25rem 1rem;">
+                      <div style="font-size:10px;color:var(--text-2);text-transform:uppercase;letter-spacing:.1em;">Verdict</div>
+                      <div class="disp" style="font-size:26px;font-weight:800;color:{sh["verdict_color"]};margin:6px 0;">{sh["verdict"]}</div>
+                      <div style="font-size:11px;color:var(--text-2);line-height:1.5;">{sh["verdict_note"]}</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:8px;">~{sh["bot_followers"]:,} likely bot/inactive</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
-              # Recommended alternative creators when fit is weak
-              if mf_score < 60:
-                  recs = recommend_creators(mf_key, d["brand_industry"], mf_score)
-                  rec_cards = "".join([
-                      f'<div style="background:#0B0B16;border:1px solid #16162A;border-radius:12px;padding:1rem 1.25rem;flex:1;min-width:200px;">'
-                      f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
-                      f'<span style="font-size:14px;font-weight:700;color:#EDEDF5;">{handle}</span>'
-                      f'<span style="font-size:13px;font-weight:800;color:#10B981;">{fit}</span></div>'
-                      f'<div style="font-size:12px;color:#A78BFA;margin-bottom:4px;">{kind}</div>'
-                      f'<div style="font-size:11px;color:#5A5A78;line-height:1.5;">{why}</div></div>'
-                      for handle, kind, fit, why in recs
-                  ])
-                  st.markdown(f"""
-                  <div class="section-card" style="margin-top:1rem;border-color:rgba(16,185,129,0.2);">
-                    <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#10B981;margin-bottom:4px;">Recommended creators — better fit for {product_label}</div>
-                    <div style="font-size:12px;color:#5A5A78;margin-bottom:1rem;">{d['creator_name']} scored {mf_score}/100 for this product. These creators are a stronger match:</div>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;">{rec_cards}</div>
+            # ═══ AUDIENCE DNA ═══
+            if "Audience" in mods:
+                ad = compute_audience_dna(d, fake_score, aud_quality, roster=_roster)
+                _tmc = "#10B981" if ad["true_match"] >= 65 else "#F59E0B" if ad["true_match"] >= 45 else "#EF4444"
+                interest_tags = "".join([
+                    f'<span style="font-size:11px;padding:4px 11px;border-radius:999px;background:#22D3EE12;'
+                    f'border:1px solid #22D3EE33;color:#22D3EE;">{i}</span>' for i in ad["interests"]])
+                if ad["overlap_hits"]:
+                    ov_html = "".join([
+                        f'<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid var(--border);">'
+                        f'<span style="font-size:12.5px;color:#C2C2D6;">{o["name"]}</span>'
+                        f'<span style="font-size:12.5px;font-weight:700;color:{"#EF4444" if o["overlap"]>=65 else "#F59E0B" if o["overlap"]>=45 else "#10B981"};">{o["overlap"]}% overlap</span></div>'
+                        for o in ad["overlap_hits"]])
+                    ov_block = (f'<div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin:1rem 0 .3rem;">Roster overlap · wasted-reach detector</div>{ov_html}')
+                else:
+                    ov_block = '<div style="font-size:11px;color:var(--text-3);margin-top:1rem;">Analyse more creators this session to detect audience overlap across your roster.</div>'
+                st.markdown(f"""
+                <div class="section-card" style="margin-bottom:1.25rem;border-color:#22D3EE22;">
+                  {_mod_header("Audience")}
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1rem;">
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:var(--text-1);">{ad["quality_score"]}</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Audience Quality</div></div>
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:#10B981;">{ad["real_pct"]}%</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Real audience</div></div>
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:{_tmc};">{ad["true_match"]}%</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">True-match to target</div></div>
+                    <div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:14px;">
+                      <div style="font-size:22px;font-weight:800;color:var(--text-1);">{ad["geo_conc"]}%</div>
+                      <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Top geo{(' · ' + ad["geo_name"]) if ad["geo_name"] else ''}</div></div>
                   </div>
-                  """, unsafe_allow_html=True)
+                  <div style="font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:.75rem;">
+                    Target: <b style="color:var(--text-1);">{ad["target_gender"]}, {ad["target_age"]}</b> —
+                    {ad["true_match"]}% of this audience matches. {ad["suspicious_pct"]}% flagged suspicious.</div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:.5rem;">Interest affinities</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">{interest_tags}</div>
+                  {ov_block}
+                </div>
+                """, unsafe_allow_html=True)
+
+            # ═══ BENCHMARK ═══
+            if "Benchmark" in mods:
+                bm = compute_benchmark(d, engagement_rate, vettd_score, fake_score)
+                _cd = bm["cost_delta"]; _cdc = "#10B981" if _cd < 0 else "#EF4444" if _cd > 0 else "var(--text-2)"
+                look_cards = "".join([
+                    f'<div style="background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:1rem 1.15rem;flex:1;min-width:190px;">'
+                    f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+                    f'<span style="font-size:13.5px;font-weight:700;color:var(--text-1);">{h}</span>'
+                    f'<span style="font-size:13px;font-weight:800;color:#10B981;">{fit}</span></div>'
+                    f'<div style="font-size:12px;color:#60A5FA;margin-bottom:4px;">{kind}</div>'
+                    f'<div style="font-size:11px;color:var(--text-3);line-height:1.5;">{why}</div></div>'
+                    for h, kind, fit, why in bm["lookalikes"]])
+                st.markdown(f"""
+                <div class="section-card" style="margin-bottom:1.25rem;border-color:#60A5FA22;">
+                  {_mod_header("Benchmark")}
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.25rem;margin-bottom:1.25rem;">
+                    <div style="text-align:center;min-width:150px;">
+                      <div class="disp" style="font-size:52px;font-weight:800;line-height:1;color:#60A5FA;">{bm["percentile"]}<span style="font-size:20px;">th</span></div>
+                      <div style="font-size:12px;color:var(--text-2);">percentile in <b style="color:var(--text-1);">{bm["category"]}</b></div>
+                    </div>
+                    <div style="flex:1;min-width:260px;">
+                      <div class="stat-row"><span class="stat-label">Engagement vs category avg</span>
+                        <span class="stat-value">{bm["creator_er"]}% vs {bm["bench_er"]}%</span></div>
+                      <div class="stat-row"><span class="stat-label">Cost-efficiency</span>
+                        <span class="stat-value" style="color:{_cdc};">{_cd:+d}%</span></div>
+                      <div class="stat-row"><span class="stat-label">Brand saturation</span>
+                        <span class="stat-value">{bm["saturation"]}/100</span></div>
+                      <div style="font-size:12px;color:var(--text-2);line-height:1.6;margin-top:.75rem;">
+                        {bm["cost_verdict"]}. {bm["saturation_label"]}.</div>
+                    </div>
+                  </div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#10B981;margin-bottom:.6rem;">Vetted lookalike alternatives</div>
+                  <div style="display:flex;gap:12px;flex-wrap:wrap;">{look_cards}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # ═══ PULSE ═══
+            if "Pulse" in mods:
+                pl = compute_pulse(d, engagement_rate, fake_score)
+                theme_tags = "".join([
+                    f'<span style="font-size:11px;padding:4px 11px;border-radius:999px;background:#34D39912;'
+                    f'border:1px solid #34D39933;color:#34D399;">{t}</span>' for t in pl["themes"]])
+                _tox_c = "#EF4444" if pl["tox_flag"] else "#10B981"
+                st.markdown(f"""
+                <div class="section-card" style="margin-bottom:1.25rem;border-color:#34D39922;">
+                  {_mod_header("Pulse")}
+                  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+                    <div style="flex:1;min-width:280px;">
+                      <div style="display:flex;height:12px;border-radius:999px;overflow:hidden;">
+                        <div style="width:{pl["pos"]}%;background:#10B981;"></div>
+                        <div style="width:{pl["neu"]}%;background:#60A5FA;"></div>
+                        <div style="width:{pl["neg"]}%;background:#EF4444;"></div></div>
+                      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-top:7px;">
+                        <span style="color:#10B981;">Positive {pl["pos"]}%</span>
+                        <span style="color:#60A5FA;">Neutral {pl["neu"]}%</span>
+                        <span style="color:#EF4444;">Negative {pl["neg"]}%</span></div>
+                    </div>
+                    <div style="text-align:center;min-width:130px;">
+                      <div class="disp" style="font-size:24px;font-weight:800;color:{pl["health_color"]};">{pl["health_tier"]}</div>
+                      <div style="font-size:11px;color:var(--text-3);">community health · {pl["health"]}/100</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+                    <span style="font-size:12px;color:var(--text-2);">Toxicity signal:</span>
+                    <span style="font-size:12px;font-weight:700;color:{_tox_c};">{pl["toxicity"]}/100 {"⚠ flagged" if pl["tox_flag"] else "· clear"}</span>
+                  </div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:.5rem;">Dominant comment themes</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">{theme_tags}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            if not mods:
+                st.markdown('<div style="text-align:center;padding:3rem;color:var(--text-4);">No modules selected. Toggle modules on in the Analyse page to generate enterprise intelligence.</div>', unsafe_allow_html=True)
         else:
-            st.markdown('<div style="text-align:center;padding:3rem;color:#333355;">Upgrade to Enterprise for predictive intelligence, Brand–Product Market Fit, and campaign briefs.</div>', unsafe_allow_html=True)
+            st.markdown('<div style="text-align:center;padding:3rem;color:var(--text-4);">Upgrade to Enterprise for the full intelligence suite — Forecast, Shield, Audience DNA, Benchmark and Pulse.</div>', unsafe_allow_html=True)
 
 # ── EXPORTS + BACK BUTTON ──
-st.markdown('<div style="border-top:1px solid #0D0D1A;margin-top:2rem;padding-top:1.5rem;"></div>', unsafe_allow_html=True)
+st.markdown('<div style="border-top:1px solid var(--surface);margin-top:2rem;padding-top:1.5rem;"></div>', unsafe_allow_html=True)
 
 exp1, exp2, exp3, exp4 = st.columns(4)
 report_data = {
@@ -761,7 +918,7 @@ _brand_row = f'<span>Brand&nbsp;·&nbsp;<b>{_brand}</b></span>' if has_brand els
 html_report = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <title>Vettd report — {d['creator_name']}</title>
 <style>
-*{{box-sizing:border-box;margin:0}} body{{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a2e;background:#f4f4f8;padding:40px;}}
+*{{box-sizing:border-box;margin:0}} body{{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--border);background:#f4f4f8;padding:40px;}}
 .wrap{{max-width:820px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.08)}}
 .hd{{background:linear-gradient(135deg,#7C3AED,#4F46E5);color:#fff;padding:28px 36px;display:flex;justify-content:space-between;align-items:center}}
 .hd .logo{{font-size:22px;font-weight:800;letter-spacing:-.5px}} .hd .dt{{font-size:12px;opacity:.8}}
