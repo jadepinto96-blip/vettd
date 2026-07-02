@@ -398,7 +398,7 @@ def _plan_card(name,price,period,searches,color,bg,featured,flist):
     popular = '<div style="position:absolute;top:16px;right:16px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#A78BFA;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.1em;">POPULAR</div>' if featured else ""
     checks = "".join([f'<div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#8888A8;margin-bottom:11px;"><span style="width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,{color},{color}88);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700;">✓</span>{f}</div>' for f in flist])
     price_html = (f'<span class="disp" style="font-size:42px;font-weight:700;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#5A5A78;">{period}</span>' if period else f'<span class="disp" style="font-size:42px;font-weight:700;color:#EDEDF5;">{price}</span>')
-    cta = {'Free': 'Start free →', 'Starter': 'Get Starter →', 'Pro': 'Get Pro →'}.get(name, 'Contact us →')
+    cta = {'Free': 'Try it free →', 'Starter': 'Get Starter →', 'Pro': 'Get Pro →'}.get(name, 'Contact us →')
     btn_bg = 'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'
     btn_border = 'none' if featured else '1px solid #16162A'
     btn_color = 'white' if featured else '#A8A8C0'
