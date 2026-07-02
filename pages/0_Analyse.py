@@ -199,54 +199,66 @@ with col_center:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── SECTION 1: CREATOR ──
-    st.markdown('<div class="input-label">Creator details</div>', unsafe_allow_html=True)
-    c1, c2 = st.columns(2)
-    with c1:
-        creator_name = st.text_input("Creator name (optional)", placeholder="Emma Williams")
-    with c2:
-        username = st.text_input("Username", placeholder="@emmalifestyle")
-    c3, c4, c5 = st.columns(3)
-    with c3:
-        platform = st.selectbox("Platform", ["Instagram", "TikTok", "YouTube"])
-    with c4:
-        _niches = ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Gaming", "Lifestyle", "Finance", "Parenting", "Other"]
-        _guess = (st.session_state.get("fetched") or {}).get("niche_guess")
-        niche = st.selectbox("Niche", _niches, index=_niches.index(_guess) if _guess in _niches else 0)
-    with c5:
-        brand_industry = st.text_input("Your brand industry", placeholder="e.g. Fashion")
-    brand_name = st.text_input("Your brand name (used in the report)", placeholder="e.g. Malabar Gold & Diamonds")
+    # premium card styling for the input sections
+    st.markdown("""<style>
+    [data-testid="stVerticalBlockBorderWrapper"]{background:#101019;border:1px solid #1C1C30!important;border-radius:18px;margin-bottom:.5rem;transition:border-color .3s ease;}
+    [data-testid="stVerticalBlockBorderWrapper"]:hover{border-color:#26264A!important;}
+    [data-testid="stVerticalBlockBorderWrapper"]>div>div[data-testid="stVerticalBlock"]{padding:1.4rem 1.6rem;}
+    .input-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9090C0;display:flex;align-items:center;gap:9px;margin-bottom:.4rem;}
+    .input-label::before{content:"";width:16px;height:3px;border-radius:3px;background:linear-gradient(90deg,#7C3AED,#22D3EE);}
+    </style>""", unsafe_allow_html=True)
 
-    # ── live data fetch (auto-fill when an API key is configured) ──
+    if "reels_n" not in st.session_state:
+        st.session_state["reels_n"] = 10
     _provider = active_provider()
-    fcol0, fcol1, fcol2 = st.columns([1, 1, 2])
-    with fcol0:
-        reels_n = st.selectbox("Average over", [5, 10, 15, 20],
-                               index=1, format_func=lambda n: f"Last {n} reels")
-    with fcol1:
-        if _provider == "manual":
-            st.button("⚡ Fetch live data", use_container_width=True, disabled=True,
-                      help="Add a MODASH_API_KEY or RAPIDAPI_KEY in Streamlit secrets to enable live fetch.")
-        else:
-            if st.button("⚡ Fetch live data", use_container_width=True):
-                with st.spinner(f"Fetching @{username.lstrip('@')} (last {reels_n} reels)…"):
-                    prof = fetch_creator(username, platform, reels_n)
-                if prof:
-                    st.session_state.fetched = prof
-                    st.rerun()
-                else:
-                    st.session_state.fetched = None
-                    st.warning("Couldn't fetch that profile — fill in the details manually.")
-    with fcol2:
-        if _provider == "manual":
-            st.caption("Live fetch off — running on manual input. Add an API key in secrets to auto-fill.")
-        else:
-            f = st.session_state.get("fetched")
-            if f:
-                tag = "full data" if not f.get("_partial") else "basic stats only"
-                st.caption(f"✓ Auto-filled from {f['_source']} ({tag}). Edit any field below.")
+
+    # ── CREATOR DETAILS ──
+    with st.container(border=True):
+        st.markdown('<div class="input-label">Creator details</div>', unsafe_allow_html=True)
+        c1, c2 = st.columns(2)
+        with c1:
+            creator_name = st.text_input("Creator name (optional)", placeholder="Emma Williams")
+        with c2:
+            username = st.text_input("Username", placeholder="@emmalifestyle")
+        c3, c4, c5 = st.columns(3)
+        with c3:
+            platform = st.selectbox("Platform", ["Instagram", "TikTok", "YouTube"])
+        with c4:
+            _niches = ["Fashion", "Fitness", "Beauty", "Tech", "Food", "Travel", "Gaming", "Lifestyle", "Finance", "Parenting", "Other"]
+            _guess = (st.session_state.get("fetched") or {}).get("niche_guess")
+            niche = st.selectbox("Niche", _niches, index=_niches.index(_guess) if _guess in _niches else 0)
+        with c5:
+            brand_industry = st.text_input("Your brand industry", placeholder="e.g. Fashion")
+        brand_name = st.text_input("Your brand name (used in the report)", placeholder="e.g. Malabar Gold & Diamonds")
+
+    # ── LIVE FETCH ──
+    reels_n = st.session_state.get("reels_n", 10)
+    with st.container(border=True):
+        fc1, fc2 = st.columns([1, 2])
+        with fc1:
+            if _provider == "manual":
+                st.button("⚡ Fetch live data", use_container_width=True, disabled=True,
+                          help="Add a MODASH_API_KEY or RAPIDAPI_KEY in Streamlit secrets to enable live fetch.")
             else:
-                st.caption(f"Live fetch ready ({_provider}). Enter a username and click fetch.")
+                if st.button("⚡ Fetch live data", use_container_width=True):
+                    with st.spinner(f"Fetching @{username.lstrip('@')} (last {reels_n} reels)…"):
+                        prof = fetch_creator(username, platform, reels_n)
+                    if prof:
+                        st.session_state.fetched = prof
+                        st.rerun()
+                    else:
+                        st.session_state.fetched = None
+                        st.warning("Couldn't fetch that profile — fill in the details manually.")
+        with fc2:
+            if _provider == "manual":
+                st.caption("Live fetch off — running on manual input. Add an API key in secrets to auto-fill.")
+            else:
+                f = st.session_state.get("fetched")
+                if f:
+                    tag = "full data" if not f.get("_partial") else "basic stats only"
+                    st.caption(f"✓ Auto-filled from {f['_source']} ({tag}). Edit any field below.")
+                else:
+                    st.caption(f"Live fetch ready ({_provider}). Enter a username and click fetch.")
 
     # helper: prefer fetched value, else fall back to default
     _f = st.session_state.get("fetched") or {}
@@ -254,57 +266,63 @@ with col_center:
         v = _f.get(key)
         return v if v is not None else default
 
-    # ── SECTION 2: PROFILE ──
-    st.markdown('<div class="input-label">Profile stats</div>', unsafe_allow_html=True)
-    p1, p2, p3, p4, p5 = st.columns(5)
-    with p1:
-        followers = st.number_input("Followers", min_value=0, value=int(pref("followers", 150000)), step=1000)
-    with p2:
-        following = st.number_input("Following", min_value=0, value=int(pref("following", 800)), step=10)
-    with p3:
-        post_count = st.number_input("Total posts", min_value=0, value=int(pref("post_count", 420)))
-    with p4:
-        posting_freq = st.number_input("Posts per week", min_value=0.0, value=float(pref("posting_freq", 4.0)), step=0.5)
-    with p5:
-        growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=float(pref("growth_rate_30d", 2.5)), step=0.1)
+    # ── PROFILE STATS ──
+    with st.container(border=True):
+        st.markdown('<div class="input-label">Profile stats</div>', unsafe_allow_html=True)
+        p1, p2, p3, p4, p5 = st.columns(5)
+        with p1:
+            followers = st.number_input("Followers", min_value=0, value=int(pref("followers", 150000)), step=1000)
+        with p2:
+            following = st.number_input("Following", min_value=0, value=int(pref("following", 800)), step=10)
+        with p3:
+            post_count = st.number_input("Total posts", min_value=0, value=int(pref("post_count", 420)))
+        with p4:
+            posting_freq = st.number_input("Posts per week", min_value=0.0, value=float(pref("posting_freq", 4.0)), step=0.5)
+        with p5:
+            growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=float(pref("growth_rate_30d", 2.5)), step=0.1)
 
-    # ── SECTION 3: REEL ENGAGEMENT ──
-    st.markdown('<div class="input-label">Reel engagement</div>', unsafe_allow_html=True)
-    e1, e2, e3, e4 = st.columns(4)
-    with e1:
-        avg_likes = st.number_input("Avg likes / reel", min_value=0, value=int(pref("avg_likes", 8500)), step=100)
-    with e2:
-        avg_comments = st.number_input("Avg comments / reel", min_value=0, value=int(pref("avg_comments", 320)), step=10)
-    with e3:
-        avg_saves = st.number_input("Avg saves / reel", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
-    with e4:
-        avg_shares = st.number_input("Avg shares / reel", min_value=0, value=int(pref("avg_shares", 450)), step=10)
+    # ── REEL ENGAGEMENT (reels-to-average lives here now) ──
+    with st.container(border=True):
+        st.markdown('<div class="input-label">Reel engagement</div>', unsafe_allow_html=True)
+        e1, e2, e3, e4 = st.columns(4)
+        with e1:
+            avg_likes = st.number_input("Avg likes / reel", min_value=0, value=int(pref("avg_likes", 8500)), step=100)
+        with e2:
+            avg_comments = st.number_input("Avg comments / reel", min_value=0, value=int(pref("avg_comments", 320)), step=10)
+        with e3:
+            avg_saves = st.number_input("Avg saves / reel", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
+        with e4:
+            avg_shares = st.number_input("Avg shares / reel", min_value=0, value=int(pref("avg_shares", 450)), step=10)
+        rr1, rr2 = st.columns([1, 3])
+        with rr1:
+            reels_n = st.selectbox("Average metrics over", [5, 10, 15, 20], key="reels_n",
+                                   format_func=lambda n: f"Last {n} reels")
 
-    # ── SECTION 4: AUDIENCE (Pro+) ──
+    # ── AUDIENCE (Pro+) ──
     if tier_gate("Pro"):
-        st.markdown('<div class="input-label">Audience demographics — Pro</div>', unsafe_allow_html=True)
-        a1, a2, a3 = st.columns(3)
-        with a1:
-            female_pct = st.slider("Female audience %", 0, 100, int(pref("female_pct", 65)))
-            male_pct = 100 - female_pct
-            st.caption(f"Male {male_pct}% · Female {female_pct}%")
-        with a2:
-            audience_authenticity = st.slider("Audience authenticity %", 0, 100, int(pref("audience_authenticity", 82)))
-        with a3:
-            age_18_24 = st.slider("Age 18–24 %", 0, 100, int(pref("age_18_24", 28)))
-            age_25_34 = st.slider("Age 25–34 %", 0, 100, int(pref("age_25_34", 35)))
-            age_35_44 = st.slider("Age 35–44 %", 0, 100, int(pref("age_35_44", 20)))
-
-        l1, l2, l3 = st.columns(3)
-        with l1:
-            loc1_name = st.text_input("Top location 1", value=pref("loc1_name", "United Kingdom"))
-            loc1_pct = st.slider("Location 1 %", 0, 100, int(pref("loc1_pct", 42)))
-        with l2:
-            loc2_name = st.text_input("Top location 2", value=pref("loc2_name", "United States"))
-            loc2_pct = st.slider("Location 2 %", 0, 100, int(pref("loc2_pct", 28)))
-        with l3:
-            loc3_name = st.text_input("Top location 3", value=pref("loc3_name", "Australia"))
-            loc3_pct = st.slider("Location 3 %", 0, 100, int(pref("loc3_pct", 12)))
+        with st.container(border=True):
+            st.markdown('<div class="input-label">Audience demographics — Pro</div>', unsafe_allow_html=True)
+            a1, a2, a3 = st.columns(3)
+            with a1:
+                female_pct = st.slider("Female audience %", 0, 100, int(pref("female_pct", 65)))
+                male_pct = 100 - female_pct
+                st.caption(f"Male {male_pct}% · Female {female_pct}%")
+            with a2:
+                audience_authenticity = st.slider("Audience authenticity %", 0, 100, int(pref("audience_authenticity", 82)))
+            with a3:
+                age_18_24 = st.slider("Age 18–24 %", 0, 100, int(pref("age_18_24", 28)))
+                age_25_34 = st.slider("Age 25–34 %", 0, 100, int(pref("age_25_34", 35)))
+                age_35_44 = st.slider("Age 35–44 %", 0, 100, int(pref("age_35_44", 20)))
+            l1, l2, l3 = st.columns(3)
+            with l1:
+                loc1_name = st.text_input("Top location 1", value=pref("loc1_name", "United Kingdom"))
+                loc1_pct = st.slider("Location 1 %", 0, 100, int(pref("loc1_pct", 42)))
+            with l2:
+                loc2_name = st.text_input("Top location 2", value=pref("loc2_name", "United States"))
+                loc2_pct = st.slider("Location 2 %", 0, 100, int(pref("loc2_pct", 28)))
+            with l3:
+                loc3_name = st.text_input("Top location 3", value=pref("loc3_name", "Australia"))
+                loc3_pct = st.slider("Location 3 %", 0, 100, int(pref("loc3_pct", 12)))
     else:
         female_pct, male_pct = 60, 40
         audience_authenticity = 75
@@ -313,32 +331,32 @@ with col_center:
         loc2_name, loc2_pct = "United States", 28
         loc3_name, loc3_pct = "Australia", 12
 
-    # ── SECTION 5: ENTERPRISE MODULES ──
+    # ── ENTERPRISE MODULES ──
     ALL_MODULES = ["Predict", "Match", "Guard", "Pulse"]
     if tier_gate("Enterprise"):
-        st.markdown('<div class="input-label">Enterprise modules — choose what to run</div>', unsafe_allow_html=True)
-        modules = st.multiselect(
-            "Active modules",
-            ALL_MODULES, default=ALL_MODULES,
-            format_func=lambda m: {"Predict": "⚡ Predict — ROI forecast",
-                                   "Match": "◈ Match — product-fit + recommendations",
-                                   "Guard": "⬡ Guard — safety & fake-follower risk",
-                                   "Pulse": "✧ Pulse — comment sentiment"}[m],
-        )
-        # module-specific inputs (only show what the chosen modules need)
-        if "Match" in modules:
-            product_text = st.text_input("Match · product you're selling",
-                                         placeholder="e.g. vitamin C serum, running shoes, budgeting app")
-        else:
-            product_text = ""
-        g1, g2, g3 = st.columns(3)
-        with g1:
-            buyer_intent = st.slider("Predict · buyer intent", 0, 100, 65) if "Predict" in modules else 60
-        with g2:
-            brand_safety = st.slider("Guard · brand safety", 0, 100, 88) if "Guard" in modules else 80
-            crisis_risk = st.selectbox("Guard · crisis risk", ["Low", "Medium", "High"]) if "Guard" in modules else "Low"
-        with g3:
-            sentiment_score = st.slider("Pulse · comment sentiment", 0, 100, 78) if "Pulse" in modules else 70
+        with st.container(border=True):
+            st.markdown('<div class="input-label">Enterprise modules — choose what to run</div>', unsafe_allow_html=True)
+            modules = st.multiselect(
+                "Active modules",
+                ALL_MODULES, default=ALL_MODULES,
+                format_func=lambda m: {"Predict": "⚡ Predict — ROI forecast",
+                                       "Match": "◈ Match — product-fit + recommendations",
+                                       "Guard": "⬡ Guard — safety & fake-follower risk",
+                                       "Pulse": "✧ Pulse — comment sentiment"}[m],
+            )
+            if "Match" in modules:
+                product_text = st.text_input("Match · product you're selling",
+                                             placeholder="e.g. vitamin C serum, running shoes, budgeting app")
+            else:
+                product_text = ""
+            g1, g2, g3 = st.columns(3)
+            with g1:
+                buyer_intent = st.slider("Predict · buyer intent", 0, 100, 65) if "Predict" in modules else 60
+            with g2:
+                brand_safety = st.slider("Guard · brand safety", 0, 100, 88) if "Guard" in modules else 80
+                crisis_risk = st.selectbox("Guard · crisis risk", ["Low", "Medium", "High"]) if "Guard" in modules else "Low"
+            with g3:
+                sentiment_score = st.slider("Pulse · comment sentiment", 0, 100, 78) if "Pulse" in modules else 70
     else:
         modules = []
         buyer_intent, sentiment_score, brand_safety, crisis_risk = 60, 70, 80, "Low"
