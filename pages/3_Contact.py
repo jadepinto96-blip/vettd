@@ -26,12 +26,12 @@ st.markdown("""
 st.markdown("""
 <div style="font-family:'Inter',sans-serif;background:#0B0B16;">
 <nav style="position:sticky;top:0;z-index:100;padding:1.1rem 3.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(11,11,22,.75);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);">
-<a href="/" target="_self" class="brandmark" style="font-size:20px;font-weight:700;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
-<div style="display:flex;gap:2.5rem;align-items:center;">
+<a href="/" target="_self" class="brandmark" style="font-size:21px;font-weight:700;letter-spacing:-.5px;background:linear-gradient(135deg,#C4B5FD,#60A5FA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;">✦ VETTD</a>
+<div style="display:flex;gap:2.75rem;align-items:center;">
 <a href="/About" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">About</a>
 <a href="/Founder" target="_self" class="navlink" style="font-size:13px;color:#7A7A98;text-decoration:none;">Founder</a>
 <a href="/Contact" target="_self" style="font-size:13px;color:#A78BFA;text-decoration:none;font-weight:600;">Contact</a>
-<a href="/Analyse" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;padding:9px 22px;border-radius:999px;background:linear-gradient(135deg,#7C3AED,#4F46E5);border:1px solid rgba(124,58,237,.5);">Launch app →</a>
+<a href="/Analyse" target="_self" style="font-size:13px;font-weight:600;color:white;text-decoration:none;padding:9px 22px;border-radius:999px;background:linear-gradient(135deg,#7C3AED,#4F46E5);border:1px solid rgba(124,58,237,.5);box-shadow:0 0 24px rgba(124,58,237,.3);">Launch app →</a>
 </div>
 </nav>
 </div>
