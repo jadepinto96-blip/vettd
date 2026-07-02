@@ -584,117 +584,120 @@ with col_main:
 
     with tab4:
         if tier_gate("Enterprise"):
+            mods = d.get("modules") or ["Predict", "Match", "Guard", "Pulse"]
             roi_estimate = round((engagement_rate * brand_fit * d["audience_authenticity"]) / 1000, 1)
             virality_score = round((d["avg_shares"] / max(d["followers"], 1)) * 1000 + d["growth_rate_30d"] * 5, 1)
             loyalty_score = round((d["avg_saves"] + d["avg_comments"]) / max(d["followers"] / 100, 1), 1)
             inactive_pct = round(100 - d["audience_authenticity"] * 0.8, 1)
 
-            c1, c2 = st.columns(2)
-            with c1:
-                st.markdown(f"""
-                <div class="section-card">
-                  <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-                      color:#333355;margin-bottom:1rem;">Predictive intelligence</div>
-                  <div class="stat-row"><span class="stat-label">ROI potential</span>
-                    <span class="stat-value" style="color:#10B981;">{min(roi_estimate,100)}/100</span></div>
-                  <div class="stat-row"><span class="stat-label">Virality likelihood</span>
-                    <span class="stat-value">{min(virality_score,100):.1f}/100</span></div>
-                  <div class="stat-row"><span class="stat-label">Audience loyalty</span>
-                    <span class="stat-value">{min(loyalty_score,100):.1f}/100</span></div>
-                  <div class="stat-row"><span class="stat-label">Inactive follower est.</span>
-                    <span class="stat-value" style="color:#F59E0B;">{inactive_pct}%</span></div>
-                  <div class="stat-row"><span class="stat-label">Buyer intent</span>
-                    <span class="stat-value">{d['buyer_intent']}/100</span></div>
-                  <div class="stat-row"><span class="stat-label">Comment sentiment</span>
-                    <span class="stat-value">{d['sentiment_score']}/100</span></div>
-                  <div class="stat-row"><span class="stat-label">Brand safety</span>
-                    <span class="stat-value" style="color:#10B981;">{d['brand_safety']}/100</span></div>
-                  <div class="stat-row"><span class="stat-label">Crisis risk</span>
-                    <span class="stat-value" style="color:{'#10B981' if d['crisis_risk']=='Low' else '#F59E0B' if d['crisis_risk']=='Medium' else '#EF4444'};">
-                      {d['crisis_risk']}</span></div>
-                </div>
-                """, unsafe_allow_html=True)
-            with c2:
-                st.markdown(f"""
-                <div class="section-card">
-                  <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-                      color:#333355;margin-bottom:1rem;">Auto campaign brief</div>
-                  <div class="brief-block">
-                    <b style="color:#A78BFA;">Creator:</b> {d['creator_name']} ({d['username']})<br>
-                    <b style="color:#A78BFA;">Platform:</b> {d['platform']} &nbsp;|&nbsp;
-                    <b style="color:#A78BFA;">Niche:</b> {d['niche']}<br>
-                    <b style="color:#A78BFA;">Recommended for:</b> {d['brand_industry'] or d['niche']} campaigns<br>
-                    <b style="color:#A78BFA;">Audience:</b> {d['female_pct']}% female, peak age 18–34<br>
-                    <b style="color:#A78BFA;">Post format:</b> {'Reels / short-form video' if d['platform'] in ['Instagram','TikTok'] else 'Long-form video'}<br>
-                    <b style="color:#A78BFA;">Est. cost/post:</b> ${est_cost_per_post:,.0f}<br>
-                    <b style="color:#A78BFA;">Key strength:</b> {'High engagement' if engagement_rate > 5 else 'Broad reach'}, {d['audience_authenticity']}% authentic<br>
-                    <b style="color:#A78BFA;">Brand safety:</b> {d['crisis_risk']} risk
+            # active-module chips
+            _mdefs = {"Predict": ("⚡", "#A78BFA"), "Match": ("◈", "#60A5FA"), "Guard": ("⬡", "#22D3EE"), "Pulse": ("✧", "#A78BFA")}
+            chips = "".join([
+                f'<span style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px;'
+                f'background:{clr}18;border:1px solid {clr}44;color:{clr};">{ic} {m}</span>'
+                if m in mods else
+                f'<span style="font-size:11px;padding:5px 12px;border-radius:999px;border:1px solid #16162A;color:#3A3A52;text-decoration:line-through;">{m}</span>'
+                for m, (ic, clr) in _mdefs.items()])
+            st.markdown(f'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center;">'
+                        f'<span style="font-size:11px;color:#5A5A78;text-transform:uppercase;letter-spacing:.1em;margin-right:4px;">Modules:</span>{chips}</div>',
+                        unsafe_allow_html=True)
+
+            _cards = []
+            if "Predict" in mods:
+                _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:1rem;">⚡ Vettd Predict</div>'
+                    f'<div class="stat-row"><span class="stat-label">ROI potential</span><span class="stat-value" style="color:#10B981;">{min(roi_estimate,100)}/100</span></div>'
+                    f'<div class="stat-row"><span class="stat-label">Virality likelihood</span><span class="stat-value">{min(virality_score,100):.1f}/100</span></div>'
+                    f'<div class="stat-row"><span class="stat-label">Audience loyalty</span><span class="stat-value">{min(loyalty_score,100):.1f}/100</span></div>'
+                    f'<div class="stat-row"><span class="stat-label">Buyer intent</span><span class="stat-value">{d["buyer_intent"]}/100</span></div>'
+                    f'<div class="stat-row"><span class="stat-label">Est. cost / post</span><span class="stat-value">${est_cost_per_post:,.0f}</span></div></div>')
+            if "Guard" in mods:
+                _cr = d["crisis_risk"]; _crc = '#10B981' if _cr=='Low' else '#F59E0B' if _cr=='Medium' else '#EF4444'
+                _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#22D3EE;margin-bottom:1rem;">⬡ Vettd Guard</div>'
+                    f'<div class="stat-row"><span class="stat-label">Brand safety</span><span class="stat-value" style="color:#10B981;">{d["brand_safety"]}/100</span></div>'
+                    f'<div class="stat-row"><span class="stat-label">Fake follower score</span><span class="stat-value">{fake_score}/100</span></div>'
+                    f'<div class="stat-row"><span class="stat-label">Inactive follower est.</span><span class="stat-value" style="color:#F59E0B;">{inactive_pct}%</span></div>'
+                    f'<div class="stat-row"><span class="stat-label">Crisis risk</span><span class="stat-value" style="color:{_crc};">{_cr}</span></div></div>')
+            if "Pulse" in mods:
+                _s = d["sentiment_score"]; _pos=_s; _neg=max(0,100-_s-15); _neu=100-_pos-_neg
+                _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#A78BFA;margin-bottom:1rem;">✧ Vettd Pulse</div>'
+                    f'<div class="stat-row"><span class="stat-label">Comment sentiment</span><span class="stat-value" style="color:#10B981;">{_s}/100</span></div>'
+                    f'<div style="margin-top:12px;display:flex;height:10px;border-radius:999px;overflow:hidden;">'
+                    f'<div style="width:{_pos}%;background:#10B981;"></div><div style="width:{_neu}%;background:#60A5FA;"></div><div style="width:{_neg}%;background:#EF4444;"></div></div>'
+                    f'<div style="display:flex;justify-content:space-between;font-size:11px;color:#5A5A78;margin-top:6px;"><span>Positive {_pos}%</span><span>Neutral {_neu}%</span><span>Negative {_neg}%</span></div></div>')
+            # campaign brief always included as a general Enterprise deliverable
+            _cards.append(f'<div class="section-card"><div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">Auto campaign brief</div>'
+                f'<div class="brief-block"><b style="color:#A78BFA;">Creator:</b> {d["creator_name"]} ({d["username"]})<br>'
+                f'<b style="color:#A78BFA;">Platform:</b> {d["platform"]} &nbsp;|&nbsp; <b style="color:#A78BFA;">Niche:</b> {d["niche"]}<br>'
+                f'<b style="color:#A78BFA;">Recommended for:</b> {d["brand_industry"] or d["niche"]} campaigns<br>'
+                f'<b style="color:#A78BFA;">Audience:</b> {d["female_pct"]}% female, peak age 18–34<br>'
+                f'<b style="color:#A78BFA;">Est. cost/post:</b> ${est_cost_per_post:,.0f}<br>'
+                f'<b style="color:#A78BFA;">Key strength:</b> {"High engagement" if engagement_rate > 5 else "Broad reach"}, {d["audience_authenticity"]}% authentic</div></div>')
+            st.markdown(f'<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">{"".join(_cards)}</div>', unsafe_allow_html=True)
+
+            # ── VETTD MATCH: BRAND–PRODUCT MARKET FIT ──
+            if "Match" in mods:
+              # ── BRAND–PRODUCT MARKET FIT (flagship Enterprise metric) ──
+              mf_score, mf_breakdown, mf_key = calculate_market_fit_score(
+                  d.get("product_text", ""), d["brand_industry"], d["niche"],
+                  d["female_pct"], d["age_18_24"], d["age_25_34"], d["age_35_44"],
+                  d["audience_authenticity"], engagement_rate, d["followers"],
+              )
+              if mf_score >= 75:
+                  mf_color, mf_verdict = "#10B981", "Excellent product–audience match"
+              elif mf_score >= 60:
+                  mf_color, mf_verdict = "#60A5FA", "Good match"
+              elif mf_score >= 45:
+                  mf_color, mf_verdict = "#F59E0B", "Weak match — consider alternatives"
+              else:
+                  mf_color, mf_verdict = "#EF4444", "Poor match — not recommended"
+
+              product_label = (d.get("product_text") or d["brand_industry"] or "your product")
+
+              bars = "".join([
+                  f'<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
+                  f'<span style="color:#5A5A78;">{k}</span><span style="color:{mf_color};font-weight:600;">{v}</span></div>'
+                  f'<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:{v}%;background:linear-gradient(90deg,{mf_color},{mf_color}88);"></div></div></div>'
+                  for k, v in mf_breakdown.items()
+              ])
+
+              st.markdown(f"""
+              <div class="section-card" style="margin-top:1.5rem;position:relative;overflow:hidden;border-color:{mf_color}33;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,{mf_color},transparent);"></div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+                  <div style="flex:1;min-width:260px;">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:{mf_color};margin-bottom:6px;">★ Brand–Product Market Fit</div>
+                    <div style="font-size:13px;color:#8888A8;line-height:1.6;margin-bottom:1rem;">
+                      How well <b style="color:#EDEDF5;">{product_label}</b> fits {d['creator_name']}'s specific audience —
+                      niche, gender, age, authenticity and price-point alignment.</div>
+                    {bars}
+                  </div>
+                  <div style="text-align:center;min-width:140px;">
+                    <div class="disp" style="font-size:56px;font-weight:800;line-height:1;color:{mf_color};">{mf_score}</div>
+                    <div style="font-size:12px;font-weight:600;color:{mf_color};max-width:150px;">{mf_verdict}</div>
                   </div>
                 </div>
-                """, unsafe_allow_html=True)
-
-            # ── BRAND–PRODUCT MARKET FIT (flagship Enterprise metric) ──
-            mf_score, mf_breakdown, mf_key = calculate_market_fit_score(
-                d.get("product_text", ""), d["brand_industry"], d["niche"],
-                d["female_pct"], d["age_18_24"], d["age_25_34"], d["age_35_44"],
-                d["audience_authenticity"], engagement_rate, d["followers"],
-            )
-            if mf_score >= 75:
-                mf_color, mf_verdict = "#10B981", "Excellent product–audience match"
-            elif mf_score >= 60:
-                mf_color, mf_verdict = "#60A5FA", "Good match"
-            elif mf_score >= 45:
-                mf_color, mf_verdict = "#F59E0B", "Weak match — consider alternatives"
-            else:
-                mf_color, mf_verdict = "#EF4444", "Poor match — not recommended"
-
-            product_label = (d.get("product_text") or d["brand_industry"] or "your product")
-
-            bars = "".join([
-                f'<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
-                f'<span style="color:#5A5A78;">{k}</span><span style="color:{mf_color};font-weight:600;">{v}</span></div>'
-                f'<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:{v}%;background:linear-gradient(90deg,{mf_color},{mf_color}88);"></div></div></div>'
-                for k, v in mf_breakdown.items()
-            ])
-
-            st.markdown(f"""
-            <div class="section-card" style="margin-top:1.5rem;position:relative;overflow:hidden;border-color:{mf_color}33;">
-              <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,{mf_color},transparent);"></div>
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
-                <div style="flex:1;min-width:260px;">
-                  <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:{mf_color};margin-bottom:6px;">★ Brand–Product Market Fit</div>
-                  <div style="font-size:13px;color:#8888A8;line-height:1.6;margin-bottom:1rem;">
-                    How well <b style="color:#EDEDF5;">{product_label}</b> fits {d['creator_name']}'s specific audience —
-                    niche, gender, age, authenticity and price-point alignment.</div>
-                  {bars}
-                </div>
-                <div style="text-align:center;min-width:140px;">
-                  <div class="disp" style="font-size:56px;font-weight:800;line-height:1;color:{mf_color};">{mf_score}</div>
-                  <div style="font-size:12px;font-weight:600;color:{mf_color};max-width:150px;">{mf_verdict}</div>
-                </div>
               </div>
-            </div>
-            """, unsafe_allow_html=True)
+              """, unsafe_allow_html=True)
 
-            # Recommended alternative creators when fit is weak
-            if mf_score < 60:
-                recs = recommend_creators(mf_key, d["brand_industry"], mf_score)
-                rec_cards = "".join([
-                    f'<div style="background:#0B0B16;border:1px solid #16162A;border-radius:12px;padding:1rem 1.25rem;flex:1;min-width:200px;">'
-                    f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
-                    f'<span style="font-size:14px;font-weight:700;color:#EDEDF5;">{handle}</span>'
-                    f'<span style="font-size:13px;font-weight:800;color:#10B981;">{fit}</span></div>'
-                    f'<div style="font-size:12px;color:#A78BFA;margin-bottom:4px;">{kind}</div>'
-                    f'<div style="font-size:11px;color:#5A5A78;line-height:1.5;">{why}</div></div>'
-                    for handle, kind, fit, why in recs
-                ])
-                st.markdown(f"""
-                <div class="section-card" style="margin-top:1rem;border-color:rgba(16,185,129,0.2);">
-                  <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#10B981;margin-bottom:4px;">Recommended creators — better fit for {product_label}</div>
-                  <div style="font-size:12px;color:#5A5A78;margin-bottom:1rem;">{d['creator_name']} scored {mf_score}/100 for this product. These creators are a stronger match:</div>
-                  <div style="display:flex;gap:12px;flex-wrap:wrap;">{rec_cards}</div>
-                </div>
-                """, unsafe_allow_html=True)
+              # Recommended alternative creators when fit is weak
+              if mf_score < 60:
+                  recs = recommend_creators(mf_key, d["brand_industry"], mf_score)
+                  rec_cards = "".join([
+                      f'<div style="background:#0B0B16;border:1px solid #16162A;border-radius:12px;padding:1rem 1.25rem;flex:1;min-width:200px;">'
+                      f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+                      f'<span style="font-size:14px;font-weight:700;color:#EDEDF5;">{handle}</span>'
+                      f'<span style="font-size:13px;font-weight:800;color:#10B981;">{fit}</span></div>'
+                      f'<div style="font-size:12px;color:#A78BFA;margin-bottom:4px;">{kind}</div>'
+                      f'<div style="font-size:11px;color:#5A5A78;line-height:1.5;">{why}</div></div>'
+                      for handle, kind, fit, why in recs
+                  ])
+                  st.markdown(f"""
+                  <div class="section-card" style="margin-top:1rem;border-color:rgba(16,185,129,0.2);">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#10B981;margin-bottom:4px;">Recommended creators — better fit for {product_label}</div>
+                    <div style="font-size:12px;color:#5A5A78;margin-bottom:1rem;">{d['creator_name']} scored {mf_score}/100 for this product. These creators are a stronger match:</div>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;">{rec_cards}</div>
+                  </div>
+                  """, unsafe_allow_html=True)
         else:
             st.markdown('<div style="text-align:center;padding:3rem;color:#333355;">Upgrade to Enterprise for predictive intelligence, Brand–Product Market Fit, and campaign briefs.</div>', unsafe_allow_html=True)
 

@@ -313,23 +313,34 @@ with col_center:
         loc2_name, loc2_pct = "United States", 28
         loc3_name, loc3_pct = "Australia", 12
 
-    # ── SECTION 5: ADVANCED (Enterprise+) ──
+    # ── SECTION 5: ENTERPRISE MODULES ──
+    ALL_MODULES = ["Predict", "Match", "Guard", "Pulse"]
     if tier_gate("Enterprise"):
-        st.markdown('<div class="input-label">Advanced signals — Enterprise</div>', unsafe_allow_html=True)
-        adv1, adv2, adv3, adv4 = st.columns(4)
-        with adv1:
-            buyer_intent = st.slider("Buyer intent score", 0, 100, 65)
-        with adv2:
-            sentiment_score = st.slider("Comment sentiment", 0, 100, 78)
-        with adv3:
-            brand_safety = st.slider("Brand safety score", 0, 100, 88)
-        with adv4:
-            crisis_risk = st.selectbox("Crisis risk", ["Low", "Medium", "High"])
-        product_text = st.text_input(
-            "Product you're selling (powers Brand–Product Market Fit)",
-            placeholder="e.g. vitamin C serum, running shoes, budgeting app"
+        st.markdown('<div class="input-label">Enterprise modules — choose what to run</div>', unsafe_allow_html=True)
+        modules = st.multiselect(
+            "Active modules",
+            ALL_MODULES, default=ALL_MODULES,
+            format_func=lambda m: {"Predict": "⚡ Predict — ROI forecast",
+                                   "Match": "◈ Match — product-fit + recommendations",
+                                   "Guard": "⬡ Guard — safety & fake-follower risk",
+                                   "Pulse": "✧ Pulse — comment sentiment"}[m],
         )
+        # module-specific inputs (only show what the chosen modules need)
+        if "Match" in modules:
+            product_text = st.text_input("Match · product you're selling",
+                                         placeholder="e.g. vitamin C serum, running shoes, budgeting app")
+        else:
+            product_text = ""
+        g1, g2, g3 = st.columns(3)
+        with g1:
+            buyer_intent = st.slider("Predict · buyer intent", 0, 100, 65) if "Predict" in modules else 60
+        with g2:
+            brand_safety = st.slider("Guard · brand safety", 0, 100, 88) if "Guard" in modules else 80
+            crisis_risk = st.selectbox("Guard · crisis risk", ["Low", "Medium", "High"]) if "Guard" in modules else "Low"
+        with g3:
+            sentiment_score = st.slider("Pulse · comment sentiment", 0, 100, 78) if "Pulse" in modules else 70
     else:
+        modules = []
         buyer_intent, sentiment_score, brand_safety, crisis_risk = 60, 70, 80, "Low"
         product_text = ""
 
@@ -381,6 +392,7 @@ with col_center:
                 "profile_pic": _fetched.get("profile_pic"),
                 "avg_views": _fetched.get("avg_views"),
                 "reels_n": _fetched.get("reels_n"),
+                "modules": modules,
             }
             # ── save to search history (most recent first, dedup by username) ──
             _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)
