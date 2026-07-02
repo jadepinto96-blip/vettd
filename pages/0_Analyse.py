@@ -201,11 +201,18 @@ with col_center:
 
     # premium card styling for the input sections
     st.markdown("""<style>
-    [data-testid="stVerticalBlockBorderWrapper"]{background:#101019;border:1px solid #1C1C30!important;border-radius:18px;margin-bottom:.5rem;transition:border-color .3s ease;}
-    [data-testid="stVerticalBlockBorderWrapper"]:hover{border-color:#26264A!important;}
-    [data-testid="stVerticalBlockBorderWrapper"]>div>div[data-testid="stVerticalBlock"]{padding:1.4rem 1.6rem;}
-    .input-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9090C0;display:flex;align-items:center;gap:9px;margin-bottom:.4rem;}
-    .input-label::before{content:"";width:16px;height:3px;border-radius:3px;background:linear-gradient(90deg,#7C3AED,#22D3EE);}
+    [data-testid="stVerticalBlockBorderWrapper"]{
+      background:#15151F !important; border:1px solid #2A2A48 !important; border-radius:18px !important;
+      padding:1.5rem 1.75rem !important; margin-bottom:1rem !important;
+      box-shadow:0 10px 30px rgba(0,0,0,.35) !important; transition:border-color .3s ease, box-shadow .3s ease !important;}
+    [data-testid="stVerticalBlockBorderWrapper"]:hover{border-color:#7C3AED66 !important; box-shadow:0 14px 44px rgba(124,58,237,.18) !important;}
+    .input-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A9A9D0;display:flex;align-items:center;gap:9px;margin-bottom:.6rem;}
+    .input-label::before{content:"";width:18px;height:3px;border-radius:3px;background:linear-gradient(90deg,#7C3AED,#22D3EE);}
+    /* inputs sit on the card — slightly lighter than the card so they pop */
+    [data-testid="stVerticalBlockBorderWrapper"] .stTextInput input,
+    [data-testid="stVerticalBlockBorderWrapper"] .stNumberInput input,
+    [data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"]>div{
+      background:#0C0C14 !important; border-color:#2A2A48 !important;}
     </style>""", unsafe_allow_html=True)
 
     if "reels_n" not in st.session_state:
