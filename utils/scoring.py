@@ -16,7 +16,8 @@ def generate_creator_report(d, engagement_rate, fake_score, brand_fit,
     auth = d["audience_authenticity"]
     niche = d["niche"]
     name = d["creator_name"]
-    brand = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip() or "a brand"
+    brand = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip()
+    has_brand = bool(brand) and brand_fit is not None
 
     # tier by size
     if followers < 10_000:
@@ -69,7 +70,7 @@ def generate_creator_report(d, engagement_rate, fake_score, brand_fit,
         strengths.append(f"High audience authenticity ({auth}%) — low fake-follower risk, real people behind the numbers.")
     if rising:
         strengths.append(f"Rising fast (+{d['growth_rate_30d']}% in 30 days) — momentum on their side.")
-    if brand_fit >= 70:
+    if has_brand and brand_fit >= 70:
         strengths.append(f"Strong alignment with {brand} ({brand_fit}/100 brand-fit).")
     if consistency_score >= 80:
         strengths.append(f"Posts consistently ({d['posting_freq']}/week) — a reliable, active partner.")
@@ -84,7 +85,7 @@ def generate_creator_report(d, engagement_rate, fake_score, brand_fit,
         watchouts.append(f"Elevated fake-follower score ({fake_score}/100) — vet the audience quality before committing.")
     if not high_eng and engagement_rate < 2:
         watchouts.append(f"Low engagement ({engagement_rate}%) — reach may not convert into action.")
-    if brand_fit < 55:
+    if has_brand and brand_fit < 55:
         watchouts.append(f"Weaker brand alignment ({brand_fit}/100) — the audience may not match {brand}'s target.")
     if d["growth_rate_30d"] <= 0:
         watchouts.append("Flat or declining growth — the audience isn't expanding right now.")
@@ -104,14 +105,17 @@ def generate_creator_report(d, engagement_rate, fake_score, brand_fit,
         best_for = "Balanced campaigns combining reasonable reach with genuine engagement."
 
     # ── Recommendation ──
+    _for = f" for {brand}" if has_brand else ""
     if vettd_score >= 70:
-        rec = f"Recommended. {name} is a strong match for {brand} — worth reaching out."
+        rec = f"Recommended. {name} is a strong choice{_for} — worth reaching out."
     elif vettd_score >= 55:
-        rec = f"Worth considering. {name} could work for {brand} with the right brief and budget."
+        rec = f"Worth considering. {name} could work{_for} with the right brief and budget."
     elif vettd_score >= 40:
-        rec = f"Proceed with caution. {name} has gaps for {brand}; consider the recommended alternatives first."
+        rec = f"Proceed with caution. {name} has gaps{_for}; consider the recommended alternatives first."
     else:
-        rec = f"Not recommended for {brand} right now. The risks outweigh the upside."
+        rec = f"Not recommended{_for} right now. The risks outweigh the upside."
+    if not has_brand:
+        rec += " Add your brand name to unlock brand-fit scoring."
 
     return {
         "archetype": archetype, "archetype_desc": arch_desc, "summary": summary,

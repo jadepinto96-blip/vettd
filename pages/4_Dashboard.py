@@ -163,11 +163,21 @@ def tier_gate(required):
 engagement_rate = calculate_engagement_rate(d["followers"], d["avg_likes"], d["avg_comments"], d["avg_saves"])
 fake_score = estimate_fake_follower_score(d["followers"], d["following"], d["avg_likes"], d["avg_comments"])
 age_18_34 = d["age_18_24"] + d["age_25_34"]
-brand_fit = calculate_brand_fit_score(d["niche"], d["brand_industry"] or d["niche"], d["female_pct"], age_18_34, d["posting_freq"])
 aud_quality = calculate_audience_quality_score(fake_score, engagement_rate, d["audience_authenticity"])
 growth_score = calculate_growth_score(d["growth_rate_30d"])
 consistency_score = calculate_consistency_score(d["posting_freq"])
-vettd_score = calculate_vettd_score(engagement_rate, fake_score, brand_fit, aud_quality, consistency_score, growth_score)
+
+# brand-fit only exists when the brand is actually specified
+brand_text = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip()
+has_brand = bool(brand_text)
+if has_brand:
+    brand_fit = calculate_brand_fit_score(d["niche"], d.get("brand_industry") or brand_text, d["female_pct"], age_18_34, d["posting_freq"])
+    vettd_score = calculate_vettd_score(engagement_rate, fake_score, brand_fit, aud_quality, consistency_score, growth_score)
+else:
+    brand_fit = None
+    # score without the brand-fit component — redistribute its 20% across the other five signals
+    _eng_n = min(engagement_rate * 10, 100); _auth_n = 100 - fake_score
+    vettd_score = round((_eng_n*0.25 + _auth_n*0.20 + aud_quality*0.15 + consistency_score*0.10 + growth_score*0.10) / 0.80)
 label, _ = score_label(vettd_score)
 est_cost_per_post, est_cpe = estimate_cpe(d["followers"], engagement_rate)
 
@@ -240,12 +250,18 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # brand + one-line fit phrase (used in the report header)
-_brand = (d.get("brand_name") or "").strip() or (d.get("brand_industry") or "").strip() or "your brand"
-_fit_phrase = ("an excellent fit" if vettd_score >= 85 else
-               "a strong fit" if vettd_score >= 70 else
-               "a moderate fit" if vettd_score >= 55 else
-               "a weak fit" if vettd_score >= 40 else
-               "not recommended")
+_brand = brand_text
+if has_brand:
+    _fit_phrase = ("an excellent fit" if vettd_score >= 85 else
+                   "a strong fit" if vettd_score >= 70 else
+                   "a moderate fit" if vettd_score >= 55 else
+                   "a weak fit" if vettd_score >= 40 else "not recommended")
+else:
+    _fit_phrase = ("an exceptional profile" if vettd_score >= 85 else
+                   "a strong profile" if vettd_score >= 70 else
+                   "a solid profile" if vettd_score >= 55 else
+                   "a weak profile" if vettd_score >= 40 else "a poor profile")
+_for = f' for <b style="color:#A78BFA;">{_brand}</b>' if has_brand else ''
 
 # ── PERSONALISED REPORT (MBTI-style) ──
 rep = generate_creator_report(d, engagement_rate, fake_score, brand_fit,
@@ -292,7 +308,7 @@ st.markdown(f"""
 <div class="disp" style="font-size:30px;font-weight:800;background:linear-gradient(135deg,#A78BFA,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;">{rep['archetype']}</div>
 <div style="font-size:14px;color:#9090B0;margin-top:8px;line-height:1.6;font-style:italic;">{rep['archetype_desc']}</div>
 <div style="font-size:15px;color:#D2D2E4;margin-top:1.1rem;border-top:1px solid #1A1A2E;padding-top:1.1rem;">
-<b style="color:#EDEDF5;">{d['creator_name']}</b> · <b style="color:{score_color};">{_fit_phrase}</b> for <b style="color:#A78BFA;">{_brand}</b> · <b style="color:#A78BFA;">{vettd_score}/100</b></div>
+<b style="color:#EDEDF5;">{d['creator_name']}</b> · <b style="color:{score_color};">{_fit_phrase}</b>{_for} · <b style="color:#A78BFA;">{vettd_score}/100</b></div>
 </div>
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;">{highlights_html}</div>
@@ -333,7 +349,7 @@ top_metrics = [
     ("Followers", f"{d['followers']:,}"),
     ("Engagement", f"{engagement_rate}%"),
     ("Fake score", f"{fake_score}/100"),
-    ("Brand fit", f"{brand_fit}/100"),
+    ("Brand fit", f"{brand_fit}/100" if has_brand else "—"),
     ("Avg likes", f"{d['avg_likes']:,}"),
     ("Avg comments", f"{d['avg_comments']:,}"),
     ("Est. cost/post", f"${est_cost_per_post:,.0f}"),
@@ -378,11 +394,14 @@ with col_score:
     components = {
         "Engagement": int(min(engagement_rate * 10, 100)),
         "Authenticity": int(100 - fake_score),
-        "Brand fit": brand_fit,
+    }
+    if has_brand:
+        components["Brand fit"] = brand_fit
+    components.update({
         "Aud. quality": aud_quality,
         "Consistency": consistency_score,
         "Growth": growth_score,
-    }
+    })
     weights = {"Engagement": "25%", "Authenticity": "20%", "Brand fit": "20%",
                "Aud. quality": "15%", "Consistency": "10%", "Growth": "10%"}
 
@@ -547,11 +566,11 @@ with col_main:
               <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
                   color:#333355;margin-bottom:1rem;">Brand intelligence</div>
               <div class="stat-row"><span class="stat-label">Brand-fit score</span>
-                <span class="stat-value" style="color:#A78BFA;">{brand_fit}/100</span></div>
+                <span class="stat-value" style="color:#A78BFA;">{f'{brand_fit}/100' if has_brand else 'add a brand'}</span></div>
               <div class="stat-row"><span class="stat-label">Niche</span>
                 <span class="stat-value">{d['niche']}</span></div>
-              <div class="stat-row"><span class="stat-label">Brand industry</span>
-                <span class="stat-value">{d['brand_industry'] or '—'}</span></div>
+              <div class="stat-row"><span class="stat-label">Brand</span>
+                <span class="stat-value">{_brand or '—'}</span></div>
               <div class="stat-row"><span class="stat-label">Audience quality</span>
                 <span class="stat-value">{aud_quality}/100</span></div>
               <div class="stat-row"><span class="stat-label">Consistency</span>
@@ -563,9 +582,15 @@ with col_main:
             </div>
             """, unsafe_allow_html=True)
         with c2:
+            _rvals = [int(min(engagement_rate * 10, 100)), int(100 - fake_score)]
+            _rtheta = ["Engagement", "Authenticity"]
+            if has_brand:
+                _rvals.append(brand_fit); _rtheta.append("Brand fit")
+            _rvals += [aud_quality, consistency_score, growth_score]
+            _rtheta += ["Aud. quality", "Consistency", "Growth"]
             fig_radar = go.Figure(go.Scatterpolar(
-                r=[int(min(engagement_rate * 10, 100)), int(100 - fake_score), brand_fit, aud_quality, consistency_score, growth_score],
-                theta=["Engagement", "Authenticity", "Brand fit", "Aud. quality", "Consistency", "Growth"],
+                r=_rvals,
+                theta=_rtheta,
                 fill="toself",
                 fillcolor="rgba(124,58,237,0.1)",
                 line=dict(color="#7C3AED", width=2),
@@ -585,7 +610,8 @@ with col_main:
     with tab4:
         if tier_gate("Enterprise"):
             mods = d.get("modules") or ["Predict", "Match", "Guard", "Pulse"]
-            roi_estimate = round((engagement_rate * brand_fit * d["audience_authenticity"]) / 1000, 1)
+            _fit_for_roi = brand_fit if has_brand else aud_quality
+            roi_estimate = round((engagement_rate * _fit_for_roi * d["audience_authenticity"]) / 1000, 1)
             virality_score = round((d["avg_shares"] / max(d["followers"], 1)) * 1000 + d["growth_rate_30d"] * 5, 1)
             loyalty_score = round((d["avg_saves"] + d["avg_comments"]) / max(d["followers"] / 100, 1), 1)
             inactive_pct = round(100 - d["audience_authenticity"] * 0.8, 1)
