@@ -738,13 +738,72 @@ report_data = {
     "vettd_score": vettd_score, "vettd_label": label,
     "est_cost_per_post": est_cost_per_post, "generated_at": datetime.now().isoformat()
 }
+
+# ── build a proper, printable HTML report ──
+_metrics = [("Followers", f"{d['followers']:,}"), ("Engagement rate", f"{engagement_rate}%"),
+            ("Audience authenticity", f"{d['audience_authenticity']}%"), ("Fake-follower score", f"{fake_score}/100")]
+if has_brand:
+    _metrics.append(("Brand-fit score", f"{brand_fit}/100"))
+if d.get("avg_views"):
+    _metrics.append(("Avg reel views", f"{d['avg_views']:,}"))
+_metrics.append(("Est. cost / post", f"${est_cost_per_post:,.0f}"))
+_metric_html = "".join(
+    f'<div class="m"><div class="mv">{v}</div><div class="ml">{l}</div></div>' for l, v in _metrics)
+_bd = {"Engagement": int(min(engagement_rate*10,100)), "Authenticity": int(100-fake_score)}
+if has_brand: _bd["Brand fit"] = brand_fit
+_bd.update({"Audience quality": aud_quality, "Consistency": consistency_score, "Growth": growth_score})
+_bar_html = "".join(
+    f'<div class="brow"><span>{k}</span><div class="bt"><div class="bf" style="width:{int(x)}%"></div></div><b>{int(x)}</b></div>'
+    for k, x in _bd.items())
+_str_li = "".join(f"<li>{s}</li>" for s in rep["strengths"])
+_watch_li = "".join(f"<li>{w}</li>" for w in rep["watchouts"])
+_brand_row = f'<span>Brand&nbsp;·&nbsp;<b>{_brand}</b></span>' if has_brand else ''
+html_report = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Vettd report — {d['creator_name']}</title>
+<style>
+*{{box-sizing:border-box;margin:0}} body{{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a2e;background:#f4f4f8;padding:40px;}}
+.wrap{{max-width:820px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.08)}}
+.hd{{background:linear-gradient(135deg,#7C3AED,#4F46E5);color:#fff;padding:28px 36px;display:flex;justify-content:space-between;align-items:center}}
+.hd .logo{{font-size:22px;font-weight:800;letter-spacing:-.5px}} .hd .dt{{font-size:12px;opacity:.8}}
+.body{{padding:32px 36px}}
+.top{{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;border-bottom:1px solid #eee;padding-bottom:24px;margin-bottom:24px}}
+.nm{{font-size:24px;font-weight:800}} .sub{{font-size:13px;color:#777;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}}
+.score{{text-align:center}} .score .n{{font-size:56px;font-weight:800;color:{score_color};line-height:1}} .score .l{{font-size:13px;font-weight:700;color:{score_color}}}
+.score .c{{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.1em}}
+.verdict{{background:#f7f5ff;border-left:4px solid {score_color};border-radius:0 10px 10px 0;padding:16px 20px;font-size:15px;line-height:1.6;margin-bottom:28px}}
+.arch{{font-size:13px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}}
+h3{{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#999;margin:28px 0 14px}}
+.grid{{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}}
+.m{{background:#f7f7fb;border-radius:12px;padding:14px}} .mv{{font-size:22px;font-weight:800;color:#4F46E5}} .ml{{font-size:11px;color:#888;margin-top:4px}}
+.brow{{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:13px}} .brow span{{width:130px;color:#666}} .brow b{{width:32px;text-align:right;color:#4F46E5}}
+.bt{{flex:1;background:#eee;border-radius:999px;height:8px;overflow:hidden}} .bf{{height:100%;background:linear-gradient(90deg,#7C3AED,#22D3EE);border-radius:999px}}
+.cols{{display:grid;grid-template-columns:1fr 1fr;gap:24px}} ul{{margin:0;padding-left:18px}} li{{font-size:13px;color:#444;line-height:1.7;margin-bottom:6px}}
+.rec{{background:{score_color}12;border:1px solid {score_color}44;border-radius:12px;padding:18px 20px;font-size:15px;font-weight:600;margin-top:24px}}
+.ft{{text-align:center;font-size:11px;color:#aaa;padding:20px;border-top:1px solid #eee}}
+@media print{{body{{background:#fff;padding:0}} .wrap{{box-shadow:none}}}}
+</style></head><body><div class="wrap">
+<div class="hd"><div class="logo">✦ VETTD</div><div class="dt">Creator report · {datetime.now().strftime('%d %b %Y')}</div></div>
+<div class="body">
+<div class="top">
+<div><div class="nm">{d['creator_name']}</div><div class="sub"><span>{d['username']}</span><span>{d['platform']}</span><span>{d['niche']}</span>{_brand_row}</div></div>
+<div class="score"><div class="c">Vettd Score</div><div class="n">{vettd_score}</div><div class="l">{label}</div></div>
+</div>
+<div class="verdict"><div class="arch">{rep['archetype']}</div>{rep['summary']}</div>
+<h3>Key metrics</h3><div class="grid">{_metric_html}</div>
+<h3>Score breakdown</h3>{_bar_html}
+<div class="cols"><div><h3>Strengths</h3><ul>{_str_li}</ul></div><div><h3>Watch-outs</h3><ul>{_watch_li}</ul></div></div>
+<div class="rec">{rep['recommendation']}</div>
+</div>
+<div class="ft">Generated by Vettd · get-vettd.streamlit.app · This report is an estimate to support, not replace, your judgement.</div>
+</div></body></html>"""
+
 with exp1:
     df = pd.DataFrame([report_data])
-    st.download_button("↓ Download CSV", df.to_csv(index=False),
+    st.download_button("↓ CSV data", df.to_csv(index=False),
         f"vettd_{d['username'].replace('@','')}.csv", "text/csv", use_container_width=True)
 with exp2:
-    st.download_button("↓ Download report", json.dumps(report_data, indent=2),
-        f"vettd_{d['username'].replace('@','')}.json", use_container_width=True)
+    st.download_button("↓ Download report", html_report,
+        f"vettd_{d['username'].replace('@','')}.html", mime="text/html", use_container_width=True)
 with exp3:
     report_id = hashlib.md5(f"{d['creator_name']}{d['username']}".encode()).hexdigest()[:8]
     st.text_input("Share link", value=f"https://get-vettd.streamlit.app/r/{report_id}",
