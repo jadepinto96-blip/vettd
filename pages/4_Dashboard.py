@@ -798,8 +798,44 @@ h3{{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#999;margi
 </div></body></html>"""
 
 with exp1:
-    df = pd.DataFrame([report_data])
-    st.download_button("↓ CSV data", df.to_csv(index=False),
+    _csv_rows = [
+        ("Creator", d["creator_name"]), ("Username", d["username"]),
+        ("Platform", d["platform"]), ("Niche", d["niche"]),
+        ("Brand", _brand or "—"),
+        ("Vettd Score", f"{vettd_score}/100"), ("Verdict", label),
+        ("", ""),
+        ("Followers", f"{d['followers']:,}"), ("Following", f"{d['following']:,}"),
+        ("Total posts", f"{d['post_count']:,}"), ("Posts per week", d["posting_freq"]),
+        ("Growth rate (30d)", f"{d['growth_rate_30d']}%"),
+        ("", ""),
+        ("Engagement rate", f"{engagement_rate}%"),
+        ("Avg likes / reel", f"{d['avg_likes']:,}"), ("Avg comments / reel", f"{d['avg_comments']:,}"),
+        ("Avg saves / reel", f"{d['avg_saves']:,}"), ("Avg shares / reel", f"{d['avg_shares']:,}"),
+        ("Avg reel views", f"{d['avg_views']:,}" if d.get("avg_views") else "—"),
+        ("", ""),
+        ("Fake-follower score", f"{fake_score}/100"),
+        ("Audience authenticity", f"{d['audience_authenticity']}%"),
+        ("Brand-fit score", f"{brand_fit}/100" if has_brand else "n/a (no brand entered)"),
+        ("Audience quality", f"{aud_quality}/100"),
+    ]
+    if tier_gate("Pro"):
+        _csv_rows += [
+            ("", ""),
+            ("Female audience", f"{d['female_pct']}%"), ("Male audience", f"{d['male_pct']}%"),
+            ("Age 18–24", f"{d['age_18_24']}%"), ("Age 25–34", f"{d['age_25_34']}%"),
+            ("Age 35–44", f"{d['age_35_44']}%"), ("Age 45+", f"{d['age_45_plus']}%"),
+            (f"Top location — {d['loc1_name']}", f"{d['loc1_pct']}%"),
+            (f"Top location — {d['loc2_name']}", f"{d['loc2_pct']}%"),
+            (f"Top location — {d['loc3_name']}", f"{d['loc3_pct']}%"),
+        ]
+    _csv_rows += [
+        ("", ""),
+        ("Est. cost / post", f"${est_cost_per_post:,.0f}"),
+        ("Cost per engagement", f"${est_cpe:.4f}"),
+        ("Report generated", datetime.now().strftime("%d %b %Y, %H:%M")),
+    ]
+    csv_df = pd.DataFrame(_csv_rows, columns=["Metric", "Value"])
+    st.download_button("↓ CSV data", csv_df.to_csv(index=False),
         f"vettd_{d['username'].replace('@','')}.csv", "text/csv", use_container_width=True)
 with exp2:
     st.download_button("↓ Download report", html_report,
