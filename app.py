@@ -291,6 +291,49 @@ st.markdown(f"""
 </section>
 """, unsafe_allow_html=True)
 
+# ════════════ ENTERPRISE MODULES ("what we offer" — choosable advanced modules) ════════════
+modules = [
+    ("Vettd Predict", "#A78BFA",
+     "Forecast a campaign's return before you spend — estimated ROI, cost per acquisition, and content-performance prediction per creator.",
+     '<div style="text-align:center;"><div class="disp" style="font-size:34px;font-weight:800;color:#10B981;">+23.5K</div>'
+     '<div style="font-size:11px;color:#5A5A78;">projected ROI</div>'
+     '<div style="margin-top:10px;height:6px;background:#12121E;border-radius:999px;"><div style="width:78%;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#22D3EE);"></div></div></div>'),
+    ("Vettd Match", "#60A5FA",
+     "Score your exact product against a creator's audience and get better-matched creators when the fit is weak — niche, gender, age, intent.",
+     '<div style="display:flex;align-items:center;gap:12px;"><div class="disp" style="font-size:32px;font-weight:800;color:#F59E0B;">56</div>'
+     '<div style="flex:1;"><div style="font-size:10px;color:#5A5A78;">product–audience fit</div>'
+     '<div style="margin-top:6px;display:flex;gap:4px;"><span style="flex:1;height:5px;background:#7C3AED;border-radius:999px;"></span><span style="flex:1;height:5px;background:#4F46E5;border-radius:999px;"></span><span style="flex:1;height:5px;background:#16162A;border-radius:999px;"></span></div></div></div>'),
+    ("Vettd Guard", "#22D3EE",
+     "Protect the spend — fake-follower and bot-network detection, brand-safety scoring, and a crisis-risk flag before you commit.",
+     '<div style="display:flex;justify-content:space-between;align-items:center;"><div><div class="disp" style="font-size:28px;font-weight:800;color:#10B981;">88</div><div style="font-size:10px;color:#5A5A78;">brand safety</div></div>'
+     '<span style="font-size:11px;font-weight:700;color:#10B981;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);padding:4px 12px;border-radius:999px;">Low risk</span></div>'),
+    ("Vettd Pulse", "#A78BFA",
+     "Understand how people really feel — comment-sentiment analysis across a creator's audience, split into positive, neutral and negative.",
+     '<div style="display:flex;align-items:flex-end;gap:6px;height:56px;">'
+     + "".join(f'<div style="flex:1;background:{c};border-radius:4px 4px 0 0;height:{h}%;"></div>' for c,h in [('#10B981',80),('#60A5FA',45),('#EF4444',25),('#10B981',65),('#60A5FA',55),('#10B981',72)])
+     + '</div><div style="font-size:10px;color:#5A5A78;margin-top:6px;">positive · neutral · negative</div>'),
+]
+mod_cards = "".join([
+    f'<div class="lift" style="background:#0D0D14;border:1px solid #14142A;border-radius:20px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;"'
+    f' onmouseover="this.style.borderColor=\'{c}55\'" onmouseout="this.style.borderColor=\'#14142A\'">'
+    f'<div style="background:#101019;border:1px solid #16162A;border-radius:14px;padding:1.1rem;min-height:96px;display:flex;flex-direction:column;justify-content:center;">{vis}</div>'
+    f'<div><div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:{c};margin-bottom:2px;">Module</div>'
+    f'<div class="disp" style="font-size:19px;font-weight:700;color:#EDEDF5;">{name}</div></div>'
+    f'<div style="font-size:13px;color:#7A7A98;line-height:1.65;flex:1;">{desc}</div>'
+    f'<a href="/Contact" target="_self" style="font-size:13px;font-weight:600;color:{c};text-decoration:none;">Learn more →</a></div>'
+    for name, c, desc, vis in modules
+])
+st.markdown(f"""
+<section style="padding:3.5rem 3rem;position:relative;overflow:hidden;z-index:2;max-width:1120px;margin:0 auto;">
+<div class="reveal" style="text-align:center;margin-bottom:1rem;">
+<div style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#5A5A78;margin-bottom:1rem;">What we offer · Enterprise</div>
+<h2 class="disp" style="font-size:clamp(34px,5.5vw,56px);font-weight:700;letter-spacing:-.03em;margin:0;background:linear-gradient(135deg,#FFFFFF,#A78BFA 65%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Build the plan you need.</h2>
+<p style="font-size:16px;color:#7A7A98;max-width:620px;margin:1.25rem auto 0;line-height:1.7;">Enterprise isn't one-size-fits-all. Pick the advanced modules that match your goals — forecasting, product-fit, brand safety, or sentiment — and we tailor the plan around them.</p>
+</div>
+<div class="reveal d1" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:2.5rem;">{mod_cards}</div>
+</section>
+""", unsafe_allow_html=True)
+
 # ════════════ HOW IT WORKS ════════════
 steps = [
     ("01","#7C3AED","Enter the creator","Type in any creator's stats. Takes under two minutes — no integrations required."),

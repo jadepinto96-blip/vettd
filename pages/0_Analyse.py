@@ -268,17 +268,17 @@ with col_center:
     with p5:
         growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=float(pref("growth_rate_30d", 2.5)), step=0.1)
 
-    # ── SECTION 3: ENGAGEMENT ──
-    st.markdown('<div class="input-label">Engagement data</div>', unsafe_allow_html=True)
+    # ── SECTION 3: REEL ENGAGEMENT ──
+    st.markdown('<div class="input-label">Reel engagement</div>', unsafe_allow_html=True)
     e1, e2, e3, e4 = st.columns(4)
     with e1:
-        avg_likes = st.number_input("Avg likes / post", min_value=0, value=int(pref("avg_likes", 8500)), step=100)
+        avg_likes = st.number_input("Avg likes / reel", min_value=0, value=int(pref("avg_likes", 8500)), step=100)
     with e2:
-        avg_comments = st.number_input("Avg comments / post", min_value=0, value=int(pref("avg_comments", 320)), step=10)
+        avg_comments = st.number_input("Avg comments / reel", min_value=0, value=int(pref("avg_comments", 320)), step=10)
     with e3:
-        avg_saves = st.number_input("Avg saves / post", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
+        avg_saves = st.number_input("Avg saves / reel", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
     with e4:
-        avg_shares = st.number_input("Avg shares / post", min_value=0, value=int(pref("avg_shares", 450)), step=10)
+        avg_shares = st.number_input("Avg shares / reel", min_value=0, value=int(pref("avg_shares", 450)), step=10)
 
     # ── SECTION 4: AUDIENCE (Pro+) ──
     if tier_gate("Pro"):
