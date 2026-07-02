@@ -200,14 +200,17 @@ div[data-baseweb="slider"] > div > div > div {
 }
 div[data-baseweb="slider"] div[role="slider"] {
     background: #fff !important;
-    border: 3px solid var(--accent) !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    border: 4px solid var(--accent) !important;
+    /* dark outer ring keeps the thumb visible on any track colour while dragging */
+    box-shadow: 0 0 0 2px var(--bg-deep), 0 2px 10px rgba(0,0,0,0.6) !important;
     transition: box-shadow var(--dur) ease, transform var(--dur) ease !important;
+    cursor: grab !important;
 }
 div[data-baseweb="slider"] div[role="slider"]:hover {
-    box-shadow: 0 0 0 5px var(--accent-soft), 0 2px 10px rgba(0,0,0,0.5) !important;
-    transform: scale(1.1) !important;
+    box-shadow: 0 0 0 2px var(--bg-deep), 0 0 0 6px var(--accent-soft), 0 2px 12px rgba(0,0,0,0.6) !important;
+    transform: scale(1.12) !important;
 }
+div[data-baseweb="slider"] div[role="slider"]:active { cursor: grabbing !important; transform: scale(1.05) !important; }
 div[data-baseweb="slider"] div[role="slider"] + div,
 div[data-testid="stThumbValue"] {
     color: var(--accent-2) !important; font-weight: 600 !important; background: transparent !important;

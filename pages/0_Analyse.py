@@ -255,10 +255,10 @@ with col_center:
         fc1, fc2 = st.columns([1, 2])
         with fc1:
             if _provider == "manual":
-                st.button("⚡ Fetch live data", use_container_width=True, disabled=True,
+                st.button("⚡ Fetch live data", use_container_width=True, disabled=True, type="primary",
                           help="Add a MODASH_API_KEY or RAPIDAPI_KEY in Streamlit secrets to enable live fetch.")
             else:
-                if st.button("⚡ Fetch live data", use_container_width=True):
+                if st.button("⚡ Fetch live data", use_container_width=True, type="primary"):
                     with st.spinner(f"Fetching @{username.lstrip('@')} (last {reels_n} reels)…"):
                         prof = fetch_creator(username, platform, reels_n)
                     if prof:
