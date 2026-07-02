@@ -213,6 +213,17 @@ with col_center:
     [data-testid="stVerticalBlockBorderWrapper"] .stNumberInput input,
     [data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"]>div{
       background:var(--surface-inset) !important; border-color:var(--border) !important;}
+    /* remove the +/- steppers on count fields — pointless on large numbers, and cleaner */
+    [data-testid="stVerticalBlockBorderWrapper"] .stNumberInput button{ display:none !important; }
+    [data-testid="stVerticalBlockBorderWrapper"] .stNumberInput input{
+      border-top-right-radius:var(--radius-sm) !important; border-bottom-right-radius:var(--radius-sm) !important;
+      text-align:left !important; font-variant-numeric:tabular-nums; }
+    /* live engagement-rate readout chip */
+    .er-chip{display:inline-flex;align-items:center;gap:10px;background:var(--surface-inset);
+      border:1px solid var(--border);border-radius:999px;padding:7px 16px 7px 12px;font-size:13px;}
+    .er-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .er-val{font-weight:700;font-variant-numeric:tabular-nums;}
+    .er-lbl{color:var(--text-3);}
     </style>""", unsafe_allow_html=True)
 
     if "reels_n" not in st.session_state:
@@ -273,70 +284,97 @@ with col_center:
         v = _f.get(key)
         return v if v is not None else default
 
-    # ── PROFILE STATS ──
-    with st.container(border=True):
-        st.markdown('<div class="input-label">Profile stats</div>', unsafe_allow_html=True)
-        p1, p2, p3, p4, p5 = st.columns(5)
-        with p1:
-            followers = st.number_input("Followers", min_value=0, value=int(pref("followers", 150000)), step=1000)
-        with p2:
-            following = st.number_input("Following", min_value=0, value=int(pref("following", 800)), step=10)
-        with p3:
-            post_count = st.number_input("Total posts", min_value=0, value=int(pref("post_count", 420)))
-        with p4:
-            posting_freq = st.number_input("Posts per week", min_value=0.0, value=float(pref("posting_freq", 4.0)), step=0.5)
-        with p5:
-            growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=float(pref("growth_rate_30d", 2.5)), step=0.1)
-
-    # ── REEL ENGAGEMENT (reels-to-average lives here now) ──
-    with st.container(border=True):
-        st.markdown('<div class="input-label">Reel engagement</div>', unsafe_allow_html=True)
-        e1, e2, e3, e4 = st.columns(4)
-        with e1:
-            avg_likes = st.number_input("Avg likes / reel", min_value=0, value=int(pref("avg_likes", 8500)), step=100)
-        with e2:
-            avg_comments = st.number_input("Avg comments / reel", min_value=0, value=int(pref("avg_comments", 320)), step=10)
-        with e3:
-            avg_saves = st.number_input("Avg saves / reel", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
-        with e4:
-            avg_shares = st.number_input("Avg shares / reel", min_value=0, value=int(pref("avg_shares", 450)), step=10)
-        rr1, rr2 = st.columns([1, 3])
-        with rr1:
-            reels_n = st.selectbox("Average metrics over", [5, 10, 15, 20], key="reels_n",
-                                   format_func=lambda n: f"Last {n} reels")
-
-    # ── AUDIENCE (Pro+) ──
-    if tier_gate("Pro"):
-        with st.container(border=True):
-            st.markdown('<div class="input-label">Audience demographics — Pro</div>', unsafe_allow_html=True)
-            a1, a2, a3 = st.columns(3)
-            with a1:
-                female_pct = st.slider("Female audience %", 0, 100, int(pref("female_pct", 65)))
-                male_pct = 100 - female_pct
-                st.caption(f"Male {male_pct}% · Female {female_pct}%")
-            with a2:
-                audience_authenticity = st.slider("Audience authenticity %", 0, 100, int(pref("audience_authenticity", 82)))
-            with a3:
-                age_18_24 = st.slider("Age 18–24 %", 0, 100, int(pref("age_18_24", 28)))
-                age_25_34 = st.slider("Age 25–34 %", 0, 100, int(pref("age_25_34", 35)))
-                age_35_44 = st.slider("Age 35–44 %", 0, 100, int(pref("age_35_44", 20)))
-            l1, l2, l3 = st.columns(3)
-            with l1:
-                loc1_name = st.text_input("Top location 1", value=pref("loc1_name", "United Kingdom"))
-                loc1_pct = st.slider("Location 1 %", 0, 100, int(pref("loc1_pct", 42)))
-            with l2:
-                loc2_name = st.text_input("Top location 2", value=pref("loc2_name", "United States"))
-                loc2_pct = st.slider("Location 2 %", 0, 100, int(pref("loc2_pct", 28)))
-            with l3:
-                loc3_name = st.text_input("Top location 3", value=pref("loc3_name", "Australia"))
-                loc3_pct = st.slider("Location 3 %", 0, 100, int(pref("loc3_pct", 12)))
+    # ── MANUAL / FETCHED INPUTS ──
+    # Fetch-first: once live data is in, tuck the fields away (review mode);
+    # open them by default when there's nothing to review or fetch is off.
+    _has_fetch = bool(st.session_state.get("fetched"))
+    if _provider == "manual":
+        _manual_label = "Enter the creator's numbers"
+    elif _has_fetch:
+        _manual_label = "Adjust the numbers manually"
     else:
-        female_pct, male_pct = 60, 40
-        audience_authenticity = 75
-        age_18_24, age_25_34, age_35_44 = 30, 35, 20
-        loc1_name, loc1_pct = "United Kingdom", 42
-        loc2_name, loc2_pct = "United States", 28
-        loc3_name, loc3_pct = "Australia", 12
+        _manual_label = "Or enter the numbers manually"
+    _manual_expanded = (_provider == "manual") or (not _has_fetch)
+
+    with st.expander(_manual_label, expanded=_manual_expanded):
+        # ── PROFILE STATS ──
+        with st.container(border=True):
+            st.markdown('<div class="input-label">Profile stats</div>', unsafe_allow_html=True)
+            p1, p2, p3, p4, p5 = st.columns(5)
+            with p1:
+                followers = st.number_input("Followers", min_value=0, value=int(pref("followers", 150000)), step=1000)
+            with p2:
+                following = st.number_input("Following", min_value=0, value=int(pref("following", 800)), step=10)
+            with p3:
+                post_count = st.number_input("Total posts", min_value=0, value=int(pref("post_count", 420)))
+            with p4:
+                posting_freq = st.number_input("Posts per week", min_value=0.0, value=float(pref("posting_freq", 4.0)), step=0.5)
+            with p5:
+                growth_rate_30d = st.number_input("Growth rate 30d %", min_value=-10.0, value=float(pref("growth_rate_30d", 2.5)), step=0.1)
+
+        # ── REEL ENGAGEMENT (reels-to-average lives here now) ──
+        with st.container(border=True):
+            st.markdown('<div class="input-label">Reel engagement</div>', unsafe_allow_html=True)
+            e1, e2, e3, e4 = st.columns(4)
+            with e1:
+                avg_likes = st.number_input("Avg likes / reel", min_value=0, value=int(pref("avg_likes", 8500)), step=100)
+            with e2:
+                avg_comments = st.number_input("Avg comments / reel", min_value=0, value=int(pref("avg_comments", 320)), step=10)
+            with e3:
+                avg_saves = st.number_input("Avg saves / reel", min_value=0, value=int(pref("avg_saves", 1200)), step=50)
+            with e4:
+                avg_shares = st.number_input("Avg shares / reel", min_value=0, value=int(pref("avg_shares", 450)), step=10)
+            rr1, rr2 = st.columns([1, 3])
+            with rr1:
+                reels_n = st.selectbox("Average metrics over", [5, 10, 15, 20], key="reels_n",
+                                       format_func=lambda n: f"Last {n} reels")
+
+        # ── AUDIENCE (Pro+) ──
+        if tier_gate("Pro"):
+            with st.container(border=True):
+                st.markdown('<div class="input-label">Audience demographics — Pro</div>', unsafe_allow_html=True)
+                a1, a2, a3 = st.columns(3)
+                with a1:
+                    female_pct = st.slider("Female audience %", 0, 100, int(pref("female_pct", 65)))
+                    male_pct = 100 - female_pct
+                    st.caption(f"Male {male_pct}% · Female {female_pct}%")
+                with a2:
+                    audience_authenticity = st.slider("Audience authenticity %", 0, 100, int(pref("audience_authenticity", 82)))
+                with a3:
+                    age_18_24 = st.slider("Age 18–24 %", 0, 100, int(pref("age_18_24", 28)))
+                    age_25_34 = st.slider("Age 25–34 %", 0, 100, int(pref("age_25_34", 35)))
+                    age_35_44 = st.slider("Age 35–44 %", 0, 100, int(pref("age_35_44", 20)))
+                l1, l2, l3 = st.columns(3)
+                with l1:
+                    loc1_name = st.text_input("Top location 1", value=pref("loc1_name", "United Kingdom"))
+                    loc1_pct = st.slider("Location 1 %", 0, 100, int(pref("loc1_pct", 42)))
+                with l2:
+                    loc2_name = st.text_input("Top location 2", value=pref("loc2_name", "United States"))
+                    loc2_pct = st.slider("Location 2 %", 0, 100, int(pref("loc2_pct", 28)))
+                with l3:
+                    loc3_name = st.text_input("Top location 3", value=pref("loc3_name", "Australia"))
+                    loc3_pct = st.slider("Location 3 %", 0, 100, int(pref("loc3_pct", 12)))
+        else:
+            female_pct, male_pct = 60, 40
+            audience_authenticity = 75
+            age_18_24, age_25_34, age_35_44 = 30, 35, 20
+            loc1_name, loc1_pct = "United Kingdom", 42
+            loc2_name, loc2_pct = "United States", 28
+            loc3_name, loc3_pct = "Australia", 12
+
+    # ── LIVE ENGAGEMENT RATE (always visible — the headline signal) ──
+    _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)
+    if _er >= 6:      _erc, _erl = "#34D399", "Excellent for this size"
+    elif _er >= 3:    _erc, _erl = "#22D3EE", "Strong"
+    elif _er >= 1.5:  _erc, _erl = "#F5A623", "Average"
+    else:             _erc, _erl = "#F0616D", "Low — reach may not convert"
+    st.markdown(
+        f'<div style="margin:.25rem 0 1rem;">'
+        f'<div class="er-chip"><span class="er-dot" style="background:{_erc};"></span>'
+        f'<span class="er-lbl">Engagement rate</span>'
+        f'<span class="er-val" style="color:{_erc};">{_er}%</span>'
+        f'<span class="er-lbl">· {_erl}</span></div></div>',
+        unsafe_allow_html=True)
 
     # ── ENTERPRISE MODULES ──
     if tier_gate("Enterprise"):
