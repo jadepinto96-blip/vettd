@@ -18,7 +18,10 @@ import os
 import streamlit as st
 
 CLAUDE_MODEL = "claude-sonnet-5"
-GEMINI_MODEL_DEFAULT = "gemini-2.0-flash"
+GEMINI_MODEL_DEFAULT = "gemini-3.6-flash"
+# Reasoning models spend tokens "thinking" before answering, and that counts
+# against the output budget — keep this generous so the full JSON isn't truncated.
+MAX_OUTPUT_TOKENS = 8000
 
 SYSTEM_PROMPT = """You are Vettd's senior creator-intelligence analyst. Brands pay Vettd to decide whether to work with a social-media creator, so your read must be sharp, honest, and useful.
 
@@ -145,7 +148,7 @@ def _call_gemini(payload_json: str) -> dict:
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
                 response_mime_type="application/json",
-                max_output_tokens=1500,
+                max_output_tokens=MAX_OUTPUT_TOKENS,
                 temperature=0.4,
             ),
         )
@@ -166,7 +169,7 @@ def _call_claude(payload_json: str) -> dict:
         client = anthropic.Anthropic(api_key=key)
         resp = client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=1500,
+            max_tokens=MAX_OUTPUT_TOKENS,
             output_config={"effort": "low"},
             system=SYSTEM_PROMPT,
             messages=[{
