@@ -15,6 +15,8 @@ from utils.scoring import (
     compute_forecast, compute_shield, compute_audience_dna,
     compute_benchmark, compute_pulse,
 )
+from utils.ai_analyst import generate_ai_analysis, ai_available
+from html import escape as _esc
 
 st.set_page_config(page_title="Vettd — Report", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
@@ -358,6 +360,69 @@ st.markdown(f"""
 </div>
 </div>
 """, unsafe_allow_html=True)
+
+# ── AI ANALYST (Claude-powered interpretation — augments the transparent scores) ──
+if ai_available():
+    with st.spinner("Vettd AI analyst reviewing the numbers…"):
+        _ai = generate_ai_analysis(d, {
+            "vettd_score": vettd_score, "engagement_rate": engagement_rate,
+            "fake_score": fake_score, "brand_fit": brand_fit, "aud_quality": aud_quality,
+            "consistency_score": consistency_score, "growth_score": growth_score,
+            "est_cost_per_post": est_cost_per_post,
+        })
+    if _ai and "_error" not in _ai:
+        _conf = str(_ai.get("confidence", "Medium")).split()[0]
+        _confc = {"High": "#34D399", "Medium": "#F5A623", "Low": "#F0616D"}.get(_conf, "#F5A623")
+        _spark = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+                  'stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">'
+                  '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/></svg>')
+
+        def _li(items, color, mark):
+            return "".join(
+                f'<div style="display:flex;gap:9px;align-items:flex-start;margin-bottom:8px;">'
+                f'<span style="color:{color};flex-shrink:0;margin-top:1px;font-size:13px;">{mark}</span>'
+                f'<span style="font-size:13px;color:#C2C2D6;line-height:1.55;">{_esc(str(s))}</span></div>'
+                for s in (items or [])[:4])
+
+        _strengths = _li(_ai.get("strengths"), "#34D399", "✓")
+        _watch = _li(_ai.get("watchouts"), "#F5A623", "!")
+
+        def _facet(label, value, color):
+            if not value:
+                return ""
+            return (f'<div style="background:var(--surface-inset);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;">'
+                    f'<div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:{color};margin-bottom:6px;">{label}</div>'
+                    f'<div style="font-size:13px;color:#C8C8DC;line-height:1.6;">{_esc(str(value))}</div></div>')
+
+        _facets = (_facet("Brand fit", _ai.get("brand_fit"), "#60A5FA")
+                   + _facet("Risk read", _ai.get("risk"), "#F0616D")
+                   + _facet("Recommended use", _ai.get("recommended_use"), "#34D399"))
+
+        st.markdown(f"""
+        <div class="section-card" style="border-color:var(--accent-line);margin-bottom:1.5rem;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--cyan),transparent);"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:34px;height:34px;border-radius:9px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent-2);">{_spark}</div>
+              <div>
+                <div style="font-size:15px;font-weight:700;color:var(--text-1);letter-spacing:-.3px;">Vettd AI Analyst</div>
+                <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;">AI interpretation of the signals</div>
+              </div>
+            </div>
+            <span style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px;background:{_confc}18;border:1px solid {_confc}44;color:{_confc};">{_conf} confidence</span>
+          </div>
+          <div class="disp" style="font-size:18px;font-weight:700;color:var(--text-1);line-height:1.4;margin-bottom:.75rem;">{_esc(str(_ai.get('verdict','')))}</div>
+          <div style="font-size:14px;color:#C2C2D6;line-height:1.75;margin-bottom:1.25rem;">{_esc(str(_ai.get('analysis','')))}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.1rem;">
+            <div><div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#34D399;margin-bottom:.7rem;">Strengths</div>{_strengths}</div>
+            <div><div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#F5A623;margin-bottom:.7rem;">Watch-outs</div>{_watch}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.9rem;">{_facets}</div>
+          <div style="font-size:11px;color:var(--text-4);margin-top:1rem;">AI interpretation of Vettd's computed signals. The scores above remain the transparent, rule-based source of truth.</div>
+        </div>
+        """, unsafe_allow_html=True)
+    elif _ai and "_error" in _ai:
+        st.caption("AI analyst is temporarily unavailable — the standard report above still applies.")
 
 # ── DEEP DIVE (full data & charts, below the readable report) ──
 st.markdown("""

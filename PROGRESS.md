@@ -2,6 +2,13 @@
 
 Last updated: 2 July 2026
 
+## Latest session (2 Jul 2026, cont.) — AI Analyst embedded (free + paid)
+- Added **`utils/ai_analyst.py`**: an AI layer that *interprets* the creator's computed metrics into a written analysis (verdict, analysis, strengths, watch-outs, brand-fit, risk, recommended use, confidence). Structured JSON output, `st.cache_data` per-creator.
+- **Dual provider, auto-detected, free-first:** uses **Google Gemini free tier** (`GEMINI_API_KEY`, `gemini-2.0-flash`, no credit card) if set; else **Claude** (`ANTHROPIC_API_KEY`, `claude-sonnet-5`, ~2c/report) if set; else rule-based fallback. Gemini wins if both are set.
+- **Augments, never replaces** the transparent deterministic scores (the USP). Grounding: the model only sees the numbers Vettd computed — instructed not to invent facts about the person.
+- Renders as a "Vettd AI Analyst" card on the Dashboard report (above the deep-dive). **Graceful fallback** with no key. Verified: AppTest green with/without keys; provider-detection + JSON-parse unit-tested.
+- **Setup:** add ONE key to Streamlit secrets — free Gemini from https://aistudio.google.com/apikey (see `.streamlit/secrets.toml.example`). Deps: `google-generativeai>=0.8.0`, `anthropic>=0.40.0`.
+
 ## Latest session (2 Jul 2026, cont.) — Design system ("Refined Dark")
 - Installed `ui-ux-pro-max` + `frontend-design` skills (manual copy into `~/.claude/skills/`, since `/plugin` isn't available in this app and the npm `uipro` binary is blocked in auto mode).
 - Used ui-ux-pro-max engine to define a premium dark design system → **`DESIGN.md`** (source of truth). Goal: fix "looks unprofessional".
