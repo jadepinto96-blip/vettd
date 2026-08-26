@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS, SITE_FOOTER, avatar_html
+from utils.styles import GLOBAL_CSS, SITE_FOOTER, avatar_html, strip_at
 from utils.data_provider import fetch_creator, active_provider
 from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
@@ -85,20 +85,25 @@ inputs = []
 for i, col in enumerate(cols):
     with col:
         dft = defaults[i]
+        cf = st.session_state.get(f"cmp_f{i}") or {}
+        def pf(key, d, _cf=cf):
+            v = _cf.get(key)
+            return v if v is not None else d
         st.markdown(f"""
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;">
           <div style="width:10px;height:10px;border-radius:50%;background:{accent[i]};box-shadow:0 0 8px {accent[i]};"></div>
           <span style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:{accent[i]};">Creator {chr(65+i)}</span>
         </div>
         """, unsafe_allow_html=True)
-        name = st.text_input("Name", value=dft["name"], key=f"name{i}")
-        user = st.text_input("Username", value=dft["user"], key=f"user{i}")
+        # Username is the account's unique ID → primary. Name auto-fills from the fetch.
+        _uraw = st.text_input("Username · @handle", value=str(dft["user"]).lstrip("@"), key=f"user{i}",
+                              on_change=strip_at, args=(f"user{i}",),
+                              help="The account's unique ID — this is what we analyse. The @ is added for you.")
+        user = ("@" + _uraw.lstrip("@").strip()) if _uraw.strip() else ""
+        name = st.text_input("Display name", value=pf("full_name", dft["name"]),
+                             placeholder="Auto-fills on fetch")  # no key → auto-updates on fetch
 
         # per-creator live fetch
-        cf = st.session_state.get(f"cmp_f{i}") or {}
-        def pf(key, d, _cf=cf):
-            v = _cf.get(key)
-            return v if v is not None else d
         if _provider != "manual":
             if st.button(f"⚡ Fetch", key=f"cfetch{i}", use_container_width=True):
                 p = fetch_creator(user, "Instagram", reels_n)
@@ -106,7 +111,7 @@ for i, col in enumerate(cols):
                     st.session_state[f"cmp_f{i}"] = p
                     st.rerun()
                 else:
-                    st.warning("Couldn't fetch — fill in manually.")
+                    st.warning("Couldn't fetch — check the handle and try again.")
             if cf:
                 st.caption(f"✓ Auto-filled from {cf.get('_source','api')}")
 

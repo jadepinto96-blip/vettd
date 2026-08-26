@@ -1,7 +1,7 @@
 import streamlit as st
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS, SITE_FOOTER
+from utils.styles import GLOBAL_CSS, SITE_FOOTER, strip_at
 from utils.data_provider import fetch_creator, active_provider
 from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
@@ -233,11 +233,18 @@ with col_center:
     # ── CREATOR DETAILS ──
     with st.container(border=True):
         st.markdown('<div class="input-label">Creator details</div>', unsafe_allow_html=True)
-        c1, c2 = st.columns(2)
+        _fetched_now = st.session_state.get("fetched") or {}
+        # Username is the account's unique ID → primary field. Name auto-fills from the fetch.
+        c1, c2 = st.columns([3, 2])
         with c1:
-            creator_name = st.text_input("Creator name (optional)", placeholder="Emma Williams")
+            _uhandle = st.text_input("Username · the account's @handle", key="an_user", placeholder="emmalifestyle",
+                                     on_change=strip_at, args=("an_user",),
+                                     help="The account's unique ID. The @ is added for you.")
+            username = ("@" + _uhandle.lstrip("@").strip()) if _uhandle.strip() else ""
         with c2:
-            username = st.text_input("Username", placeholder="@emmalifestyle")
+            creator_name = st.text_input("Display name", value=_fetched_now.get("full_name") or "",
+                                         placeholder="Auto-fills on fetch",
+                                         help="Optional — pulled from the profile automatically when you fetch live data.")
         c3, c4, c5 = st.columns(3)
         with c3:
             platform = st.selectbox("Platform", ["Instagram", "TikTok", "YouTube"])
