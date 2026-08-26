@@ -16,6 +16,7 @@ from utils.scoring import (
     compute_benchmark, compute_pulse, sample_notable_followers,
 )
 from utils.ai_analyst import generate_ai_analysis, ai_available
+from utils.styles import avatar_html
 from html import escape as _esc
 
 st.set_page_config(page_title="Vettd — Report", page_icon="✦", layout="wide")
@@ -430,13 +431,11 @@ if tier_gate("Pro"):
     _av_colors = ["#7C6BF0", "#22D3EE", "#60A5FA", "#34D399", "#F5A623"]
     _rows = ""
     for i, nf in enumerate(_notables):
-        _init = nf["handle"].lstrip("@")[:2].upper()
         _clr = _av_colors[i % len(_av_colors)]
         _relc = "#34D399" if nf["relationship"] == "Follows" else "#22D3EE"
         _rows += (
             f'<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--border);">'
-            f'<div style="width:38px;height:38px;border-radius:50%;flex-shrink:0;background:{_clr}22;border:1px solid {_clr}55;'
-            f'display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:{_clr};">{_init}</div>'
+            f'{avatar_html(nf["handle"], 38, ring=_clr)}'
             f'<div style="flex:1;min-width:0;">'
             f'<div style="font-size:14px;font-weight:700;color:var(--text-1);">{nf["handle"]}</div>'
             f'<div style="font-size:12px;color:var(--text-3);">{nf["category"]} · {nf["followers"]} followers</div></div>'

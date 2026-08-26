@@ -309,3 +309,23 @@ SITE_FOOTER = """
   </div>
 </div>
 """
+
+import hashlib as _hashlib
+
+
+def avatar_html(seed, size=40, initials="", ring="#7C6BF0"):
+    """A round avatar: a sample face photo (illustrative) with an initials
+    fallback if the image can't load. Deterministic per seed. External photos
+    are decorative sample stock faces — swap for real profile pics when live."""
+    n = int(_hashlib.md5(str(seed).encode()).hexdigest(), 16) % 70 + 1  # 1..70
+    url = f"https://i.pravatar.cc/{size * 2}?img={n}"
+    init = (initials or str(seed).lstrip("@")[:2]).upper()
+    fs = max(11, size // 3)
+    return (
+        f'<div style="position:relative;width:{size}px;height:{size}px;border-radius:50%;flex-shrink:0;'
+        f'background:{ring}22;border:1px solid {ring}55;display:flex;align-items:center;justify-content:center;'
+        f'font-size:{fs}px;font-weight:700;color:{ring};overflow:hidden;">'
+        f'<span>{init}</span>'
+        f'<img src="{url}" loading="lazy" onerror="this.remove()" alt="" '
+        f'style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>'
+    )

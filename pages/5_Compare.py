@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS, SITE_FOOTER
+from utils.styles import GLOBAL_CSS, SITE_FOOTER, avatar_html
 from utils.data_provider import fetch_creator, active_provider
 from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
@@ -188,9 +188,12 @@ if run:
             st.markdown(f"""
             <div class="cmp-card" style="border:{border};">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                <div>
-                  <div style="font-size:16px;font-weight:700;color:var(--text-1);">{r['name']}</div>
-                  <div style="font-size:12px;color:var(--text-4);">{r['user']} · {r['niche']}</div>
+                <div style="display:flex;align-items:center;gap:11px;">
+                  {avatar_html(r['user'] or r['name'], 42, ring=accent[i])}
+                  <div>
+                    <div style="font-size:16px;font-weight:700;color:var(--text-1);">{r['name']}</div>
+                    <div style="font-size:12px;color:var(--text-4);">{r['user']} · {r['niche']}</div>
+                  </div>
                 </div>{crown}
               </div>
               <div style="text-align:center;padding:1rem 0;border-top:1px solid var(--surface);border-bottom:1px solid var(--surface);margin-bottom:1rem;">

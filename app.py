@@ -1,7 +1,7 @@
 import streamlit as st
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from utils.styles import GLOBAL_CSS
+from utils.styles import GLOBAL_CSS, avatar_html
 
 st.set_page_config(page_title="Vettd — Creator Intelligence for Brands", page_icon="✦", layout="wide")
 st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
@@ -166,7 +166,7 @@ st.markdown(r"""
       <div style="flex:1;display:flex;flex-direction:column;gap:1rem;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
           <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;">EW</div>
+            <div style="position:relative;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;overflow:hidden;"><span>EW</span><img src="https://i.pravatar.cc/80?img=5" onerror="this.remove()" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>
             <div><div style="font-size:15px;font-weight:700;color:var(--text-1);">Emma Williams</div>
               <div style="font-size:11px;color:var(--text-4);">@emmalifestyle · Instagram · Fashion</div></div></div>
           <div style="background:#16122E;border:1px solid rgba(124,58,237,.3);border-radius:999px;padding:4px 14px;font-size:11px;font-weight:600;color:#A78BFA;">Pro</div></div>
@@ -261,7 +261,7 @@ vis_fit = f"""<div style="background:#0D0D14;border:1px solid var(--border);bord
 
 # Visual C — compare + overlap
 vis_cmp = f"""<div style="background:#0D0D14;border:1px solid var(--border);border-radius:20px;padding:1.5rem;box-shadow:0 30px 80px rgba(124,58,237,.15);">
-{''.join(f'<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:{c};"></span><span style="font-size:13px;color:var(--text-1);">{n}</span></div><span class="disp" style="font-size:20px;font-weight:800;color:{c};">{s}</span></div>' for n,s,c in [('@creator_a','84','#A78BFA'),('@creator_b','71','#60A5FA'),('@creator_c','68','#22D3EE')])}
+{''.join(f'<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 14px;margin-bottom:8px;"><div style="display:flex;align-items:center;gap:10px;">{avatar_html(n, 26, ring=c)}<span style="font-size:13px;color:var(--text-1);">{n}</span></div><span class="disp" style="font-size:20px;font-weight:800;color:{c};">{s}</span></div>' for n,s,c in [('@creator_a','84','#A78BFA'),('@creator_b','71','#60A5FA'),('@creator_c','68','#22D3EE')])}
 <div style="margin-top:1rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:12px 14px;text-align:center;">
 <div style="font-size:24px;font-weight:800;color:#EF4444;">72%</div>
 <div style="font-size:11px;color:#A8A8C0;margin-top:2px;">A ↔ B audience overlap · pick one</div></div></div>"""
@@ -320,7 +320,7 @@ mod_cards = "".join([
     f'<div><div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:{c};margin-bottom:2px;">Module</div>'
     f'<div class="disp" style="font-size:19px;font-weight:700;color:var(--text-1);">{name}</div></div>'
     f'<div style="font-size:13px;color:#7A7A98;line-height:1.65;flex:1;">{desc}</div>'
-    f'<a href="/Contact" target="_self" style="font-size:13px;font-weight:600;color:{c};text-decoration:none;">Learn more →</a></div>'
+    f'<a href="/Analyse" target="_self" style="font-size:13px;font-weight:600;color:{c};text-decoration:none;">Try it →</a></div>'
     for name, c, desc, vis in modules
 ])
 st.markdown(f"""
@@ -440,7 +440,15 @@ def _plan_card(name,price,period,searches,color,bg,featured,flist):
     topline = '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C3AED,#60A5FA,#22D3EE);"></div>' if featured else ""
     popular = '<div style="position:absolute;top:16px;right:16px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);color:#A78BFA;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.1em;">POPULAR</div>' if featured else ""
     checks = "".join([f'<div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#8888A8;margin-bottom:11px;"><span style="width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,{color},{color}88);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:700;">✓</span>{f}</div>' for f in flist])
-    price_html = (f'<span class="disp" style="font-size:42px;font-weight:700;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span><span style="font-size:15px;color:#5A5A78;">{period}</span>' if period else f'<span class="disp" style="font-size:42px;font-weight:700;color:#EDEDF5;">{price}</span>')
+    # numeric prices ($149) render big; word prices ("Custom") smaller + never break mid-word
+    _is_num = price.strip().startswith("$")
+    _psize = 42 if _is_num else 30
+    price_html = (
+        f'<span class="disp" style="font-size:{_psize}px;font-weight:700;white-space:nowrap;background:linear-gradient(135deg,{color},#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{price}</span>'
+        f'<span style="font-size:15px;color:#5A5A78;">{period}</span>'
+        if period else
+        f'<span class="disp" style="font-size:{_psize}px;font-weight:700;white-space:nowrap;color:#EDEDF5;">{price}</span>'
+    )
     cta = {'Free': 'Try it free →', 'Starter': 'Get Starter →', 'Pro': 'Get Pro →'}.get(name, 'Contact us →')
     btn_bg = 'linear-gradient(135deg,#7C3AED,#4F46E5)' if featured else 'rgba(255,255,255,.04)'
     btn_border = 'none' if featured else '1px solid var(--border)'
@@ -478,9 +486,10 @@ tcards = "".join([
     f'<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,{color}44,transparent);"></div>'
     f'<div class="disp" style="font-size:48px;color:{color};line-height:.6;margin-bottom:1.25rem;opacity:.6;">&ldquo;</div>'
     f'<p style="font-size:14.5px;color:#A8A8C0;line-height:1.85;margin:0 0 1.5rem;">{quote}</p>'
-    f'<div style="border-top:1px solid var(--border);padding-top:1rem;">'
-    f'<div style="font-size:13px;font-weight:600;color:var(--text-1);">{name}</div>'
-    f'<div style="font-size:11px;color:var(--text-3);margin-top:3px;">{role}</div></div></div>'
+    f'<div style="border-top:1px solid var(--border);padding-top:1rem;display:flex;align-items:center;gap:12px;">'
+    f'{avatar_html(name, 44, ring=color)}'
+    f'<div><div style="font-size:13px;font-weight:600;color:var(--text-1);">{name}</div>'
+    f'<div style="font-size:11px;color:var(--text-3);margin-top:3px;">{role}</div></div></div></div>'
     for quote,name,role,color in testimonials
 ])
 st.markdown(f"""
