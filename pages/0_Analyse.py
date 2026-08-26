@@ -1,8 +1,8 @@
 import streamlit as st
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS, SITE_FOOTER, strip_at
-from utils.data_provider import fetch_creator, active_provider
+from utils.styles import GLOBAL_CSS, SITE_FOOTER, keep_at
+from utils.data_provider import fetch_creator, active_provider, last_fetch_error
 from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
     calculate_brand_fit_score, calculate_audience_quality_score,
@@ -237,10 +237,11 @@ with col_center:
         # Username is the account's unique ID → primary field. Name auto-fills from the fetch.
         c1, c2 = st.columns([3, 2])
         with c1:
-            _uhandle = st.text_input("Username · the account's @handle", key="an_user", placeholder="emmalifestyle",
-                                     on_change=strip_at, args=("an_user",),
-                                     help="The account's unique ID. The @ is added for you.")
-            username = ("@" + _uhandle.lstrip("@").strip()) if _uhandle.strip() else ""
+            st.session_state.setdefault("an_user", "@")
+            _uhandle = st.text_input("Username · the account's @handle", key="an_user", placeholder="@yourhandle",
+                                     on_change=keep_at, args=("an_user",),
+                                     help="The account's unique ID. Type the handle — the @ stays put.")
+            username = _uhandle.strip() if len(_uhandle.strip()) > 1 else ""
         with c2:
             creator_name = st.text_input("Display name", value=_fetched_now.get("full_name") or "",
                                          placeholder="Auto-fills on fetch",
@@ -273,7 +274,8 @@ with col_center:
                         st.rerun()
                     else:
                         st.session_state.fetched = None
-                        st.warning("Couldn't fetch that profile — fill in the details manually.")
+                        _reason = last_fetch_error() or "the account couldn't be reached"
+                        st.warning(f"Couldn't fetch — {_reason} You can still fill in the details manually below.")
         with fc2:
             if _provider == "manual":
                 st.caption("Live fetch off — running on manual input. Add an API key in secrets to auto-fill.")

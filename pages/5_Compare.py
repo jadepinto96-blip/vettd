@@ -2,8 +2,8 @@ import streamlit as st
 import plotly.graph_objects as go
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.styles import GLOBAL_CSS, SITE_FOOTER, avatar_html, strip_at
-from utils.data_provider import fetch_creator, active_provider
+from utils.styles import GLOBAL_CSS, SITE_FOOTER, avatar_html, keep_at
+from utils.data_provider import fetch_creator, active_provider, last_fetch_error
 from utils.scoring import (
     calculate_engagement_rate, estimate_fake_follower_score,
     calculate_brand_fit_score, calculate_audience_quality_score,
@@ -96,10 +96,11 @@ for i, col in enumerate(cols):
         </div>
         """, unsafe_allow_html=True)
         # Username is the account's unique ID → primary. Name auto-fills from the fetch.
-        _uraw = st.text_input("Username · @handle", value=str(dft["user"]).lstrip("@"), key=f"user{i}",
-                              on_change=strip_at, args=(f"user{i}",),
-                              help="The account's unique ID — this is what we analyse. The @ is added for you.")
-        user = ("@" + _uraw.lstrip("@").strip()) if _uraw.strip() else ""
+        st.session_state.setdefault(f"user{i}", "@" + str(dft["user"]).lstrip("@"))
+        _uraw = st.text_input("Username · @handle", key=f"user{i}",
+                              on_change=keep_at, args=(f"user{i}",),
+                              help="The account's unique ID — this is what we analyse. The @ stays put.")
+        user = _uraw.strip() if len(_uraw.strip()) > 1 else ""
         name = st.text_input("Display name", value=pf("full_name", dft["name"]),
                              placeholder="Auto-fills on fetch")  # no key → auto-updates on fetch
 
@@ -111,7 +112,7 @@ for i, col in enumerate(cols):
                     st.session_state[f"cmp_f{i}"] = p
                     st.rerun()
                 else:
-                    st.warning("Couldn't fetch — check the handle and try again.")
+                    st.warning(f"Couldn't fetch — {last_fetch_error() or 'the account couldn’t be reached'}")
             if cf:
                 st.caption(f"✓ Auto-filled from {cf.get('_source','api')}")
 

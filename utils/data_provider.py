@@ -42,6 +42,29 @@ def active_provider():
     return "manual"
 
 
+# Human-readable reason for the most recent failed fetch (for the UI).
+_LAST_ERROR = None
+
+
+def last_fetch_error():
+    return _LAST_ERROR
+
+
+def _set_error(msg):
+    global _LAST_ERROR
+    _LAST_ERROR = msg
+
+
+def _explain_status(code):
+    return {
+        401: "API key rejected (401) — check RAPIDAPI_KEY in Secrets.",
+        403: "API access denied (403) — the key may not be subscribed to this API.",
+        404: "Account not found (404) — check the exact @handle (no spaces).",
+        429: "Rate limit reached (429) — the RapidAPI free quota is used up; wait or upgrade the plan.",
+        500: "The scraper API had a server error (500) — try again in a moment.",
+    }.get(code, f"The scraper API returned status {code}.")
+
+
 # Normalised shape every fetcher must return (None for unknown fields).
 def _empty_profile():
     return {
@@ -145,6 +168,7 @@ def _fetch_rapidapi(username, platform, reels_n=12):
             timeout=20,
         )
         if r.status_code != 200:
+            _set_error(_explain_status(r.status_code))
             return None
         data = r.json()
         # response may be the profile dict directly, or nested under data/user
@@ -174,6 +198,7 @@ def _fetch_rapidapi(username, platform, reels_n=12):
         prof["profile_pic"] = (hd.get("url") if isinstance(hd, dict) else None) or data.get("profile_pic_url")
         prof["niche_guess"] = _category_to_niche(data.get("category"))
         if prof["followers"] is None:
+            _set_error("Profile reached but returned no stats — the account may be private, renamed, or not on Instagram.")
             return None
         # second call: recent reels → real avg likes / comments / views
         media = _fetch_recent_media(handle, key, host, reels_n)
@@ -186,7 +211,8 @@ def _fetch_rapidapi(username, platform, reels_n=12):
                 prof["avg_views"] = media["avg_views"]
             prof["reels_n"] = media.get("reels_n")
         return prof
-    except Exception:
+    except Exception as e:
+        _set_error(f"Network/parse error talking to the scraper API: {str(e)[:120]}")
         return None
 
 
@@ -270,7 +296,9 @@ def fetch_creator(username, platform, reels_n=12):
     or the lookup failed (caller then keeps manual input).
     `reels_n` = how many recent reels to average engagement over.
     """
+    _set_error(None)
     if not username:
+        _set_error("Enter a username first.")
         return None
     provider = active_provider()
     if provider == "modash":

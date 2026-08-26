@@ -261,14 +261,6 @@ a { transition: color var(--dur) ease, opacity var(--dur) ease !important; }
 /* visible focus ring for keyboard nav (accessibility) */
 *:focus-visible { outline: 2px solid var(--accent) !important; outline-offset: 2px !important; }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--accent-2) !important; outline-offset: 2px !important; }
-
-/* ── username fields: a fixed, undeletable "@" prefix (users type the handle) ── */
-div[data-baseweb="input"]:has(input[aria-label*="@handle"]) { position: relative; }
-div[data-baseweb="input"]:has(input[aria-label*="@handle"])::before {
-    content: "@"; display: flex; align-items: center; padding-left: 12px;
-    color: var(--accent-2); font-size: 14px; font-weight: 700; pointer-events: none;
-}
-div[data-baseweb="input"]:has(input[aria-label*="@handle"]) input { padding-left: 4px !important; }
 </style>
 """
 
@@ -322,12 +314,13 @@ import hashlib as _hashlib
 import streamlit as _st
 
 
-def strip_at(key):
-    """on_change callback: keep username fields as a bare handle — the '@' is a
-    fixed, undeletable visual prefix (added via CSS), so the box never stores it."""
+def keep_at(key):
+    """on_change callback for username fields: always keep exactly one leading
+    '@' in the box (re-adds it if the user deletes it), and strip spaces. The '@'
+    is effectively undeletable, and the stored value is always '@handle'."""
     v = _st.session_state.get(key, "")
     if isinstance(v, str):
-        _st.session_state[key] = v.lstrip("@").lstrip().replace(" ", "")
+        _st.session_state[key] = "@" + v.lstrip("@").strip().replace(" ", "")
 
 
 def avatar_html(seed, size=40, initials="", ring="#7C6BF0"):
