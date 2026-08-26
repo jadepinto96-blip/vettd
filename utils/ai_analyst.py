@@ -133,22 +133,21 @@ def _extract_json(text: str):
 def _call_gemini(payload_json: str) -> dict:
     key = _secret("GEMINI_API_KEY")
     try:
-        import google.generativeai as genai
+        from google import genai
+        from google.genai import types
     except ImportError:
-        return {"_error": "google-generativeai not installed."}
+        return {"_error": "google-genai not installed."}
     try:
-        genai.configure(api_key=key)
-        model = genai.GenerativeModel(
-            _secret("GEMINI_MODEL") or GEMINI_MODEL_DEFAULT,
-            system_instruction=SYSTEM_PROMPT,
-        )
-        resp = model.generate_content(
-            f"Analyse this creator brief and respond with ONLY the JSON object described.\n\n{payload_json}",
-            generation_config={
-                "response_mime_type": "application/json",
-                "max_output_tokens": 1500,
-                "temperature": 0.4,
-            },
+        client = genai.Client(api_key=key)
+        resp = client.models.generate_content(
+            model=_secret("GEMINI_MODEL") or GEMINI_MODEL_DEFAULT,
+            contents=f"Analyse this creator brief and respond with ONLY the JSON object described.\n\n{payload_json}",
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                response_mime_type="application/json",
+                max_output_tokens=1500,
+                temperature=0.4,
+            ),
         )
         text = resp.text
     except Exception as e:
