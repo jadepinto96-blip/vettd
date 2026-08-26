@@ -1,7 +1,16 @@
-def calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves):
-    if followers == 0:
+def calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves, avg_views=None):
+    """Engagement rate as a %.
+
+    For reels/video, engagement is measured against VIEWS (the reach that
+    actually saw the content), not followers — otherwise a viral reel with far
+    more views than followers produces a nonsensical >100% rate. When view data
+    isn't available (manual / feed-only), fall back to followers.
+    """
+    engagements = (avg_likes or 0) + (avg_comments or 0) + (avg_saves or 0)
+    denom = avg_views if (avg_views and avg_views > 0) else followers
+    if not denom:
         return 0
-    return round(((avg_likes + avg_comments + avg_saves) / followers) * 100, 2)
+    return round((engagements / denom) * 100, 2)
 
 
 def generate_creator_report(d, engagement_rate, fake_score, brand_fit,

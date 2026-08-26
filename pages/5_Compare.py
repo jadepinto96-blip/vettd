@@ -134,7 +134,7 @@ run = st.columns([1, 2, 1])[1].button("✦ Compare creators", use_container_widt
 if run:
     results = []
     for c in inputs:
-        er = calculate_engagement_rate(c["followers"], c["likes"], c["comments"], c["saves"])
+        er = calculate_engagement_rate(c["followers"], c["likes"], c["comments"], c["saves"], c.get("views"))
         fake = estimate_fake_follower_score(c["followers"], c["following"], c["likes"], c["comments"])
         bf = calculate_brand_fit_score(c["niche"], brand_industry or c["niche"], 60, 60, c["freq"])
         aq = calculate_audience_quality_score(fake, er, c["auth"])

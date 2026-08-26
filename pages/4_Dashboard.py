@@ -185,7 +185,7 @@ for _k, _dflt in (("followers", 0), ("following", 0), ("post_count", 0),
     d[_k] = _num(_k, _dflt)
 
 # ── CALCULATIONS ──
-engagement_rate = calculate_engagement_rate(d["followers"], d["avg_likes"], d["avg_comments"], d["avg_saves"])
+engagement_rate = calculate_engagement_rate(d["followers"], d["avg_likes"], d["avg_comments"], d["avg_saves"], d.get("avg_views"))
 fake_score = estimate_fake_follower_score(d["followers"], d["following"], d["avg_likes"], d["avg_comments"])
 age_18_34 = d["age_18_24"] + d["age_25_34"]
 aud_quality = calculate_audience_quality_score(fake_score, engagement_rate, d["audience_authenticity"])

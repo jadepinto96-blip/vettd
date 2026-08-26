@@ -363,7 +363,7 @@ with col_center:
             loc3_name, loc3_pct = "Australia", 12
 
     # ── LIVE ENGAGEMENT RATE (always visible — the headline signal) ──
-    _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)
+    _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves, _f.get("avg_views"))
     if _er >= 6:      _erc, _erl = "#34D399", "Excellent for this size"
     elif _er >= 3:    _erc, _erl = "#22D3EE", "Strong"
     elif _er >= 1.5:  _erc, _erl = "#F5A623", "Average"
@@ -670,7 +670,7 @@ with col_center:
                 "modules": modules,
             }
             # ── save to search history (most recent first, dedup by username) ──
-            _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves)
+            _er = calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves, _fetched.get("avg_views"))
             _fake = estimate_fake_follower_score(followers, following, avg_likes, avg_comments)
             _bf = calculate_brand_fit_score(niche, brand_industry or niche, female_pct, age_18_24 + age_25_34, posting_freq)
             _aq = calculate_audience_quality_score(_fake, _er, audience_authenticity)
