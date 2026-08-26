@@ -13,7 +13,7 @@ from utils.scoring import (
     calculate_vettd_score, score_label, estimate_cpe,
     generate_creator_report,
     compute_forecast, compute_shield, compute_audience_dna,
-    compute_benchmark, compute_pulse,
+    compute_benchmark, compute_pulse, sample_notable_followers,
 )
 from utils.ai_analyst import generate_ai_analysis, ai_available
 from html import escape as _esc
@@ -217,7 +217,7 @@ axis_color = "var(--surface)"
 text_color = "#444466"
 
 initials = "".join([w[0].upper() for w in d["creator_name"].split()[:2]])
-tier_colors = {"Starter": "var(--text-3)", "Pro": "#A78BFA", "Enterprise": "#06B6D4"}
+tier_colors = {"Starter": "#8888A8", "Pro": "#A78BFA", "Enterprise": "#06B6D4"}
 tc = tier_colors[tier]
 
 # ── NAV ──
@@ -423,6 +423,39 @@ if ai_available():
         """, unsafe_allow_html=True)
     elif _ai and "_error" in _ai:
         st.caption("AI analyst is temporarily unavailable — the standard report above still applies.")
+
+# ── NOTABLE AUDIENCE (illustrative sample — real data needs Modash) ──
+if tier_gate("Pro"):
+    _notables = sample_notable_followers(d.get("username") or d.get("creator_name", ""), d.get("niche", ""))
+    _av_colors = ["#7C6BF0", "#22D3EE", "#60A5FA", "#34D399", "#F5A623"]
+    _rows = ""
+    for i, nf in enumerate(_notables):
+        _init = nf["handle"].lstrip("@")[:2].upper()
+        _clr = _av_colors[i % len(_av_colors)]
+        _relc = "#34D399" if nf["relationship"] == "Follows" else "#22D3EE"
+        _rows += (
+            f'<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--border);">'
+            f'<div style="width:38px;height:38px;border-radius:50%;flex-shrink:0;background:{_clr}22;border:1px solid {_clr}55;'
+            f'display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:{_clr};">{_init}</div>'
+            f'<div style="flex:1;min-width:0;">'
+            f'<div style="font-size:14px;font-weight:700;color:var(--text-1);">{nf["handle"]}</div>'
+            f'<div style="font-size:12px;color:var(--text-3);">{nf["category"]} · {nf["followers"]} followers</div></div>'
+            f'<span style="font-size:11px;font-weight:700;padding:4px 11px;border-radius:999px;'
+            f'background:{_relc}18;border:1px solid {_relc}44;color:{_relc};white-space:nowrap;">{nf["relationship"]}</span></div>'
+        )
+    st.markdown(f"""
+    <div class="section-card" style="margin-bottom:1.5rem;border-color:var(--border);">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:.4rem;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="font-size:15px;font-weight:700;color:var(--text-1);letter-spacing:-.3px;">Notable audience</div>
+          <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-3);">Sample</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-3);">1M+ follower accounts</div>
+      </div>
+      <div style="font-size:12px;color:var(--text-4);margin-bottom:.5rem;">Illustrative preview — connect Modash to surface this creator's real verified notable followers.</div>
+      {_rows}
+    </div>
+    """, unsafe_allow_html=True)
 
 # ── DEEP DIVE (full data & charts, below the readable report) ──
 st.markdown("""

@@ -1,3 +1,78 @@
+import hashlib as _hashlib
+
+# ── Notable audience (ILLUSTRATIVE SAMPLE) ──────────────────────────────────
+# Real "notable followers" data is only available from a paid provider (Modash).
+# Until that's connected, this returns clearly-labelled SAMPLE accounts so the
+# feature can be shown in demos/pitches. Handles are invented — NOT real people.
+# Deterministic per creator (seeded by username) so a creator's list is stable.
+_NOTABLE_POOL = {
+    "beauty": [("theglowledger", "Beauty brand"), ("velvetmuse.co", "Cosmetics label"),
+               ("skinsyntax", "Skincare educator"), ("themakeupvault", "MUA / creator"),
+               ("auraborealbeauty", "Clean-beauty brand"), ("glosscadence", "Beauty editor")],
+    "fashion": [("themodearchive", "Fashion house"), ("streetcadence", "Streetwear label"),
+                ("atelier.noire", "Designer studio"), ("thefitcurator", "Style creator"),
+                ("runwayrelay", "Fashion media"), ("velourthreads", "Luxury label")],
+    "fitness": [("ironcadence", "Fitness brand"), ("themobilitylab", "Coach / creator"),
+                ("fuelform.co", "Sports nutrition"), ("strengthsyntax", "Training platform"),
+                ("apexathleticco", "Athleisure label"), ("thereps.club", "Fitness media")],
+    "food": [("theflavorledger", "Food brand"), ("brunchcadence", "Recipe creator"),
+             ("pantrysyntax", "FMCG label"), ("themorselclub", "Food media"),
+             ("umamiatelier", "Restaurant group"), ("crumbandco", "Bakery brand")],
+    "travel": [("thewanderledger", "Travel brand"), ("nomadcadence", "Travel creator"),
+               ("atlas.syntax", "Hospitality group"), ("thelayoverclub", "Travel media"),
+               ("voyagevelours", "Luxury resorts"), ("driftandco", "Airline brand")],
+    "tech": [("thebytecadence", "Tech brand"), ("gadgetsyntax", "Reviewer / creator"),
+             ("stackatelier", "Dev platform"), ("thesilicondesk", "Tech media"),
+             ("nova.compute", "Hardware label"), ("pixelandco", "SaaS brand")],
+    "gaming": [("thepixelcadence", "Game studio"), ("frameratefm", "Gaming creator"),
+               ("arcadesyntax", "Esports org"), ("theloadout.club", "Gaming media"),
+               ("novaplays", "Streamer collective"), ("questandco", "Publisher")],
+    "finance": [("theledgercadence", "Fintech brand"), ("moneymapped", "Finance creator"),
+                ("capitalsyntax", "Investing platform"), ("thevaultdesk", "Finance media"),
+                ("novacapitalco", "Neobank"), ("yieldandco", "Wealth app")],
+    "lifestyle": [("thedailyledger", "Lifestyle brand"), ("metrocadence", "Lifestyle creator"),
+                  ("homesyntax.co", "Home label"), ("thecuratedclub", "Lifestyle media"),
+                  ("velourliving", "Premium brand"), ("driftlifeco", "Wellness label")],
+    "parenting": [("thelittleledger", "Baby brand"), ("mamacadence", "Parenting creator"),
+                  ("nestsyntax", "Kids label"), ("thefamilydesk", "Parenting media"),
+                  ("novanurseryco", "Nursery brand"), ("tinyandco", "Toy label")],
+    "default": [("thedailyledger", "Media brand"), ("metrocadence", "Creator"),
+                ("novasyntax.co", "Consumer brand"), ("thecuratedclub", "Media"),
+                ("velourcollective", "Premium label"), ("driftandco", "Lifestyle brand")],
+}
+
+
+def sample_notable_followers(username, niche, n=5):
+    """Return n illustrative-sample notable (1M+) accounts for this creator.
+    SAMPLE DATA ONLY — invented handles, not real people. Deterministic per user.
+    Each item: {handle, category, followers, relationship}."""
+    key = (niche or "").lower()
+    pool = None
+    for k in _NOTABLE_POOL:
+        if k != "default" and k in key:
+            pool = _NOTABLE_POOL[k]
+            break
+    pool = list(pool or _NOTABLE_POOL["default"])
+
+    seed = int(_hashlib.md5(f"{username}|{niche}".encode()).hexdigest(), 16)
+    # deterministic shuffle
+    idx = list(range(len(pool)))
+    for i in range(len(idx) - 1, 0, -1):
+        seed, j = divmod(seed, i + 1)
+        idx[i], idx[j] = idx[j], idx[i]
+
+    out = []
+    for rank, i in enumerate(idx[:n]):
+        handle, category = pool[i]
+        s = int(_hashlib.md5(f"{username}|{handle}".encode()).hexdigest(), 16)
+        followers_m = 1.2 + (s % 130) / 10.0            # 1.2M – 14.1M
+        rel = "Follows" if (s >> 8) % 3 else "Engaged"  # ~2/3 follow, ~1/3 engaged
+        fol = f"{followers_m:.1f}M"
+        out.append({"handle": "@" + handle, "category": category,
+                    "followers": fol, "relationship": rel})
+    return out
+
+
 def calculate_engagement_rate(followers, avg_likes, avg_comments, avg_saves, avg_views=None):
     """Engagement rate as a %.
 
